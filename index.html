@@ -1,19 +1,69 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>志木キッチンカー GO MAP</title>
-  
-  <meta property="og:title" content="志木キッチンカー GO MAP">
-  <meta property="og:description" content="志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図。">
-  <meta property="og:image" content="https://drive.google.com/thumbnail?id=1zcQqzRT2rV9GCW9sk4nISiM1ubH0qQ5U&sz=w1200">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="あなたのGitHubのURL">
+// --- 表示側HTML ---
+function getUserHtml() {
+  const bannerUrl = 'https://drive.google.com/thumbnail?id=' + BANNER_ID + '&sz=w1200';
+  const shareUrl = 'https://ichirohns-jpg.github.io/shiki.gomap-001/'; // GitHubのURL
 
-  <meta http-equiv="refresh" content="0;URL='https://script.google.com/macros/s/AKfycbyd0gZGZIwRj6zxin4gRfvWI8GwDORhFqPNblOr3GUQPLc7y29D7BQiH9HyeFVTJgvG/exec'">
-</head>
-<body style="background:#f2f5f8; text-align:center; padding-top:50px; font-family:sans-serif;">
-  <p>読み込み中...</p>
-  <p><a href="https://script.google.com/macros/s/AKfycbyd0gZGZIwRj6zxin4gRfvWI8GwDORhFqPNblOr3GUQPLc7y29D7BQiH9HyeFVTJgvG/exec">切り替わらない場合はこちらをクリック</a></p>
-</body>
-</html>
+  return `<!DOCTYPE html><html><head><style>
+    body { font-family: sans-serif; background: #f2f5f8; padding: 0; margin: 0; color: #333; }
+    .header { width: 100%; max-width: 800px; margin: 0 auto; background: white; line-height: 0; }
+    .banner { width: 100%; height: auto; display: block; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; max-width: 1000px; margin: 0 auto; padding: 20px 15px; }
+    .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 6px 15px rgba(0,0,0,0.05); border-top: 5px solid #004ea2; margin-bottom: 10px; }
+    .media-box { width: 100%; height: 350px; background: #eee; overflow-x: auto; display: flex; scroll-snap-type: x mandatory; }
+    .media-box img, .media-box iframe { flex: 0 0 100%; width: 100%; height: 100%; object-fit: cover; scroll-snap-align: start; border: none; }
+    .p-20 { padding: 20px; }
+    .shop-name { font-size: 20px; font-weight: bold; color: #004ea2; margin: 0; }
+    .loc { background: #fff3e0; color: #e65100; padding: 4px 10px; border-radius: 5px; font-size: 14px; font-weight: bold; display: inline-block; margin: 10px 0; }
+    .msg { font-size: 14px; line-height: 1.6; color: #555; margin-bottom: 15px; white-space: pre-wrap; }
+    .btn { display: block; text-align: center; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: bold; background: #004ea2; color: white; }
+    .copy-section { text-align: center; padding: 40px 20px; }
+    .btn-copy { background: #f0f0f0; color: #333; border: 1px solid #ddd; padding: 15px; border-radius: 8px; width: 100%; max-width: 360px; font-weight: bold; cursor: pointer; }
+  </style></head><body>
+    <div class="header"><img src="${bannerUrl}" class="banner"></div>
+    <div id="list" class="grid"></div>
+    <div id="loading" style="text-align:center; padding:20px; color:#999;">読み込み中...</div>
+    
+    <div class="copy-section">
+      <button onclick="copyUrl()" class="btn-copy">このページをコピーしてシェアしてください</button>
+      <p style="font-size:12px; color:#999; margin-top:10px;">FacebookやLINEで綺麗に表示されます</p>
+    </div>
+
+    <script>
+      let all = [], idx = 0, PAGE = 5;
+      google.script.run.withSuccessHandler(data => { all = data; render(); }).getEvents();
+      
+      function render() {
+        const list = document.getElementById('list');
+        const batch = all.slice(idx, idx + PAGE);
+        batch.forEach(d => {
+          const div = document.createElement('div'); div.className = 'card';
+          let mediaHtml = '<div class="media-box">';
+          if(d.media && d.media.length > 0) {
+            d.media.forEach(m => {
+              if(m.type === 'youtube') mediaHtml += \`<iframe src="\${m.url}" allow="autoplay; encrypted-media"></iframe>\`;
+              else mediaHtml += \`<img src="\${m.url}">\`;
+            });
+          } else { mediaHtml += '<div style="width:100%; line-height:350px; text-align:center; color:#ccc;">No Image</div>'; }
+          mediaHtml += '</div>';
+          div.innerHTML = \`\${mediaHtml}<div class="p-20"><div class="shop-name">\${d.name}</div><div class="loc">📍 \${d.place}</div><div class="msg">\${d.msg}</div><a href="\${d.map}" class="btn" target="_blank">Googleマップを見る</a></div>\`;
+          list.appendChild(div);
+        });
+        idx += PAGE;
+        document.getElementById('loading').innerText = (idx >= all.length) ? "以上です" : "スクロールで次を表示";
+      }
+
+      window.onscroll = () => { if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 300) render(); };
+
+      function copyUrl() {
+        const shareText = "🚚 志木キッチンカー GO MAP\\n${shareUrl}";
+        const t = document.createElement("textarea"); 
+        document.body.appendChild(t);
+        t.value = shareText;
+        t.select(); 
+        document.execCommand('copy'); 
+        document.body.removeChild(t);
+        alert("コピーしました！SNS等に貼り付けてシェアしてください。");
+      }
+    </script>
+  </body></html>`;
+}
