@@ -13,25 +13,29 @@
   <meta name="twitter:card" content="summary_large_image">
 
   <style>
-    /* 1. デザイン: 文字大きめ・モバイル最適化 */
-    body { font-family: sans-serif; background: #f2f5f8; margin: 0; padding: 0; color: #333; }
-    .header { width: 100%; max-width: 800px; margin: 0 auto; background: white; }
+    /* デザイン：文字大きめ・操作性重視 */
+    body { font-family: sans-serif; background: #f2f5f8; margin: 0; padding: 0; color: #333; padding-bottom: 120px; }
+    .header { width: 100%; max-width: 800px; margin: 0 auto; background: white; line-height: 0; }
     .banner { width: 100%; height: auto; display: block; }
-    .container { max-width: 1000px; margin: 0 auto; padding: 20px 15px; }
+    .container { max-width: 800px; margin: 0 auto; padding: 20px 15px; }
     
-    .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 6px 15px rgba(0,0,0,0.05); border-top: 5px solid #004ea2; margin-bottom: 25px; }
-    .media { width: 100%; height: 300px; background: #000; }
-    .media img, .media iframe { width: 100%; height: 100%; object-fit: cover; border: none; }
+    .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 6px 15px rgba(0,0,0,0.08); border-top: 6px solid #004ea2; margin-bottom: 30px; }
+    .media { width: 100%; height: 350px; background: #eee; }
+    .media img { width: 100%; height: 100%; object-fit: cover; display: block; }
     
-    .p-20 { padding: 20px; }
-    .shop-name { font-size: 24px; font-weight: bold; color: #004ea2; margin-bottom: 8px; }
-    .loc { background: #fff3e0; color: #e65100; padding: 6px 12px; border-radius: 5px; font-size: 18px; font-weight: bold; display: inline-block; margin-bottom: 12px; }
-    .msg { font-size: 18px; line-height: 1.8; color: #555; white-space: pre-wrap; }
+    .p-20 { padding: 25px; }
+    .time-text { font-size: 14px; color: #999; margin-bottom: 10px; }
+    .shop-name { font-size: 28px; font-weight: bold; color: #004ea2; margin: 0 0 12px 0; }
+    .loc { background: #fff3e0; color: #e65100; padding: 8px 15px; border-radius: 8px; font-size: 20px; font-weight: bold; display: inline-block; margin-bottom: 15px; }
+    .msg { font-size: 22px; line-height: 1.8; color: #444; white-space: pre-wrap; margin-bottom: 20px; }
     
-    .bottom-actions { display: flex; gap: 10px; padding: 20px 15px 40px; max-width: 1000px; margin: 0 auto; }
-    .btn { flex: 1; padding: 18px; border-radius: 10px; border: none; font-size: 18px; font-weight: bold; cursor: pointer; text-align: center; text-decoration: none; }
-    .copy-btn { background: #eee; color: #333; }
-    .map-btn { background: #004ea2; color: white; display: block; margin-top: 15px; }
+    .btn-map { display: block; text-align: center; padding: 20px; background: #004ea2; color: white; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 20px; }
+    
+    /* 下部固定コピーボタン */
+    .footer-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(255,255,255,0.95); padding: 20px 0; display: flex; justify-content: center; backdrop-filter: blur(8px); box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
+    .copy-btn { width: 90%; max-width: 450px; padding: 18px; background: #333; color: white; border: none; border-radius: 40px; font-size: 22px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+    
+    .loading { text-align: center; padding: 100px; font-size: 22px; color: #999; }
   </style>
 </head>
 <body>
@@ -40,40 +44,90 @@
   <img src="https://drive.google.com/thumbnail?id=1zcQqzRT2rV9GCW9sk4nISiM1ubH0qQ5U&sz=w1200" class="banner">
 </div>
 
-<div class="container" id="list">
-  <p style="text-align:center; padding:50px; color:#999;">読み込み中...</p>
+<div class="container" id="app">
+  <div class="loading">最新情報を取得中...</div>
 </div>
 
-<div class="bottom-actions">
-  <button class="btn copy-btn" onclick="copyUrl()">🔗 リンクをコピー</button>
+<div class="footer-bar">
+  <button class="copy-btn" onclick="copyLink()">🔗 リンクをコピーしてシェア</button>
 </div>
 
 <script>
-  // コピーするURLを指定
+  // ご指定のGAS API URL
+  const API_URL = 'https://script.google.com/macros/s/AKfycbyNcQBHahDqnQk_Csmfwv_yaezLWp7YZDPV_cVDZ_trD9lq2XOvvqoq1EgnHkFLwrdS/exec';
+  // ご指定のGitHub Pages URL
   const SHARE_URL = 'https://ichirohns-jpg.github.io/shiki.gomap-001/';
 
-  function copyUrl() {
-    const text = "🚚 志木キッチンカー GO MAP\n今日のご飯が見つかるリアルタイム地図！\n" + SHARE_URL;
-    
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(text).then(() => {
-        alert("リンクをコピーしました！SNSでシェアしてください。");
+  // 1. データ取得と表示
+  async function loadData() {
+    const app = document.getElementById('app');
+    try {
+      const res = await fetch(API_URL);
+      if (!res.ok) throw new Error('通信エラー');
+      const data = await res.json();
+      app.innerHTML = '';
+
+      if (!data || data.length === 0) {
+        app.innerHTML = '<div class="loading">現在、掲載情報はありません。</div>';
+        return;
+      }
+
+      data.forEach(item => {
+        const img = (item.media && item.media.length > 0) ? item.media[0].url : '';
+        const card = `
+          <div class="card">
+            ${img ? `<div class="media"><img src="${img}" loading="lazy"></div>` : ''}
+            <div class="p-20">
+              <div class="time-text">${item.time} 投稿</div>
+              <div class="shop-name">${item.name}</div>
+              <div class="loc">📍 ${item.place}</div>
+              <div class="msg">${item.msg}</div>
+              ${item.map ? `<a href="${item.map}" class="btn-map" target="_blank">Googleマップで場所を確認</a>` : ''}
+            </div>
+          </div>`;
+        app.innerHTML += card;
       });
-    } else {
-      // 古いブラウザ用
-      const t = document.createElement("textarea");
-      t.value = text;
-      document.body.appendChild(t);
-      t.select();
-      document.execCommand("copy");
-      document.body.removeChild(t);
-      alert("リンクをコピーしました！");
+    } catch (e) {
+      app.innerHTML = '<div class="loading">データの読み込みに失敗しました。<br>GAS側の設定（アクセス権：全員）を確認してください。</div>';
     }
   }
 
-  // GASからデータを取得する処理（ここは以前のGASウェブアプリURLをfetchするようにしてください）
-  // async function loadData() { ... }
-</script>
+  // 2. URLコピー機能 (間違いなく動作するように構築)
+  function copyLink() {
+    const text = "🚚 志木キッチンカー GO MAP\n志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図！\n" + SHARE_URL;
+    
+    // 最新のブラウザ用
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert("リンクをコピーしました！");
+      }).catch(err => {
+        fallbackCopy(text);
+      });
+    } else {
+      fallbackCopy(text);
+    }
+  }
 
+  // 古いブラウザや非セキュア環境用の予備コピー処理
+  function fallbackCopy(text) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-999999px";
+    textArea.style.top = "-999999px";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+      document.execCommand('copy');
+      alert("リンクをコピーしました！");
+    } catch (err) {
+      alert("コピーに失敗しました。URLを選択してコピーしてください。");
+    }
+    document.body.removeChild(textArea);
+  }
+
+  loadData();
+</script>
 </body>
 </html>
