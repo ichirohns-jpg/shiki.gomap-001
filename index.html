@@ -1,13 +1,29 @@
-// --- 表示側HTML ---
-function getUserHtml() {
-  // バナーURLをサムネイル形式に強制変更（表示されやすい形式）
-  const bannerUrl = 'https://drive.google.com/thumbnail?id=' + BANNER_ID + '&sz=w1200';
-  // GitHubのURL（スペルミスを修正：shiki.gomap-001）
-  const shareUrl = 'https://ichirohns-jpg.github.io/shiki.gomap-001/'; 
+    function copyUrl() {
+      // 指定されたGitHub PagesのURLをセット
+      const shareUrl = 'https://ichirohns-jpg.github.io/shiki.gomap-001/';
+      
+      const text =
+        '🚚 志木キッチンカー GO MAP\n' +
+        '志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図。\n' +
+        shareUrl;
 
-  return `<!DOCTYPE html><html><head><style>
-    body { font-family: sans-serif; background: #f2f5f8; padding: 0; margin: 0; color: #333; }
-    .header { width: 100%; max-width: 800px; margin: 0 auto; background: white; line-height: 0; }
-    /* バナーが確実に表示されるようスタイル調整 */
-    .banner { width: 100%; height: auto; display: block; min-height: 150px; background: #eee; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; max-width: 1000px; margin: 0 auto; padding: 20px 15px; }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function() {
+          alert('リンクをコピーしました');
+        }).catch(function() {
+          fallbackCopy(text);
+        });
+      } else {
+        fallbackCopy(text);
+      }
+    }
+
+    function fallbackCopy(text) {
+      const t = document.createElement('textarea');
+      document.body.appendChild(t);
+      t.value = text;
+      t.select();
+      document.execCommand('copy');
+      document.body.removeChild(t);
+      alert('リンクをコピーしました');
+    }
