@@ -241,7 +241,6 @@
 
   <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbyNcQBHahDqnQk_Csmfwv_yaezLWp7YZDPV_cVDZ_trD9lq2XOvvqoq1EgnHkFLwrdS/exec";
-    const SHARE_URL = "https://ichirohns-jpg.github.io/shiki.gomap-001/";
 
     const MAIN_COUNT = 5;
     const PAGE_SIZE = 5;
@@ -257,7 +256,7 @@
     if (IS_ARCHIVE) {
       document.getElementById("page-title").textContent = "アーカイブ";
       document.getElementById("archive-link").textContent = "最新に戻る";
-      document.getElementById("archive-link").href = SHARE_URL;
+      document.getElementById("archive-link").href = "https://ichirohns-jpg.github.io/shiki.gomap-001/";
     }
 
     fetch(GAS_URL + "?v=" + Date.now())
@@ -366,9 +365,7 @@
 
     function copyUrl() {
       const text =
-        "🚚 志木キッチンカー GO MAP\n" +
-        "志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図。\n" +
-        SHARE_URL;
+        "https://ichirohns-jpg.github.io/shiki.gomap-001/";
 
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text).then(function() {
