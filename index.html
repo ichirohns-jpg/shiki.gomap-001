@@ -11,7 +11,6 @@
   <meta property="og:url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="志木キッチンカー GO MAP">
-  <meta property="og:locale" content="ja_JP">
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="志木キッチンカー GO MAP">
@@ -19,387 +18,46 @@
   <meta name="twitter:image" content="https://drive.google.com/thumbnail?id=1zcQqzRT2rV9GCW9sk4nISiM1ubH0qQ5U&sz=w1200">
 
   <style>
+    html,
     body {
-      font-family: sans-serif;
-      background: #f2f5f8;
-      padding: 0;
       margin: 0;
-      color: #333;
-    }
-
-    .header {
-      width: 100%;
-      max-width: 800px;
-      margin: 0 auto;
-      background: white;
-      line-height: 0;
-    }
-
-    .banner {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    .page-title {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 18px 15px 0;
-      font-size: 24px;
-      font-weight: bold;
-      color: #004ea2;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 20px;
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 20px 15px;
-    }
-
-    .card {
-      background: white;
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.05);
-      border-top: 5px solid #004ea2;
-      margin-bottom: 10px;
-    }
-
-    .media {
-      width: 100%;
-      height: 350px;
-      background: #eee;
-      overflow-x: auto;
-      overflow-y: hidden;
-      display: flex;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .media-slide {
-      flex: 0 0 100%;
-      width: 100%;
-      height: 350px;
-      scroll-snap-align: start;
-      background: #000;
-    }
-
-    .media img,
-    .media video,
-    .media iframe {
+      padding: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      overflow: hidden;
+      background: #f2f5f8;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
       border: none;
       display: block;
-    }
-
-    .no-media {
-      height: 350px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #aaa;
-      background: #f1f1f1;
-      font-size: 18px;
-    }
-
-    .p-20 {
-      padding: 20px;
-    }
-
-    .time-text {
-      font-size: 13px;
-      color: #999;
-      margin-bottom: 8px;
-      line-height: 1.6;
-    }
-
-    .shop-name {
-      font-size: 24px;
-      font-weight: bold;
-      color: #004ea2;
-      margin: 0 0 8px 0;
-      word-break: break-word;
-      line-height: 1.5;
-    }
-
-    .loc {
-      background: #fff3e0;
-      color: #e65100;
-      padding: 6px 12px;
-      border-radius: 5px;
-      font-size: 16px;
-      font-weight: bold;
-      display: inline-block;
-      margin-bottom: 12px;
-      word-break: break-word;
-      line-height: 1.6;
-    }
-
-    .msg {
-      font-size: 18px;
-      line-height: 1.9;
-      color: #555;
-      margin-bottom: 18px;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-
-    .btn {
-      display: block;
-      text-align: center;
-      padding: 14px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: bold;
-      width: 100%;
-      box-sizing: border-box;
-      border: none;
-      font-size: 17px;
-      line-height: 1.6;
-    }
-
-    .btn-map {
-      background: #004ea2;
-      color: white;
-    }
-
-    #loading {
-      text-align: center;
-      padding: 20px;
-      color: #999;
-      font-size: 16px;
-    }
-
-    .bottom-actions {
-      display: none;
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 24px 15px 40px;
-      gap: 12px;
-      grid-template-columns: 1fr 1fr;
-    }
-
-    .bottom-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 56px;
-      border-radius: 10px;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 17px;
-      box-sizing: border-box;
-      border: none;
-      cursor: pointer;
-      width: 100%;
-      line-height: 1.5;
-      padding: 12px;
-    }
-
-    .copy-btn {
-      background: #f0f0f0;
-      color: #333;
-      border: 1px solid #ddd;
-    }
-
-    .archive-btn {
-      background: #004ea2;
-      color: white;
-    }
-
-    .empty {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 40px;
-      color: #999;
-      font-size: 18px;
-      line-height: 1.8;
+      background: #f2f5f8;
     }
   </style>
 </head>
 
 <body>
-  <div class="header">
-    <img src="https://drive.google.com/thumbnail?id=1zcQqzRT2rV9GCW9sk4nISiM1ubH0qQ5U&sz=w1200" class="banner">
-  </div>
-
-  <div class="page-title" id="page-title">志木キッチンカー GO MAP</div>
-
-  <div id="list" class="grid"></div>
-
-  <div id="loading">読み込み中...</div>
-
-  <div id="bottom-actions" class="bottom-actions">
-    <button onclick="copyUrl()" class="bottom-btn copy-btn">URLコピー</button>
-    <a id="archive-link" class="bottom-btn archive-btn" href="?p=archive">アーカイブ</a>
-  </div>
+  <iframe id="gomapFrame"></iframe>
 
   <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbyNcQBHahDqnQk_Csmfwv_yaezLWp7YZDPV_cVDZ_trD9lq2XOvvqoq1EgnHkFLwrdS/exec";
-    const SHARE_URL = "https://ichirohns-jpg.github.io/shiki.gomap-001/";
-
-    const MAIN_COUNT = 5;
-    const PAGE_SIZE = 5;
 
     const params = new URLSearchParams(window.location.search);
-    const IS_ARCHIVE = params.get("p") === "archive";
+    const p = params.get("p");
 
-    let all = [];
-    let visible = [];
-    let idx = 0;
-    let loadingLock = false;
+    let url = GAS_URL;
 
-    if (IS_ARCHIVE) {
-      document.getElementById("page-title").textContent = "アーカイブ";
-      document.getElementById("archive-link").textContent = "最新に戻る";
-      document.getElementById("archive-link").href = SHARE_URL;
+    if (p === "s") {
+      url += "?p=s";
+    } else if (p === "archive") {
+      url += "?p=archive";
     }
 
-    fetch(GAS_URL + "?v=" + Date.now())
-      .then(function(res) {
-        return res.json();
-      })
-      .then(function(data) {
-        all = data || [];
+    url += (url.indexOf("?") === -1 ? "?" : "&") + "v=" + Date.now();
 
-        if (IS_ARCHIVE) {
-          visible = all.slice(MAIN_COUNT);
-        } else {
-          visible = all.slice(0, MAIN_COUNT);
-        }
-
-        render();
-      })
-      .catch(function() {
-        document.getElementById("list").innerHTML =
-          '<div class="empty">読み込みに失敗しました</div>';
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("bottom-actions").style.display = "grid";
-      });
-
-    function render() {
-      if (idx >= visible.length) {
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("bottom-actions").style.display = "grid";
-
-        if (visible.length === 0) {
-          document.getElementById("list").innerHTML =
-            '<div class="empty">表示できる情報はありません</div>';
-        }
-
-        return;
-      }
-
-      const list = document.getElementById("list");
-      const batch = visible.slice(idx, idx + PAGE_SIZE);
-
-      batch.forEach(function(d) {
-        const div = document.createElement("div");
-        div.className = "card";
-
-        div.innerHTML =
-          buildMedia(d.media) +
-          '<div class="p-20">' +
-            '<div class="time-text">' + esc(d.time) + '</div>' +
-            '<div class="shop-name">' + esc(d.name) + '</div>' +
-            '<div class="loc">📍 ' + esc(d.place) + '</div>' +
-            '<div class="msg">' + esc(d.msg) + '</div>' +
-            (d.map ? '<a href="' + escAttr(d.map) + '" class="btn btn-map" target="_blank" rel="noopener noreferrer">Googleマップを見る</a>' : '') +
-          '</div>';
-
-        list.appendChild(div);
-      });
-
-      idx += PAGE_SIZE;
-
-      if (idx >= visible.length) {
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("bottom-actions").style.display = "grid";
-      } else {
-        document.getElementById("loading").style.display = "block";
-        document.getElementById("loading").innerText = "スクロールで次を表示";
-      }
-    }
-
-    function buildMedia(mediaList) {
-      if (!mediaList || !mediaList.length) {
-        return '<div class="no-media">No Image</div>';
-      }
-
-      let html = '<div class="media">';
-
-      mediaList.slice(0, 5).forEach(function(m) {
-        html += '<div class="media-slide">';
-
-        if (m.type === "youtube" || m.type === "driveVideo") {
-          html += '<iframe src="' + escAttr(m.url) + '" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
-        } else if (m.type === "video") {
-          html += '<video src="' + escAttr(m.url) + '" controls muted loop playsinline></video>';
-        } else {
-          html += '<img src="' + escAttr(m.url) + '" loading="lazy">';
-        }
-
-        html += '</div>';
-      });
-
-      html += '</div>';
-      return html;
-    }
-
-    window.addEventListener("scroll", function() {
-      if (loadingLock) return;
-
-      if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 300) {
-        loadingLock = true;
-        render();
-
-        setTimeout(function() {
-          loadingLock = false;
-        }, 500);
-      }
-    });
-
-    function copyUrl() {
-      const text = SHARE_URL;
-
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(function() {
-          alert("コピー完了");
-        }).catch(function() {
-          fallbackCopy(text);
-        });
-      } else {
-        fallbackCopy(text);
-      }
-    }
-
-    function fallbackCopy(text) {
-      const t = document.createElement("textarea");
-      document.body.appendChild(t);
-      t.value = text;
-      t.select();
-      document.execCommand("copy");
-      document.body.removeChild(t);
-      alert("コピー完了");
-    }
-
-    function esc(s) {
-      return String(s || "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#39;");
-    }
-
-    function escAttr(s) {
-      return esc(s);
-    }
+    document.getElementById("gomapFrame").src = url;
   </script>
 </body>
 </html>
