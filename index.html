@@ -7,15 +7,14 @@
   <title>志木キッチンカー GO MAP</title>
 
   <meta property="og:title" content="志木キッチンカー GO MAP">
-  <meta property="og:description" content="志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図。">
+  <meta property="og:description" content="志木市のキッチンカーは今どこ？今日の出店場所がわかるリアルタイム地図。">
   <meta property="og:image" content="https://drive.google.com/thumbnail?id=1zcQqzRT2rV9GCW9sk4nISiM1ubH0qQ5U&sz=w1200">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="志木キッチンカー GO MAP">
-  <meta property="og:locale" content="ja_JP">
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="志木キッチンカー GO MAP">
-  <meta name="twitter:description" content="志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図。">
+  <meta name="twitter:description" content="志木市のキッチンカーは今どこ？今日の出店場所がわかるリアルタイム地図。">
   <meta name="twitter:image" content="https://drive.google.com/thumbnail?id=1zcQqzRT2rV9GCW9sk4nISiM1ubH0qQ5U&sz=w1200">
 
   <style>
@@ -29,114 +28,69 @@
     .wrap {
       max-width: 720px;
       margin: 0 auto;
-      background: #fff;
       min-height: 100vh;
+      background: #ffffff;
     }
 
-    .hero img {
+    .banner {
       width: 100%;
       display: block;
     }
 
     .content {
-      padding: 28px 22px 38px;
-    }
-
-    .label {
-      display: inline-block;
-      background: #fff3e0;
-      color: #e65100;
-      font-weight: 900;
-      font-size: 15px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      margin-bottom: 16px;
+      padding: 28px 20px 40px;
     }
 
     h1 {
-      margin: 0 0 16px;
-      font-size: 32px;
+      margin: 0 0 18px;
+      color: #004ea2;
+      font-size: 31px;
       line-height: 1.35;
-      color: #004ea2;
-      letter-spacing: 0.02em;
-    }
-
-    .lead {
-      font-size: 19px;
-      line-height: 1.85;
-      font-weight: 700;
-      margin: 0 0 24px;
-    }
-
-    .card {
-      background: #f7fbff;
-      border: 2px solid #dbeeff;
-      border-radius: 18px;
-      padding: 18px;
-      margin: 20px 0;
-    }
-
-    .card-title {
-      font-size: 21px;
       font-weight: 900;
-      color: #004ea2;
-      margin-bottom: 8px;
     }
 
-    .card-text {
+    p {
+      margin: 0 0 24px;
       font-size: 18px;
       line-height: 1.8;
-      margin: 0;
+      font-weight: 700;
     }
 
     .btn {
       display: block;
       width: 100%;
       box-sizing: border-box;
-      text-align: center;
-      text-decoration: none;
+      border: none;
       border-radius: 16px;
-      padding: 20px 14px;
-      margin-top: 16px;
+      padding: 22px 14px;
+      margin: 18px 0;
       font-size: 23px;
       font-weight: 900;
       line-height: 1.4;
-      border: none;
+      text-align: center;
+      color: #ffffff;
       cursor: pointer;
     }
 
     .btn-view {
       background: #004ea2;
-      color: white;
-      box-shadow: 0 8px 18px rgba(0, 78, 162, 0.25);
     }
 
     .btn-send {
       background: #ff7a00;
-      color: white;
-      box-shadow: 0 8px 18px rgba(255, 122, 0, 0.25);
     }
 
     .btn-archive {
-      background: #555;
-      color: white;
-      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+      background: #555555;
     }
 
     .note {
-      margin-top: 22px;
-      font-size: 15px;
+      margin-top: 24px;
+      font-size: 14px;
       line-height: 1.7;
-      color: #666;
+      color: #666666;
       text-align: center;
-    }
-
-    .footer {
-      background: #f2f5f8;
-      text-align: center;
-      color: #777;
-      font-size: 13px;
-      padding: 24px 16px 34px;
+      font-weight: 500;
     }
   </style>
 </head>
@@ -144,44 +98,30 @@
 <body>
   <div class="wrap">
 
-    <div class="hero">
-      <img src="https://drive.google.com/thumbnail?id=1zcQqzRT2rV9GCW9sk4nISiM1ubH0qQ5U&sz=w1600" alt="志木キッチンカー GO MAP">
-    </div>
+    <img
+      class="banner"
+      src="https://drive.google.com/thumbnail?id=1zcQqzRT2rV9GCW9sk4nISiM1ubH0qQ5U&sz=w1600"
+      alt="志木キッチンカー GO MAP"
+    >
 
     <div class="content">
-      <div class="label">志木市のキッチンカー情報</div>
-
       <h1>志木キッチンカー<br>GO MAP</h1>
 
-      <p class="lead">
+      <p>
         志木市のキッチンカーは今どこ？<br>
-        今日の出店場所・時間・お店の情報を見やすく届けます。
+        今日の出店場所・時間・お店の情報を確認できます。
       </p>
-
-      <div class="card">
-        <div class="card-title">見る人はこちら</div>
-        <p class="card-text">
-          今日の出店情報、場所、メッセージ、Googleマップを確認できます。
-        </p>
-      </div>
 
       <button class="btn btn-view" onclick="openViewer()">
         GO MAPを見る
       </button>
 
-      <button class="btn btn-archive" onclick="openArchive()">
-        アーカイブを見る
-      </button>
-
-      <div class="card">
-        <div class="card-title">店主さんはこちら</div>
-        <p class="card-text">
-          店名、場所、時間、メッセージを入れて、今日の出店情報を投稿できます。
-        </p>
-      </div>
-
       <button class="btn btn-send" onclick="openSender()">
         投稿パネルを開く
+      </button>
+
+      <button class="btn btn-archive" onclick="openArchive()">
+        アーカイブを見る
       </button>
 
       <div class="note">
@@ -189,25 +129,21 @@
       </div>
     </div>
 
-    <div class="footer">
-      志木キッチンカー GO MAP
-    </div>
-
   </div>
 
   <script>
-    const GAS_URL = "ここにGASの公開URLを入れる";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbypl87uceINv3pE1vkwc1f4DCy3knkstLPikMHiZJhmsjFgBmibGbfjeuT2f8C15Lzb/exec";
 
     function openViewer() {
-      window.open(GAS_URL + "?v=" + Date.now(), "_blank");
-    }
-
-    function openArchive() {
-      window.open(GAS_URL + "?p=archive&v=" + Date.now(), "_blank");
+      window.location.href = GAS_URL + "?v=" + Date.now();
     }
 
     function openSender() {
-      window.open(GAS_URL + "?p=s&v=" + Date.now(), "_blank");
+      window.location.href = GAS_URL + "?p=s&v=" + Date.now();
+    }
+
+    function openArchive() {
+      window.location.href = GAS_URL + "?p=archive&v=" + Date.now();
     }
   </script>
 </body>
