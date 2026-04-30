@@ -7,17 +7,14 @@
 
   <meta property="og:title" content="志木Go map">
   <meta property="og:description" content="志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図。">
-  <meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/sakura.png?v=2026">
-  <meta property="og:url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/?v=1">
+  <meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/sakura.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="志木Go map">
-  <meta property="og:locale" content="ja_JP">
+  <meta property="og:url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/sakura.png?v=2026">
-
-  <link rel="apple-touch-icon" href="https://ichirohns-jpg.github.io/shiki.gomap-001/sakura.png">
-  <link rel="icon" href="https://ichirohns-jpg.github.io/shiki.gomap-001/sakura.png">
+  <meta name="twitter:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/sakura.png">
 
   <style>
     html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: #f2f5f8; overflow: hidden; }
@@ -32,17 +29,17 @@
   <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbxDgUmuNnll_cgVILwei9PGQMfxoR_2NeRKvvJI2C7gqsvrm0bDleDN2iwVncYZkmSV/exec";
     
-    // 現在のURLパラメータを取得
-    const params = new URLSearchParams(window.location.search);
+    const url = new URL(window.location.href);
     
-    // Facebookのキャッシュ対策として、シェア用URLに ?v=1 が付いていなければリダイレクト
-    if (!params.has('v')) {
-      params.set('v', '1');
-      window.history.replaceState(null, null, "?" + params.toString());
+    // 【重要】もしURLに v= がなければ、今日の日付を入れて強制的にURLを新しく見せる
+    // これで「URLコピー」したときに、SNSが新しい画像として読み込んでくれます
+    if (!url.searchParams.has('v')) {
+      const version = new Date().getTime(); // 1/1000秒単位の数字
+      url.searchParams.set('v', version);
+      window.history.replaceState(null, null, url.search);
     }
 
-    // 地図アプリの読み込み
-    const iframeUrl = GAS_URL + "?" + params.toString();
+    const iframeUrl = GAS_URL + "?" + url.searchParams.toString();
     const frame = document.getElementById("appFrame");
     const loading = document.getElementById("loading");
 
