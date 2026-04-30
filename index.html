@@ -7,14 +7,15 @@
   <title>志木キッチンカー GO MAP</title>
 
   <meta property="og:title" content="志木キッチンカー GO MAP">
-  <meta property="og:description" content="志木市のキッチンカーは今どこ？今日の出店場所がわかるリアルタイム地図。">
+  <meta property="og:description" content="志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図。">
   <meta property="og:image" content="https://drive.google.com/thumbnail?id=1zcQqzRT2rV9GCW9sk4nISiM1ubH0qQ5U&sz=w1200">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="志木キッチンカー GO MAP">
+  <meta property="og:locale" content="ja_JP">
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="志木キッチンカー GO MAP">
-  <meta name="twitter:description" content="志木市のキッチンカーは今どこ？今日の出店場所がわかるリアルタイム地図。">
+  <meta name="twitter:description" content="志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図。">
   <meta name="twitter:image" content="https://drive.google.com/thumbnail?id=1zcQqzRT2rV9GCW9sk4nISiM1ubH0qQ5U&sz=w1200">
 
   <style>
@@ -28,7 +29,7 @@
     .wrap {
       max-width: 720px;
       margin: 0 auto;
-      background: #ffffff;
+      background: #fff;
       min-height: 100vh;
     }
 
@@ -54,7 +55,7 @@
 
     h1 {
       margin: 0 0 16px;
-      font-size: 31px;
+      font-size: 32px;
       line-height: 1.35;
       color: #004ea2;
       letter-spacing: 0.02em;
@@ -76,14 +77,14 @@
     }
 
     .card-title {
-      font-size: 20px;
+      font-size: 21px;
       font-weight: 900;
       color: #004ea2;
       margin-bottom: 8px;
     }
 
     .card-text {
-      font-size: 17px;
+      font-size: 18px;
       line-height: 1.8;
       margin: 0;
     }
@@ -95,9 +96,9 @@
       text-align: center;
       text-decoration: none;
       border-radius: 16px;
-      padding: 19px 14px;
-      margin-top: 18px;
-      font-size: 22px;
+      padding: 20px 14px;
+      margin-top: 16px;
+      font-size: 23px;
       font-weight: 900;
       line-height: 1.4;
       border: none;
@@ -116,9 +117,15 @@
       box-shadow: 0 8px 18px rgba(255, 122, 0, 0.25);
     }
 
+    .btn-archive {
+      background: #555;
+      color: white;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+    }
+
     .note {
       margin-top: 22px;
-      font-size: 14px;
+      font-size: 15px;
       line-height: 1.7;
       color: #666;
       text-align: center;
@@ -162,6 +169,10 @@
         GO MAPを見る
       </button>
 
+      <button class="btn btn-archive" onclick="openArchive()">
+        アーカイブを見る
+      </button>
+
       <div class="card">
         <div class="card-title">店主さんはこちら</div>
         <p class="card-text">
@@ -188,13 +199,15 @@
     const GAS_URL = "ここにGASの公開URLを入れる";
 
     function openViewer() {
-      const url = GAS_URL + "?v=" + Date.now();
-      window.open(url, "_blank");
+      window.open(GAS_URL + "?v=" + Date.now(), "_blank");
+    }
+
+    function openArchive() {
+      window.open(GAS_URL + "?p=archive&v=" + Date.now(), "_blank");
     }
 
     function openSender() {
-      const url = GAS_URL + "?p=s&v=" + Date.now();
-      window.open(url, "_blank");
+      window.open(GAS_URL + "?p=s&v=" + Date.now(), "_blank");
     }
   </script>
 </body>
