@@ -1,138 +1,30 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>志木キッチンカー GO MAP</title>
+<script>
+  const SHARE_URL = "https://ichirohns-jpg.github.io/shiki.gomap-001/";
 
-  <meta property="og:title" content="志木キッチンカー GO MAP">
-  <meta property="og:description" content="志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図。">
-  <meta property="og:image" content="https://drive.google.com/thumbnail?id=1zcQqzRT2rV9GCW9sk4nISiM1ubH0qQ5U&sz=w1200">
-  <meta property="og:url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/">
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="志木キッチンカー GO MAP">
+  function copyUrl() {
+    const text =
+      "🚚 志木キッチンカー GO MAP\n" +
+      "今日のご飯が見つかるリアルタイム地図！\n" +
+      SHARE_URL;
 
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="志木キッチンカー GO MAP">
-  <meta name="twitter:description" content="志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図。">
-  <meta name="twitter:image" content="https://drive.google.com/thumbnail?id=1zcQqzRT2rV9GCW9sk4nISiM1ubH0qQ5U&sz=w1200">
-
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(255, 152, 0, 0.22), transparent 34%),
-        radial-gradient(circle at top right, rgba(0, 78, 162, 0.18), transparent 36%),
-        linear-gradient(180deg, #fff8ef 0%, #f2f6fb 42%, #eef3f8 100%);
-      color: #222;
-    }
-    .page { max-width: 820px; margin: 0 auto; min-height: 100vh; padding: 14px 12px 28px; }
-    .hero-card { background: #ffffff; border-radius: 26px; overflow: hidden; box-shadow: 0 14px 34px rgba(0, 0, 0, 0.12); border: 1px solid rgba(255, 255, 255, 0.8); }
-    .hero-img { width: 100%; display: block; }
-    .hero-body { padding: 22px 20px 24px; background: linear-gradient(135deg, #ffffff 0%, #f8fbff 58%, #fff3df 100%); }
-    .badge { display: inline-flex; align-items: center; gap: 6px; background: #ff7a00; color: #ffffff; font-size: 15px; font-weight: 900; padding: 8px 14px; border-radius: 999px; box-shadow: 0 5px 12px rgba(255, 122, 0, 0.28); margin-bottom: 14px; }
-    h1 { margin: 0; color: #004ea2; font-size: 34px; line-height: 1.25; font-weight: 1000; letter-spacing: 0.02em; }
-    .lead { margin: 14px 0 0; font-size: 18px; line-height: 1.75; font-weight: 800; color: #333; }
-    .button-panel { margin-top: 16px; background: rgba(255, 255, 255, 0.88); border-radius: 24px; padding: 16px; box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08); border: 1px solid rgba(0, 78, 162, 0.08); }
-    .main-buttons { display: grid; grid-template-columns: 1fr; gap: 12px; }
-    .sub-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-    .btn { border: none; border-radius: 18px; padding: 18px 12px; font-size: 20px; font-weight: 1000; line-height: 1.35; cursor: pointer; box-shadow: 0 8px 18px rgba(0, 0, 0, 0.13); width: 100%; }
-    .btn-view { background: linear-gradient(135deg, #004ea2, #0078d7); color: white; font-size: 23px; padding: 22px 14px; }
-    .btn-send { background: linear-gradient(135deg, #ff7a00, #ff9f1c); color: white; }
-    .btn-archive { background: linear-gradient(135deg, #4b5563, #6b7280); color: white; }
-    .btn-copy { background: #ffffff; color: #004ea2; border: 2px solid #d7e8ff; box-shadow: none; margin-top: 10px; }
-    .note { margin-top: 12px; text-align: center; color: #666; font-size: 14px; line-height: 1.7; font-weight: 700; }
-    .app-title { margin: 18px 4px 10px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-    .app-title span:first-child { font-size: 20px; font-weight: 1000; color: #004ea2; }
-    .app-title span:last-child { font-size: 13px; font-weight: 900; color: #ff7a00; background: #fff3e0; padding: 5px 10px; border-radius: 999px; }
-    .frame-card { background: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 14px 34px rgba(0, 0, 0, 0.12); border: 1px solid rgba(0, 78, 162, 0.10); }
-    iframe { width: 100%; height: 76vh; border: none; display: block; background: white; }
-
-    @media (max-width: 480px) {
-      .page { padding: 10px 8px 22px; }
-      h1 { font-size: 31px; }
-      .lead { font-size: 17px; }
-      .hero-body { padding: 20px 16px 22px; }
-      .button-panel { padding: 13px; }
-      .btn { font-size: 18px; }
-      .btn-view { font-size: 22px; }
-      iframe { height: 74vh; }
-    }
-  </style>
-</head>
-
-<body>
-  <div class="page">
-    <section class="hero-card">
-      <img class="hero-img" src="https://drive.google.com/thumbnail?id=1zcQqzRT2rV9GCW9sk4nISiM1ubH0qQ5U&sz=w1600" alt="志木キッチンカー GO MAP">
-      <div class="hero-body">
-        <div class="badge">🚚 志木のランチ情報</div>
-        <h1>志木キッチンカー<br>GO MAP</h1>
-        <p class="lead">今日のキッチンカーは今どこ？<br>出店場所・時間・お店の情報を、スマホで見やすく確認できます。</p>
-      </div>
-    </section>
-
-    <section class="button-panel">
-      <div class="main-buttons">
-        <button class="btn btn-view" onclick="openView()">GO MAPを見る</button>
-      </div>
-      <div class="sub-buttons">
-        <button class="btn btn-send" onclick="openSend()">投稿</button>
-        <button class="btn btn-archive" onclick="openArchive()">アーカイブ</button>
-      </div>
-      <button class="btn btn-copy" onclick="copyUrl()">リンクコピー</button>
-      <div class="note">SNSで紹介するときは「リンクコピー」から投稿してください。</div>
-    </section>
-
-    <div class="app-title">
-      <span>現在の表示</span>
-      <span id="modeLabel">GO MAP</span>
-    </div>
-
-    <section class="frame-card">
-      <iframe id="appFrame" src=""></iframe>
-    </section>
-  </div>
-
-  <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbyNcQBHahDqnQk_Csmfwv_yaezLWp7YZDPV_cVDZ_trD9lq2XOvvqoq1EgnHkFLwrdS/exec";
-    const SHARE_URL = "https://ichirohns-jpg.github.io/shiki.gomap-001/";
-
-    function openView() {
-      document.getElementById("modeLabel").textContent = "GO MAP";
-      document.getElementById("appFrame").src = GAS_URL + "?v=" + Date.now();
-    }
-
-    function openSend() {
-      document.getElementById("modeLabel").textContent = "投稿パネル";
-      document.getElementById("appFrame").src = GAS_URL + "?p=s&v=" + Date.now();
-    }
-
-    function openArchive() {
-      document.getElementById("modeLabel").textContent = "アーカイブ";
-      document.getElementById("appFrame").src = GAS_URL + "?p=archive&v=" + Date.now();
-    }
-
-    function copyUrl() {
-      const text = "🚚 志木キッチンカー GO MAP\n志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図。\n" + SHARE_URL;
-      
-      const textArea = document.createElement("textarea");
-      textArea.value = text;
-      document.body.appendChild(textArea);
-      textArea.select();
-      try {
-        document.execCommand('copy');
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function() {
         alert("GitHubのリンクをコピーしました！");
-      } catch (err) {
-        alert("コピーに失敗しました。URLを手動でコピーしてください。");
-      }
-      document.body.removeChild(textArea);
+      }).catch(function() {
+        fallbackCopy(text);
+      });
+    } else {
+      fallbackCopy(text);
     }
+  }
 
-    // 初期読み込み
-    openView();
-  </script>
-</body>
-</html>
+  function fallbackCopy(text) {
+    const t = document.createElement("textarea");
+    t.value = text;
+    document.body.appendChild(t);
+    t.select();
+    document.execCommand("copy");
+    document.body.removeChild(t);
+    alert("GitHubのリンクをコピーしました！");
+  }
+</script>
