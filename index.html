@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>志木キッチンカーGoマップ</title>
-  <meta name="description" content="志木市周辺のキッチンカー情報を、地図と一緒に見やすく確認できます。">
+  <meta name="description" content="志木市周辺のキッチンカー情報を、地図と一緒に見やすく確認できるページです。">
 
-  <!-- SNS表示用 -->
+  <!-- Facebook / LINE / X 用 -->
   <meta property="og:title" content="志木キッチンカーGoマップ">
   <meta property="og:description" content="志木市周辺のキッチンカー情報を、地図と一緒に見やすく確認できます。">
   <meta property="og:type" content="website">
@@ -29,99 +29,181 @@
       box-sizing: border-box;
     }
 
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
       font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
       background: #eef5fb;
       color: #1f2937;
     }
 
-    .wrap {
+    body {
+      display: flex;
+      justify-content: center;
+    }
+
+    .page {
       width: 100%;
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 18px 14px 34px;
+      max-width: 760px;
+      padding: 18px 14px 40px;
     }
 
     .card {
+      width: 100%;
       background: #ffffff;
-      border-radius: 22px;
+      border-radius: 26px;
       overflow: hidden;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.13);
     }
 
     .hero {
-      padding: 36px 20px 28px;
-      background: linear-gradient(135deg, #e8f3ff, #ffffff);
+      width: 100%;
+      min-height: 330px;
+      padding: 34px 22px 30px;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.95), rgba(255,255,255,0) 38%),
+        linear-gradient(135deg, #dff0ff 0%, #f7fbff 48%, #ffffff 100%);
+      border-bottom: 1px solid #d9e8f5;
       text-align: center;
-      border-bottom: 1px solid #dbe7f3;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
     }
 
-    .hero img {
+    .hero-image {
       width: 100%;
       max-width: 620px;
-      height: auto;
       display: block;
-      margin: 0 auto 20px;
-      border-radius: 16px;
+      margin: 0 auto 24px;
+      border-radius: 18px;
+      box-shadow: 0 8px 22px rgba(20, 80, 130, 0.18);
+      background: #e7f0f8;
     }
 
-    .hero-title {
-      font-size: 30px;
+    .badge {
+      display: inline-block;
+      padding: 9px 18px;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #1d5f99;
+      font-size: 18px;
+      font-weight: 800;
+      box-shadow: 0 4px 12px rgba(20,80,130,0.14);
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      color: #174a7c;
+      font-size: 34px;
       line-height: 1.35;
       font-weight: 900;
-      color: #174a7c;
-      margin: 0;
+      letter-spacing: 0.02em;
     }
 
-    .content {
-      padding: 28px 20px 34px;
+    .lead {
+      padding: 32px 22px 34px;
       text-align: center;
     }
 
-    .content p {
-      font-size: 20px;
-      line-height: 1.8;
-      font-weight: 700;
-      margin: 0 0 26px;
+    .lead p {
+      margin: 0 0 28px;
+      font-size: 21px;
+      line-height: 1.85;
+      font-weight: 800;
+      color: #1f2937;
     }
 
     .btn {
       display: block;
       width: 100%;
-      max-width: 430px;
+      max-width: 440px;
       margin: 0 auto;
-      padding: 18px 18px;
+      padding: 19px 18px;
       border-radius: 999px;
       background: #1677d2;
       color: #ffffff;
       text-decoration: none;
-      font-size: 24px;
+      font-size: 25px;
       font-weight: 900;
-      box-shadow: 0 6px 16px rgba(22,119,210,0.35);
+      box-shadow: 0 7px 18px rgba(22,119,210,0.38);
     }
 
-    .note {
-      margin-top: 18px;
-      font-size: 14px;
-      color: #6b7280;
+    .btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 4px 12px rgba(22,119,210,0.32);
+    }
+
+    .sub {
+      margin-top: 20px;
+      font-size: 15px;
       line-height: 1.7;
+      color: #6b7280;
+      font-weight: 600;
+    }
+
+    .mini {
+      margin-top: 26px;
+      padding: 18px;
+      border-radius: 18px;
+      background: #f3f8fc;
+      color: #31506b;
+      font-size: 16px;
+      line-height: 1.7;
+      font-weight: 700;
+    }
+
+    @media (max-width: 480px) {
+      .page {
+        padding: 14px 10px 32px;
+      }
+
+      .hero {
+        min-height: 300px;
+        padding: 30px 18px 26px;
+      }
+
+      h1 {
+        font-size: 31px;
+      }
+
+      .lead p {
+        font-size: 20px;
+      }
+
+      .btn {
+        font-size: 24px;
+      }
     }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="card">
+  <main class="page">
+    <section class="card">
 
       <div class="hero">
-        <img src="facebook-card.jpg" alt="志木キッチンカーGoマップ" onerror="this.style.display='none';">
-        <h1 class="hero-title">志木キッチンカーGoマップ</h1>
+        <img
+          class="hero-image"
+          src="facebook-card.jpg"
+          alt="志木キッチンカーGoマップ"
+          onerror="this.style.display='none';"
+        >
+
+        <div class="badge">志木市周辺のキッチンカー情報</div>
+
+        <h1>
+          志木キッチンカー<br>
+          Goマップ
+        </h1>
       </div>
 
-      <div class="content">
+      <div class="lead">
         <p>
-          志木市周辺のキッチンカー情報を、<br>
+          今日どこにキッチンカーが来ているか、<br>
           地図と一緒に見やすく確認できます。
         </p>
 
@@ -129,12 +211,16 @@
           アプリを開く
         </a>
 
-        <div class="note">
-          Facebook投稿用の入口ページです
+        <div class="mini">
+          Facebookに投稿したときに、内容が伝わりやすいように作った入口ページです。
+        </div>
+
+        <div class="sub">
+          志木キッチンカーGoマップ
         </div>
       </div>
 
-    </div>
-  </div>
+    </section>
+  </main>
 </body>
 </html>
