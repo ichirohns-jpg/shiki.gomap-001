@@ -2,13 +2,33 @@
 <html lang="ja" prefix="og: https://ogp.me/ns#">
 <head>
   <meta charset="UTF-8">
+  <!-- 1. Metaクローラー対策：最優先で画像を読み込ませる -->
+  <meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg">
+  <meta property="og:image:secure_url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="志木キッチンカー GO MAP">
+
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
   <title>志木キッチンカー GO MAP</title>
   <meta name="description" content="志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図。">
 
-  <!-- 基本URL -->
+  <!-- 基本URLとOGP基本情報 -->
   <link rel="canonical" href="https://ichirohns-jpg.github.io/shiki.gomap-001/">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:site_name" content="志木キッチンカー GO MAP">
+  <meta property="og:url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/">
+  <meta property="og:title" content="志木キッチンカー GO MAP">
+  <meta property="og:description" content="志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図。">
+
+  <!-- X / Twitterカード -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="志木キッチンカー GO MAP">
+  <meta name="twitter:description" content="志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図。">
+  <meta name="twitter:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg">
 
   <!-- ホーム画面アイコン -->
   <link rel="icon" href="https://ichirohns-jpg.github.io/shiki.gomap-001/apple-touch-icon.png">
@@ -17,26 +37,6 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="志木GO MAP">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-
-  <!-- Facebook / LINE / Instagram DM など共通OGP -->
-  <meta property="og:type" content="website">
-  <meta property="og:locale" content="ja_JP">
-  <meta property="og:site_name" content="志木キッチンカー GO MAP">
-  <meta property="og:url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/">
-  <meta property="og:title" content="志木キッチンカー GO MAP">
-  <meta property="og:description" content="志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図。">
-  <meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg">
-  <meta property="og:image:secure_url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg">
-  <meta property="og:image:type" content="image/jpeg">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="志木キッチンカー GO MAP">
-
-  <!-- X / Twitterカード -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="志木キッチンカー GO MAP">
-  <meta name="twitter:description" content="志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図。">
-  <meta name="twitter:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg">
 
   <style>
     html, body {
@@ -48,7 +48,6 @@
       overflow: hidden;
       font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "Yu Gothic UI", sans-serif;
     }
-
     #appFrame {
       width: 100%;
       height: 100dvh;
@@ -56,7 +55,6 @@
       display: block;
       background: #f2f5f8;
     }
-
     .loading {
       position: fixed;
       inset: 0;
@@ -69,7 +67,6 @@
       background: #f2f5f8;
       z-index: 10;
     }
-
     .noscript {
       padding: 24px;
       text-align: center;
@@ -77,7 +74,6 @@
       line-height: 1.7;
       color: #123;
     }
-
     .noscript a {
       color: #0b74de;
       font-weight: 700;
@@ -105,17 +101,14 @@
 
   <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbxDgUmuNnll_cgVILwei9PGQMfxoR_2NeRKvvJI2C7gqsvrm0bDleDN2iwVncYZkmSV/exec";
-
     const frame = document.getElementById("appFrame");
     const loading = document.getElementById("loading");
-
     const url = new URL(window.location.href);
     const params = url.searchParams.toString();
 
     frame.onload = function () {
       loading.style.display = "none";
     };
-
     frame.src = params ? GAS_URL + "?" + params : GAS_URL;
 
     setTimeout(function () {
