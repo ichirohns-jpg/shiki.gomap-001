@@ -1,74 +1,43 @@
 <!DOCTYPE html>
-<html lang="ja" prefix="og: https://ogp.me/ns#">
+<html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>志木キッチンカー GO MAP</title>
-  <meta name="description" content="志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図。">
 
-  <!-- 基本URL -->
-  <link rel="canonical" href="https://shiki-go-map.netlify.app/">
-
-  <!-- ホーム画面アイコン -->
-  <link rel="icon" href="https://ichirohns-jpg.github.io/shiki.gomap-001/apple-touch-icon.png">
-  <link rel="apple-touch-icon" href="https://ichirohns-jpg.github.io/shiki.gomap-001/apple-touch-icon.png">
-  <meta name="theme-color" content="#0b74de">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="志木GO MAP">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-
-  <!-- Facebook / Meta 403完全突破・最強設定 -->
-  <meta property="og:type" content="website">
-  <meta property="og:locale" content="ja_JP">
+  <!-- 他の成功しているサイトと同じ「標準的」なハブ設定 -->
   <meta property="og:site_name" content="志木キッチンカー GO MAP">
+  <meta property="og:type" content="website">
   <meta property="og:url" content="https://shiki-go-map.netlify.app/">
   <meta property="og:title" content="志木キッチンカー GO MAP">
   <meta property="og:description" content="志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図。">
   
-  <!-- 【最強の修正】Metaが403を出す最大の原因「?」や「古いドメイン」を排除 -->
-  <!-- 画像のハブをNetlify直下のファイルに完全固定 -->
+  <!-- 最も標準的な画像指定（余計な文字を一切入れない） -->
   <meta property="og:image" content="https://shiki-go-map.netlify.app/sakura.png">
   <meta property="og:image:secure_url" content="https://shiki-go-map.netlify.app/sakura.png">
-  <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="志木キッチンカー GO MAP 桜風景">
+  <meta property="og:image:type" content="image/png">
 
-  <!-- X / Twitterカード -->
+  <!-- Twitter/X用 -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="志木キッチンカー GO MAP">
-  <meta name="twitter:description" content="志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図。">
   <meta name="twitter:image" content="https://shiki-go-map.netlify.app/sakura.png">
 
   <style>
-    html, body {
-      margin: 0; padding: 0; width: 100%; height: 100%;
-      background: #f2f5f8; overflow: hidden;
-      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "Yu Gothic UI", sans-serif;
-    }
-    #appFrame { width: 100%; height: 100dvh; border: none; display: block; background: #f2f5f8; }
-    .loading { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #456; background: #f2f5f8; z-index: 10; }
+    html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: #f2f5f8; overflow: hidden; }
+    #appFrame { width: 100%; height: 100dvh; border: none; display: block; }
+    .loading { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; font-family: sans-serif; color: #456; background: #f2f5f8; z-index: 1; }
   </style>
 </head>
-
 <body>
   <div id="loading" class="loading">読み込み中...</div>
   <iframe id="appFrame" title="志木キッチンカー GO MAP" allow="geolocation; camera; microphone; clipboard-read; clipboard-write; fullscreen"></iframe>
-
   <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbxDgUmuNnll_cgVILwei9PGQMfxoR_2NeRKvvJI2C7gqsvrm0bDleDN2iwVncYZkmSV/exec";
     const frame = document.getElementById("appFrame");
     const loading = document.getElementById("loading");
-    const url = new URL(window.location.href);
-    const params = url.searchParams.toString();
-
     frame.onload = () => { loading.style.display = "none"; };
-    // ハブを繋ぐための最短URL生成
-    frame.src = params ? `${GAS_URL}?${params}` : GAS_URL;
-
-    // 万が一のフリーズ対策
-    setTimeout(() => { loading.style.display = "none"; }, 8000);
+    frame.src = GAS_URL; // パラメータなしの純粋なハブ直結
   </script>
 </body>
 </html>
