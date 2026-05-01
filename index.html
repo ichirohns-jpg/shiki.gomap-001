@@ -2,96 +2,23 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>志木キッチンカー GO MAP</title>
-  <meta name="description" content="志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図。">
-
-  <!-- 1. 標準URL設定（ハブの統一） -->
-  <link rel="canonical" href="https://shiki-go-map.netlify.app/">
-
-  <!-- 2. Facebook / Meta 403回避・標準OGP設定 -->
-  <meta property="og:site_name" content="志木キッチンカー GO MAP">
-  <meta property="og:type" content="website">
+  <!-- Metaのロボットを真っ先に迎えるための配置 -->
   <meta property="og:url" content="https://shiki-go-map.netlify.app/">
+  <meta property="og:type" content="website">
   <meta property="og:title" content="志木キッチンカー GO MAP">
   <meta property="og:description" content="志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図。">
-  
-  <!-- 画像URL：パラメータ(?v=..)を消し、Netlify直結に固定 -->
   <meta property="og:image" content="https://shiki-go-map.netlify.app/sakura.png">
-  <meta property="og:image:secure_url" content="https://shiki-go-map.netlify.app/sakura.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:type" content="image/png">
 
-  <!-- 3. Twitter / LINE 共通設定 -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://shiki-go-map.netlify.app/sakura.png">
-
-  <!-- 4. アイコン設定 -->
-  <link rel="icon" href="https://ichirohns-jpg.github.io/shiki.gomap-001/apple-touch-icon.png">
-  <link rel="apple-touch-icon" href="https://ichirohns-jpg.github.io/shiki.gomap-001/apple-touch-icon.png">
-
+  <title>志木キッチンカー GO MAP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      background: #f2f5f8;
-      overflow: hidden;
-      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "Yu Gothic UI", sans-serif;
-    }
-    #appFrame {
-      width: 100%;
-      height: 100dvh;
-      border: none;
-      display: block;
-      background: #f2f5f8;
-    }
-    .loading {
-      position: fixed;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      font-weight: 700;
-      color: #456;
-      background: #f2f5f8;
-      z-index: 10;
-    }
+    html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: #f2f5f8; overflow: hidden; }
+    #appFrame { width: 100%; height: 100dvh; border: none; display: block; }
   </style>
 </head>
-
 <body>
-  <div id="loading" class="loading">読み込み中...</div>
-
-  <iframe
-    id="appFrame"
-    title="志木キッチンカー GO MAP"
-    allow="geolocation; camera; microphone; clipboard-read; clipboard-write; fullscreen">
-  </iframe>
-
-  <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbxDgUmuNnll_cgVILwei9PGQMfxoR_2NeRKvvJI2C7gqsvrm0bDleDN2iwVncYZkmSV/exec";
-    const frame = document.getElementById("appFrame");
-    const loading = document.getElementById("loading");
-
-    const url = new URL(window.location.href);
-    const params = url.searchParams.toString();
-
-    frame.onload = function () {
-      loading.style.display = "none";
-    };
-
-    // パラメータがあれば引き継ぎ、なければそのままGASを呼ぶ
-    frame.src = params ? `${GAS_URL}?${params}` : GAS_URL;
-
-    // 読み込みが遅い場合のバックアップ
-    setTimeout(function () {
-      loading.style.display = "none";
-    }, 8000);
-  </script>
+  <iframe id="appFrame" src="https://script.google.com/macros/s/AKfycbxDgUmuNnll_cgVILwei9PGQMfxoR_2NeRKvvJI2C7gqsvrm0bDleDN2iwVncYZkmSV/exec"></iframe>
 </body>
 </html>
