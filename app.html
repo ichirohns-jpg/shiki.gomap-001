@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+
+  <!-- Meta / Facebook / LINE / X 用 -->
+  <meta property="og:url" content="https://shiki-go-map.netlify.app/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="志木Go map">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:title" content="志木Go map">
+  <meta property="og:description" content="志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図。">
+  <meta property="og:image" content="https://shiki-go-map.netlify.app/gomap-ogp.jpg?v=14">
+  <meta property="og:image:secure_url" content="https://shiki-go-map.netlify.app/gomap-ogp.jpg?v=14">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="志木Go map">
+
+  <!-- X / Twitterカード -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="志木Go map">
+  <meta name="twitter:description" content="志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図。">
+  <meta name="twitter:image" content="https://shiki-go-map.netlify.app/gomap-ogp.jpg?v=14">
+
+  <!-- スマホ用 -->
+  <title>志木Go map</title>
+  <meta name="description" content="志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図。">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+
+  <!-- ホーム画面アイコン -->
+  <link rel="apple-touch-icon" sizes="180x180" href="https://shiki-go-map.netlify.app/apple-touch-icon.png?v=14">
+  <link rel="icon" type="image/png" href="https://shiki-go-map.netlify.app/apple-touch-icon.png?v=14">
+  <meta name="apple-mobile-web-app-title" content="志木Go map">
+  <meta name="application-name" content="志木Go map">
+  <meta name="theme-color" content="#0b74de">
+
+  <link rel="canonical" href="https://shiki-go-map.netlify.app/">
+
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: #f2f5f8;
+      overflow: hidden;
+    }
+
+    #appFrame {
+      width: 100%;
+      height: 100dvh;
+      border: none;
+      display: block;
+      background: #f2f5f8;
+    }
+
+    .loading {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: sans-serif;
+      font-size: 18px;
+      font-weight: bold;
+      color: #456;
+      background: #f2f5f8;
+      z-index: 10;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="loading" class="loading">読み込み中...</div>
+
+  <iframe
+    id="appFrame"
+    title="志木Go map"
+    src="https://script.google.com/macros/s/AKfycbzAiRzzfUdS3z9HLnH6pcp1PhdsozCUqjYHdMJiYGCG2evGy-Ptt-1WrWGWvrcRsFl5/exec"
+    allow="geolocation; camera; microphone; clipboard-read; clipboard-write; fullscreen">
+  </iframe>
+
+  <script>
+    const frame = document.getElementById("appFrame");
+    const loading = document.getElementById("loading");
+
+    frame.onload = function() {
+      loading.style.display = "none";
+    };
+
+    setTimeout(function() {
+      loading.style.display = "none";
+    }, 8000);
+  </script>
+</body>
+</html>
