@@ -2,26 +2,9 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
   <title>志木Go map</title>
-  <meta name="description" content="志木市のキッチンカー出店情報を見られるGoマップです。">
-
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="志木Go map">
-  <meta property="og:description" content="志木市のキッチンカー出店情報を見られるGoマップです。">
-  <meta property="og:url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/">
-  <meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=final">
-  <meta property="og:image:secure_url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=final">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:site_name" content="志木Go map">
-  <meta property="og:locale" content="ja_JP">
-
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="志木Go map">
-  <meta name="twitter:description" content="志木市のキッチンカー出店情報を見られるGoマップです。">
-  <meta name="twitter:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=final">
 
   <meta name="apple-mobile-web-app-title" content="志木Go map">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -32,87 +15,30 @@
   <link rel="icon" type="image/jpeg" href="gomap-ogp.jpg">
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
     html, body {
       margin: 0;
       padding: 0;
-      background: #eef6ff;
-      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
-      color: #1f2937;
-    }
-
-    body {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .box {
-      width: 92%;
-      max-width: 560px;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
       background: #ffffff;
-      border-radius: 28px;
-      padding: 28px 18px 30px;
-      text-align: center;
-      box-shadow: 0 10px 28px rgba(20, 70, 130, 0.16);
-      border: 3px solid #1e5bb8;
     }
 
-    .main-img {
-      width: 100%;
-      border-radius: 20px;
-      display: block;
-      margin: 0 auto 22px;
-    }
-
-    h1 {
-      margin: 0 0 14px;
-      color: #1e5bb8;
-      font-size: 34px;
-      line-height: 1.35;
-      font-weight: 900;
-    }
-
-    .lead {
-      margin: 0 0 24px;
-      font-size: 20px;
-      line-height: 1.7;
-      font-weight: 800;
-      color: #333;
-    }
-
-    .btn {
+    iframe {
       display: block;
       width: 100%;
-      padding: 22px 14px;
-      border-radius: 999px;
-      background: #1e5bb8;
-      color: #ffffff;
-      font-size: 26px;
-      font-weight: 900;
-      text-decoration: none;
+      height: 100%;
+      border: 0;
+      background: #ffffff;
     }
   </style>
 </head>
 
 <body>
-  <div class="box">
-    <img class="main-img" src="gomap-ogp.jpg" alt="志木Go map">
-
-    <h1>志木Go map</h1>
-
-    <p class="lead">
-      志木市のキッチンカー出店情報を<br>
-      見られるページです。
-    </p>
-
-    <a class="btn" href="app.html">
-      Go mapを開く
-    </a>
-  </div>
+  <iframe
+    src="https://script.google.com/macros/s/AKfycbwYaoJkMJXbUGKvrtSkr5CbEAZ68B3_k2RKIotvjELBrr5kfz_IuBEZZqSgJ7FtWTiK/exec"
+    allow="geolocation *; microphone *; camera *"
+    referrerpolicy="no-referrer-when-downgrade">
+  </iframe>
 </body>
 </html>
