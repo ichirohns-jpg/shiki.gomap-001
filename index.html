@@ -1,39 +1,536 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+/**
+ * 志木Go map 受信側・表示側GS
+ *
+ * 使うスプレッドシート：
+ * https://docs.google.com/spreadsheets/d/12pq1Flwl_Ol61frvAMhdFkpDzoTdGsnnzystje8jEXw/edit
+ *
+ * シート1の列
+ * A 日時
+ * B 店名
+ * C 出店場所
+ * D メッセージ
+ * E メディアURL
+ * F メディア種別
+ * G 緯度
+ * H 経度
+ * I 地図URL
+ * J 公開
+ *
+ * 内容
+ * ・I列の地図URLを読む
+ * ・Googleマップを見るボタンを出す
+ * ・J列が「非公開」「停止」「投稿不可」「削除」のものは表示しない
+ * ・最新5件をトップ表示
+ * ・6件目以降はアーカイブ
+ * ・写真、Drive動画、YouTubeリンク対応
+ */
 
-  <title>志木Go map</title>
+var SPREADSHEET_ID = '12pq1Flwl_Ol61frvAMhdFkpDzoTdGsnnzystje8jEXw';
+var SHEET_NAME = 'シート1';
+var TIMEZONE = 'Asia/Tokyo';
 
-  <meta name="apple-mobile-web-app-title" content="志木Go map">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="theme-color" content="#004ea2">
+var SITE_TITLE = '志木Go map';
+var MAIN_COUNT = 5;
+var PAGE_SIZE = 5;
+var MAX_MEDIA = 5;
 
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: #f2f5f8;
+/* =========================================================
+   入口
+========================================================= */
+
+function doGet(e) {
+  var page = e && e.parameter && e.parameter.p ? String(e.parameter.p) : '';
+  var isArchive = page === 'archive';
+
+  return HtmlService.createHtmlOutput(buildHtml_(isArchive))
+    .setTitle(SITE_TITLE)
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
+
+/* =========================================================
+   データ取得
+========================================================= */
+
+function getEvents() {
+  var sheet = getMainSheet_();
+  var rows = sheet.getDataRange().getValues();
+
+  if (rows.length <= 1) return [];
+
+  rows.shift();
+
+  var data = [];
+
+  for (var i = 0; i < rows.length; i++) {
+    var r = rows[i];
+
+    var rawDate = r[0];
+    var dt = rawDate instanceof Date ? rawDate : new Date(rawDate);
+    var timeMs = !isNaN(dt.getTime()) ? dt.getTime() : 0;
+
+    var timeText = timeMs
+      ? Utilities.formatDate(dt, TIMEZONE, 'yyyy/MM/dd HH:mm')
+      : String(r[0] || '');
+
+    var name = String(r[1] || '').trim();
+    var place = String(r[2] || '').trim();
+    var msg = String(r[3] || '').trim();
+    var mediaCell = String(r[4] || '').trim();
+    var lat = String(r[6] || '').trim();
+    var lng = String(r[7] || '').trim();
+
+    // I列：地図URL
+    var mapUrl = String(r[8] || '').trim();
+
+    // I列が空なら緯度経度から作る
+    if (!mapUrl && lat && lng) {
+      mapUrl = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(lat + ',' + lng);
     }
 
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      display: block;
+    // それでも空なら出店場所名から作る
+    if (!mapUrl && place) {
+      mapUrl = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(place + ' 志木市');
     }
-  </style>
-</head>
 
-<body>
-  <iframe
-    src="https://script.google.com/macros/s/AKfycbyk0noKfvnS0uGUttnBaXyznoLtbiD7tAQOZTqd8YDwNFAlw8Uf_f_EN47WFbHJ_--2/exec"
-    allow="geolocation; camera; microphone"
-  ></iframe>
-</body>
-</html>
+    // J列：公開状態
+    var status = String(r[9] || '').trim();
+
+    if (!name) continue;
+    if (!isVisibleStatus_(status)) continue;
+
+    var media = parseMediaList_(mediaCell);
+
+    if (!media || media.length === 0) {
+      media = parseMediaList_(msg);
+    }
+
+    data.push({
+      time: timeText,
+      timeMs: timeMs,
+      name: name,
+      place: place,
+      msg: msg,
+      media: media,
+      map: mapUrl,
+      status: status
+    });
+  }
+
+  data.sort(function(a, b) {
+    return (b.timeMs || 0) - (a.timeMs || 0);
+  });
+
+  return data;
+}
+
+function isVisibleStatus_(status) {
+  var s = String(status || '').trim();
+
+  if (s === '非公開') return false;
+  if (s === '停止') return false;
+  if (s === '投稿不可') return false;
+  if (s === '利用停止') return false;
+  if (s === '削除') return false;
+
+  return true;
+}
+
+/* =========================================================
+   メディア処理
+========================================================= */
+
+function parseMediaList_(value) {
+  var s = String(value || '').trim();
+  if (!s) return [];
+
+  try {
+    var arr = JSON.parse(s);
+    if (Array.isArray(arr)) {
+      return arr.slice(0, MAX_MEDIA).map(function(x) {
+        return normalizeMediaItem_(x);
+      }).filter(function(x) {
+        return x && x.url;
+      });
+    }
+  } catch (e) {}
+
+  var urls = extractUrls_(s);
+  var targets = urls.length ? urls : [s];
+
+  var media = [];
+
+  for (var i = 0; i < targets.length; i++) {
+    if (media.length >= MAX_MEDIA) break;
+
+    var target = String(targets[i] || '').trim();
+    if (!target) continue;
+
+    var youtubeId = extractYouTubeId_(target);
+    if (youtubeId) {
+      media.push({
+        type: 'youtube',
+        url: makeYouTubeEmbedUrl_(youtubeId)
+      });
+      continue;
+    }
+
+    if (/youtube\.com\/embed/i.test(target)) {
+      media.push({
+        type: 'youtube',
+        url: target
+      });
+      continue;
+    }
+
+    if (/drive\.google\.com\/thumbnail/i.test(target)) {
+      media.push({
+        type: 'image',
+        url: target
+      });
+      continue;
+    }
+
+    if (/drive\.google\.com\/file\/d\//i.test(target)) {
+      media.push({
+        type: 'driveVideo',
+        url: toDrivePreviewUrl_(target)
+      });
+      continue;
+    }
+
+    if (/[?&]id=([a-zA-Z0-9_-]+)/.test(target) && /drive\.google\.com/i.test(target)) {
+      media.push({
+        type: 'driveVideo',
+        url: toDrivePreviewUrl_(target)
+      });
+      continue;
+    }
+
+    if (/\.(mp4|mov|webm|m4v)(\?.*)?$/i.test(target)) {
+      media.push({
+        type: 'video',
+        url: target
+      });
+      continue;
+    }
+
+    if (/\.(jpg|jpeg|png|gif|webp)(\?.*)?$/i.test(target)) {
+      media.push({
+        type: 'image',
+        url: target
+      });
+      continue;
+    }
+  }
+
+  return media;
+}
+
+function normalizeMediaItem_(x) {
+  var type = String(x && x.type ? x.type : '').trim();
+  var url = String(x && x.url ? x.url : '').trim();
+
+  if (!url) return null;
+
+  var youtubeId = extractYouTubeId_(url);
+  if (youtubeId) {
+    return {
+      type: 'youtube',
+      url: makeYouTubeEmbedUrl_(youtubeId)
+    };
+  }
+
+  if (type === 'youtube') {
+    return {
+      type: 'youtube',
+      url: url
+    };
+  }
+
+  if (type === 'driveVideo') {
+    return {
+      type: 'driveVideo',
+      url: toDrivePreviewUrl_(url)
+    };
+  }
+
+  if (type === 'video') {
+    return {
+      type: 'video',
+      url: url
+    };
+  }
+
+  if (/drive\.google\.com\/file\/d\//i.test(url)) {
+    return {
+      type: 'driveVideo',
+      url: toDrivePreviewUrl_(url)
+    };
+  }
+
+  return {
+    type: type || 'image',
+    url: url
+  };
+}
+
+function extractUrls_(text) {
+  var s = String(text || '');
+  var matches = s.match(/https?:\/\/[^\s　]+/g);
+  return matches || [];
+}
+
+function extractYouTubeId_(text) {
+  var s = String(text || '');
+
+  var m = s.match(/youtube\.com\/watch\?v=([a-zA-Z0-9_-]{11})/);
+  if (m) return m[1];
+
+  m = s.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+  if (m) return m[1];
+
+  m = s.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/);
+  if (m) return m[1];
+
+  m = s.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/);
+  if (m) return m[1];
+
+  return '';
+}
+
+function makeYouTubeEmbedUrl_(id) {
+  return 'https://www.youtube.com/embed/' + id + '?playsinline=1&mute=1&loop=1&playlist=' + id;
+}
+
+function toDrivePreviewUrl_(url) {
+  var s = String(url || '');
+
+  var m = s.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (m) {
+    return 'https://drive.google.com/file/d/' + m[1] + '/preview';
+  }
+
+  m = s.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (m) {
+    return 'https://drive.google.com/file/d/' + m[1] + '/preview';
+  }
+
+  return s;
+}
+
+/* =========================================================
+   HTML
+========================================================= */
+
+function buildHtml_(isArchive) {
+  var pageTitle = isArchive ? 'アーカイブ' : SITE_TITLE;
+  var baseUrl = ScriptApp.getService().getUrl();
+
+  var html = '';
+
+  html += '<!DOCTYPE html>';
+  html += '<html lang="ja">';
+  html += '<head>';
+  html += '<meta charset="UTF-8">';
+  html += '<base target="_top">';
+  html += '<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">';
+  html += '<title>' + escapeHtml_(SITE_TITLE) + '</title>';
+
+  html += '<style>';
+  html += '*{box-sizing:border-box;}';
+  html += 'html,body{margin:0;padding:0;background:#f2f5f8;color:#333;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic","Meiryo",sans-serif;-webkit-text-size-adjust:100%;}';
+  html += 'body{overflow-x:hidden;}';
+  html += '.page{max-width:920px;margin:0 auto;padding:22px 14px 34px;}';
+  html += '.page-title{font-size:34px;line-height:1.25;font-weight:900;color:#004ea2;margin:0 0 20px;padding-left:2px;}';
+  html += '.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:22px;}';
+  html += '.card{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.08);border-top:6px solid #004ea2;}';
+  html += '.media{width:100%;height:360px;background:#f1f1f1;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}';
+  html += '.media-slide{flex:0 0 100%;height:360px;scroll-snap-align:start;background:#000;}';
+  html += '.media img,.media video,.media iframe{width:100%;height:100%;object-fit:cover;border:none;display:block;}';
+  html += '.p-20{padding:22px;}';
+  html += '.time-text{font-size:18px;color:#999;margin-bottom:10px;font-weight:700;}';
+  html += '.shop-name{font-size:31px;line-height:1.35;font-weight:900;color:#004ea2;margin:8px 0 12px;word-break:break-word;}';
+  html += '.loc{background:#fff3e0;color:#e65100;padding:10px 16px;border-radius:9px;font-size:22px;font-weight:900;display:inline-block;margin-bottom:18px;word-break:break-word;}';
+  html += '.msg{font-size:24px;line-height:1.8;color:#333;white-space:pre-wrap;margin-bottom:22px;word-break:break-word;}';
+  html += '.btn{display:block;text-align:center;padding:18px 14px;border-radius:12px;text-decoration:none;font-weight:900;font-size:24px;background:#004ea2;color:#fff;margin-top:10px;}';
+  html += '.map-btn{background:#004ea2;}';
+  html += '.archive-actions{display:grid;grid-template-columns:1fr;gap:12px;margin-top:26px;}';
+  html += '.archive-btn{display:flex;align-items:center;justify-content:center;min-height:60px;border-radius:14px;background:#555;color:#fff;text-decoration:none;font-size:22px;font-weight:900;}';
+  html += '#loading{text-align:center;padding:28px;color:#888;font-size:20px;font-weight:800;}';
+  html += '.empty{background:#fff;border-radius:16px;padding:34px 18px;text-align:center;color:#777;font-size:22px;font-weight:800;box-shadow:0 4px 14px rgba(0,0,0,.06);}';
+  html += '@media(max-width:640px){';
+  html += '.page{padding:18px 12px 28px;}';
+  html += '.page-title{font-size:32px;}';
+  html += '.media,.media-slide{height:340px;}';
+  html += '.shop-name{font-size:30px;}';
+  html += '.msg{font-size:23px;}';
+  html += '.btn{font-size:23px;}';
+  html += '}';
+  html += '</style>';
+
+  html += '</head>';
+  html += '<body>';
+  html += '<div class="page">';
+  html += '<h1 class="page-title">' + escapeHtml_(pageTitle) + '</h1>';
+  html += '<div id="list" class="grid"></div>';
+  html += '<div id="loading">読み込み中...</div>';
+
+  html += '<div id="archive-actions" class="archive-actions" style="display:none;">';
+  html += '<a id="archive-link" class="archive-btn" href="' + (isArchive ? baseUrl : baseUrl + '?p=archive') + '">';
+  html += isArchive ? '最新に戻る' : 'アーカイブを見る';
+  html += '</a>';
+  html += '</div>';
+
+  html += '</div>';
+
+  html += '<script>';
+  html += 'var MAIN_COUNT=' + MAIN_COUNT + ';';
+  html += 'var PAGE_SIZE=' + PAGE_SIZE + ';';
+  html += 'var IS_ARCHIVE=' + (isArchive ? 'true' : 'false') + ';';
+  html += 'var all=[];';
+  html += 'var visible=[];';
+  html += 'var idx=0;';
+  html += 'var loadingLock=false;';
+
+  html += 'google.script.run';
+  html += '.withSuccessHandler(function(data){';
+  html += 'all=data||[];';
+  html += 'visible=IS_ARCHIVE?all.slice(MAIN_COUNT):all.slice(0,MAIN_COUNT);';
+  html += 'if(visible.length===0){';
+  html += 'document.getElementById("list").innerHTML="<div class=\\"empty\\" style=\\"grid-column:1/-1;\\">表示できる情報はありません</div>";';
+  html += 'document.getElementById("loading").style.display="none";';
+  html += 'document.getElementById("archive-actions").style.display="grid";';
+  html += 'return;';
+  html += '}';
+  html += 'render();';
+  html += '})';
+  html += '.withFailureHandler(function(){';
+  html += 'document.getElementById("list").innerHTML="<div class=\\"empty\\" style=\\"grid-column:1/-1;\\">読み込みに失敗しました</div>";';
+  html += 'document.getElementById("loading").style.display="none";';
+  html += 'document.getElementById("archive-actions").style.display="grid";';
+  html += '})';
+  html += '.getEvents();';
+
+  html += 'function render(){';
+  html += 'if(idx>=visible.length){';
+  html += 'document.getElementById("loading").style.display="none";';
+  html += 'document.getElementById("archive-actions").style.display="grid";';
+  html += 'return;';
+  html += '}';
+  html += 'var list=document.getElementById("list");';
+  html += 'var batch=visible.slice(idx,idx+PAGE_SIZE);';
+
+  html += 'batch.forEach(function(d){';
+  html += 'var div=document.createElement("div");';
+  html += 'div.className="card";';
+
+  html += 'var mediaHtml="";';
+  html += 'if(d.media&&d.media.length){';
+  html += 'mediaHtml+="<div class=\\"media\\">";';
+  html += 'd.media.forEach(function(m){';
+  html += 'mediaHtml+="<div class=\\"media-slide\\">";';
+  html += 'if(m.type==="youtube"||m.type==="driveVideo"){';
+  html += 'mediaHtml+="<iframe src=\\""+escAttr(m.url)+"\\" allow=\\"autoplay; encrypted-media; picture-in-picture\\" allowfullscreen></iframe>";';
+  html += '}else if(m.type==="video"){';
+  html += 'mediaHtml+="<video src=\\""+escAttr(m.url)+"\\" controls muted playsinline></video>";';
+  html += '}else{';
+  html += 'mediaHtml+="<img src=\\""+escAttr(m.url)+"\\" loading=\\"lazy\\">";';
+  html += '}';
+  html += 'mediaHtml+="</div>";';
+  html += '});';
+  html += 'mediaHtml+="</div>";';
+  html += '}';
+
+  html += 'var mapButton="";';
+  html += 'if(d.map){';
+  html += 'mapButton="<a href=\\""+escAttr(d.map)+"\\" class=\\"btn map-btn\\" target=\\"_blank\\" rel=\\"noopener noreferrer\\">Googleマップを見る</a>";';
+  html += '}';
+
+  html += 'div.innerHTML=';
+  html += 'mediaHtml+';
+  html += '"<div class=\\"p-20\\">"+';
+  html += '"<div class=\\"time-text\\">"+esc(d.time)+"</div>"+';
+  html += '"<div class=\\"shop-name\\">"+esc(d.name)+"</div>"+';
+  html += '"<div class=\\"loc\\">📍 "+esc(d.place)+"</div>"+';
+  html += '(d.msg?"<div class=\\"msg\\">"+esc(d.msg)+"</div>":"")+';
+  html += 'mapButton+';
+  html += '"</div>";';
+
+  html += 'list.appendChild(div);';
+  html += '});';
+
+  html += 'idx+=PAGE_SIZE;';
+  html += 'if(idx>=visible.length){';
+  html += 'document.getElementById("loading").style.display="none";';
+  html += 'document.getElementById("archive-actions").style.display="grid";';
+  html += '}';
+  html += '}';
+
+  html += 'window.onscroll=function(){';
+  html += 'if(loadingLock)return;';
+  html += 'if((window.innerHeight+window.scrollY)>=document.body.offsetHeight-300){';
+  html += 'loadingLock=true;';
+  html += 'render();';
+  html += 'setTimeout(function(){loadingLock=false;},500);';
+  html += '}';
+  html += '};';
+
+  html += 'function esc(s){';
+  html += 'return String(s||"").replace(/[&<>"\\\']/g,function(m){';
+  html += 'return {"&":"&amp;","<":"&lt;",">":"&gt;","\\"":"&quot;","\\\'":"&#39;"}[m];';
+  html += '});';
+  html += '}';
+
+  html += 'function escAttr(s){return esc(s);}';
+  html += '</script>';
+
+  html += '</body>';
+  html += '</html>';
+
+  return html;
+}
+
+/* =========================================================
+   シート
+========================================================= */
+
+function getMainSheet_() {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName(SHEET_NAME);
+
+  if (!sheet) {
+    sheet = ss.insertSheet(SHEET_NAME);
+  }
+
+  if (sheet.getLastRow() === 0) {
+    sheet.getRange(1, 1, 1, 10).setValues([[
+      '日時',
+      '店名',
+      '出店場所',
+      'メッセージ',
+      'メディアURL',
+      'メディア種別',
+      '緯度',
+      '経度',
+      '地図URL',
+      '公開'
+    ]]);
+    sheet.setFrozenRows(1);
+  }
+
+  return sheet;
+}
+
+/* =========================================================
+   HTMLエスケープ
+========================================================= */
+
+function escapeHtml_(s) {
+  return String(s || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
