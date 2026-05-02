@@ -11,8 +11,8 @@
   <meta property="og:title" content="志木Go map">
   <meta property="og:description" content="志木市のキッチンカー出店情報を見られるGoマップです。">
   <meta property="og:url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/">
-  <meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=20260502clean">
-  <meta property="og:image:secure_url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=20260502clean">
+  <meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=share1">
+  <meta property="og:image:secure_url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=share1">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:site_name" content="志木Go map">
@@ -21,15 +21,15 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="志木Go map">
   <meta name="twitter:description" content="志木市のキッチンカー出店情報を見られるGoマップです。">
-  <meta name="twitter:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=20260502clean">
+  <meta name="twitter:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=share1">
 
   <meta name="apple-mobile-web-app-title" content="志木Go map">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="theme-color" content="#1e5bb8">
 
-  <link rel="apple-touch-icon" href="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=20260502clean">
-  <link rel="icon" type="image/jpeg" href="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=20260502clean">
+  <link rel="apple-touch-icon" href="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=share1">
+  <link rel="icon" type="image/jpeg" href="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=share1">
 
   <style>
     * {
@@ -107,6 +107,27 @@
     .copy-btn {
       background: #00a36c;
     }
+
+    .owner-btn {
+      background: #e65100;
+    }
+
+    .owner-note {
+      margin-top: 18px;
+      padding: 16px 14px;
+      border-radius: 18px;
+      background: #fff3e8;
+      color: #333;
+      font-size: 17px;
+      line-height: 1.7;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .free {
+      color: #e65100;
+      font-weight: 900;
+    }
   </style>
 </head>
 
@@ -114,7 +135,7 @@
   <div class="box">
     <img
       class="main-img"
-      src="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=20260502clean"
+      src="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=share1"
       alt="志木Go map"
     >
 
@@ -130,22 +151,39 @@
     </a>
 
     <button class="btn copy-btn" onclick="copyUrl()">
-      URLをコピー
+      リンクをコピー
     </button>
+
+    <a class="btn owner-btn" href="https://forms.gle/jETDC4mjDRVoPtL16" target="_blank" rel="noopener noreferrer">
+      出店者募集はこちら
+    </a>
+
+    <div class="owner-note">
+      キッチンカーオーナーの方へ<br>
+      登録・掲載・投稿は<span class="free">すべて無料</span>です。
+    </div>
   </div>
 
   <script>
     function copyUrl() {
-      var url = 'https://ichirohns-jpg.github.io/shiki.gomap-001/';
+      var text =
+        '志木のキッチンカー情報を見やすくしました🚚\n\n' +
+        '「今日はどこに出てるの？」\n' +
+        '「場所はどこ？」\n' +
+        'がすぐ分かる、志木Go mapです。\n\n' +
+        'Googleマップで出店場所も確認できます。\n' +
+        '志木のまちを少し楽しくする取り組みです。\n\n' +
+        'よかったらシェアお願いします。\n\n' +
+        'https://ichirohns-jpg.github.io/shiki.gomap-001/';
 
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(url).then(function() {
-          alert('URLをコピーしました');
+        navigator.clipboard.writeText(text).then(function() {
+          alert('コピーしました');
         }).catch(function() {
-          fallbackCopy(url);
+          fallbackCopy(text);
         });
       } else {
-        fallbackCopy(url);
+        fallbackCopy(text);
       }
     }
 
@@ -156,7 +194,7 @@
       t.select();
       document.execCommand('copy');
       document.body.removeChild(t);
-      alert('URLをコピーしました');
+      alert('コピーしました');
     }
   </script>
 </body>
