@@ -1,144 +1,117 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>志木Go map</title>
+<title>志木Go map</title>
 
-  <meta property="og:title" content="志木Go map">
-  <meta property="og:description" content="志木市のキッチンカー出店情報を見られるページです。掲載・投稿は無料です。">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/">
-  <meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/ogp.jpg">
+<!-- OGP（画像なくても壊れない設計） -->
+<meta property="og:title" content="志木Go map">
+<meta property="og:description" content="志木市のキッチンカー出店情報を見られるページです。掲載無料。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/">
 
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="志木Go map">
-  <meta name="twitter:description" content="志木市のキッチンカー出店情報を見られるページです。">
-  <meta name="twitter:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/ogp.jpg">
+<!-- 画像は一旦なしでもOK（壊れ防止） -->
 
-  <style>
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif;
-      background:#eef6ff;
-      color:#222;
-    }
-    .wrap{
-      max-width:520px;
-      margin:0 auto;
-      padding:18px 14px 28px;
-    }
-    .card{
-      background:#fff;
-      border:4px solid #1f63bd;
-      border-radius:26px;
-      padding:22px 18px 26px;
-      text-align:center;
-      box-shadow:0 8px 24px rgba(0,0,0,.08);
-    }
-    .banner{
-      width:100%;
-      border-radius:18px;
-      display:block;
-      margin-bottom:26px;
-    }
-    h1{
-      font-size:38px;
-      color:#1f63bd;
-      margin:8px 0 20px;
-      font-weight:900;
-    }
-    .lead{
-      font-size:22px;
-      line-height:1.75;
-      font-weight:800;
-      margin:0 0 28px;
-    }
-    .btn{
-      display:block;
-      width:100%;
-      padding:22px 14px;
-      margin:16px 0;
-      border-radius:999px;
-      color:white;
-      text-decoration:none;
-      font-size:27px;
-      font-weight:900;
-    }
-    .blue{background:#1f63bd}
-    .green{background:#05a86b}
-    .orange{background:#f05a00}
-    .info{
-      margin-top:24px;
-      background:#fff2e8;
-      border-radius:18px;
-      padding:18px 14px;
-      font-size:20px;
-      line-height:1.7;
-      font-weight:800;
-    }
-    .free{
-      color:#f05a00;
-      font-weight:900;
-    }
-    .small{
-      margin-top:18px;
-      font-size:15px;
-      line-height:1.6;
-      color:#555;
-    }
-  </style>
+<style>
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif;
+  background:#eef6ff;
+  text-align:center;
+}
+
+.wrap{
+  max-width:520px;
+  margin:auto;
+  padding:20px;
+}
+
+.card{
+  background:#fff;
+  border:4px solid #1f63bd;
+  border-radius:25px;
+  padding:20px;
+}
+
+h1{
+  font-size:36px;
+  color:#1f63bd;
+  margin:10px 0;
+}
+
+p{
+  font-size:20px;
+  line-height:1.6;
+  font-weight:bold;
+}
+
+.btn{
+  display:block;
+  margin:15px 0;
+  padding:20px;
+  border-radius:50px;
+  color:#fff;
+  font-size:24px;
+  text-decoration:none;
+  font-weight:bold;
+}
+
+.blue{background:#1f63bd;}
+.green{background:#0aa36c;}
+.orange{background:#f05a00;}
+
+.info{
+  background:#fff3e8;
+  padding:15px;
+  border-radius:15px;
+  font-size:18px;
+  margin-top:20px;
+}
+</style>
 </head>
 
 <body>
-  <main class="wrap">
-    <section class="card">
 
-      <img class="banner" src="ogp.jpg" alt="志木キッチンカー GO MAP">
+<div class="wrap">
+<div class="card">
 
-      <h1>志木Go map</h1>
+<h1>志木Go map</h1>
 
-      <p class="lead">
-        志木市のキッチンカー出店情報を<br>
-        見られるページです。
-      </p>
+<p>
+志木市のキッチンカー出店情報を<br>
+見られるページです。
+</p>
 
-      <a class="btn blue" href="./app.html">
-        Go mapを開く
-      </a>
+<!-- ここ重要：絶対GASに飛ばさない -->
+<a class="btn blue" href="app.html">
+Go mapを開く
+</a>
 
-      <button class="btn green" onclick="copyLink()">
-        リンクをコピー
-      </button>
+<button class="btn green" onclick="copyLink()">
+友だちに送るリンクをコピー
+</button>
 
-      <a class="btn orange" href="https://forms.gle/jETDC4mjDRVoPtL16">
-        出店者募集はこちら
-      </a>
+<a class="btn orange" href="https://forms.gle/jETDC4mjDRVoPtL16">
+出店者募集はこちら
+</a>
 
-      <div class="info">
-        キッチンカーオーナーの方へ<br>
-        登録・掲載・投稿は<br>
-        <span class="free">すべて無料</span>です。
-      </div>
+<div class="info">
+キッチンカーオーナーの方へ<br>
+登録・掲載・投稿は無料です
+</div>
 
-      <p class="small">
-        ※FacebookやLINEから開いた場合も、この入口ページから安全に開けます。
-      </p>
+</div>
+</div>
 
-    </section>
-  </main>
+<script>
+function copyLink(){
+  const url = "https://ichirohns-jpg.github.io/shiki.gomap-001/";
+  navigator.clipboard.writeText(url);
+  alert("リンクをコピーしました");
+}
+</script>
 
-  <script>
-    function copyLink(){
-      const url = "https://ichirohns-jpg.github.io/shiki.gomap-001/";
-      navigator.clipboard.writeText(url).then(function(){
-        alert("リンクをコピーしました");
-      }).catch(function(){
-        prompt("このリンクをコピーしてください", url);
-      });
-    }
-  </script>
 </body>
 </html>
