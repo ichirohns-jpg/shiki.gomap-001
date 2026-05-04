@@ -2,199 +2,142 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>志木Go map</title>
-  <meta name="description" content="志木市のキッチンカー出店情報を見られるGoマップです。">
 
-  <meta property="og:type" content="website">
   <meta property="og:title" content="志木Go map">
-  <meta property="og:description" content="志木市のキッチンカー出店情報を見られるGoマップです。">
+  <meta property="og:description" content="志木市のキッチンカー出店情報を見られるページです。掲載・投稿は無料です。">
+  <meta property="og:type" content="website">
   <meta property="og:url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/">
-  <meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=ownerfinal">
-  <meta property="og:image:secure_url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=ownerfinal">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:site_name" content="志木Go map">
-  <meta property="og:locale" content="ja_JP">
+  <meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/ogp.jpg">
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="志木Go map">
-  <meta name="twitter:description" content="志木市のキッチンカー出店情報を見られるGoマップです。">
-  <meta name="twitter:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=ownerfinal">
-
-  <meta name="apple-mobile-web-app-title" content="志木Go map">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="theme-color" content="#1e5bb8">
-
-  <link rel="apple-touch-icon" href="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=ownerfinal">
-  <link rel="icon" type="image/jpeg" href="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=ownerfinal">
+  <meta name="twitter:description" content="志木市のキッチンカー出店情報を見られるページです。">
+  <meta name="twitter:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/ogp.jpg">
 
   <style>
-    * {
-      box-sizing: border-box;
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif;
+      background:#eef6ff;
+      color:#222;
     }
-
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: #eef6ff;
-      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
-      color: #1f2937;
+    .wrap{
+      max-width:520px;
+      margin:0 auto;
+      padding:18px 14px 28px;
     }
-
-    body {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .card{
+      background:#fff;
+      border:4px solid #1f63bd;
+      border-radius:26px;
+      padding:22px 18px 26px;
+      text-align:center;
+      box-shadow:0 8px 24px rgba(0,0,0,.08);
     }
-
-    .box {
-      width: 92%;
-      max-width: 560px;
-      background: #ffffff;
-      border-radius: 28px;
-      padding: 28px 18px 30px;
-      text-align: center;
-      box-shadow: 0 10px 28px rgba(20, 70, 130, 0.16);
-      border: 3px solid #1e5bb8;
+    .banner{
+      width:100%;
+      border-radius:18px;
+      display:block;
+      margin-bottom:26px;
     }
-
-    .main-img {
-      width: 100%;
-      border-radius: 20px;
-      display: block;
-      margin: 0 auto 22px;
+    h1{
+      font-size:38px;
+      color:#1f63bd;
+      margin:8px 0 20px;
+      font-weight:900;
     }
-
-    h1 {
-      margin: 0 0 14px;
-      color: #1e5bb8;
-      font-size: 34px;
-      line-height: 1.35;
-      font-weight: 900;
+    .lead{
+      font-size:22px;
+      line-height:1.75;
+      font-weight:800;
+      margin:0 0 28px;
     }
-
-    .lead {
-      margin: 0 0 24px;
-      font-size: 20px;
-      line-height: 1.7;
-      font-weight: 800;
-      color: #333;
+    .btn{
+      display:block;
+      width:100%;
+      padding:22px 14px;
+      margin:16px 0;
+      border-radius:999px;
+      color:white;
+      text-decoration:none;
+      font-size:27px;
+      font-weight:900;
     }
-
-    .btn {
-      display: block;
-      width: 100%;
-      padding: 22px 14px;
-      border-radius: 999px;
-      color: #ffffff;
-      font-size: 25px;
-      font-weight: 900;
-      text-decoration: none;
-      border: none;
-      cursor: pointer;
-      margin-top: 14px;
-      font-family: inherit;
+    .blue{background:#1f63bd}
+    .green{background:#05a86b}
+    .orange{background:#f05a00}
+    .info{
+      margin-top:24px;
+      background:#fff2e8;
+      border-radius:18px;
+      padding:18px 14px;
+      font-size:20px;
+      line-height:1.7;
+      font-weight:800;
     }
-
-    .open-btn {
-      background: #1e5bb8;
+    .free{
+      color:#f05a00;
+      font-weight:900;
     }
-
-    .copy-btn {
-      background: #00a36c;
-    }
-
-    .owner-btn {
-      background: #e65100;
-    }
-
-    .owner-note {
-      margin-top: 18px;
-      padding: 16px 14px;
-      border-radius: 18px;
-      background: #fff3e8;
-      color: #333;
-      font-size: 17px;
-      line-height: 1.7;
-      font-weight: 800;
-      text-align: center;
-    }
-
-    .free {
-      color: #e65100;
-      font-weight: 900;
+    .small{
+      margin-top:18px;
+      font-size:15px;
+      line-height:1.6;
+      color:#555;
     }
   </style>
 </head>
 
 <body>
-  <div class="box">
-    <img
-      class="main-img"
-      src="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=ownerfinal"
-      alt="志木Go map"
-    >
+  <main class="wrap">
+    <section class="card">
 
-    <h1>志木Go map</h1>
+      <img class="banner" src="ogp.jpg" alt="志木キッチンカー GO MAP">
 
-    <p class="lead">
-      志木市のキッチンカー出店情報を<br>
-      見られるページです。
-    </p>
+      <h1>志木Go map</h1>
 
-    <a class="btn open-btn" href="app.html">
-      Go mapを開く
-    </a>
+      <p class="lead">
+        志木市のキッチンカー出店情報を<br>
+        見られるページです。
+      </p>
 
-    <button class="btn copy-btn" onclick="copyUrl()">
-      リンクをコピー
-    </button>
+      <a class="btn blue" href="./app.html">
+        Go mapを開く
+      </a>
 
-    <a class="btn owner-btn" href="https://forms.gle/jETDC4mjDRVoPtL16" target="_blank" rel="noopener noreferrer">
-      出店者募集はこちら
-    </a>
+      <button class="btn green" onclick="copyLink()">
+        リンクをコピー
+      </button>
 
-    <div class="owner-note">
-      キッチンカーオーナーの方へ<br>
-      登録・掲載・投稿は<span class="free">すべて無料</span>です。
-    </div>
-  </div>
+      <a class="btn orange" href="https://forms.gle/jETDC4mjDRVoPtL16">
+        出店者募集はこちら
+      </a>
+
+      <div class="info">
+        キッチンカーオーナーの方へ<br>
+        登録・掲載・投稿は<br>
+        <span class="free">すべて無料</span>です。
+      </div>
+
+      <p class="small">
+        ※FacebookやLINEから開いた場合も、この入口ページから安全に開けます。
+      </p>
+
+    </section>
+  </main>
 
   <script>
-    function copyUrl() {
-      var text =
-        '志木のキッチンカー情報を見やすくしました🚚\n\n' +
-        '「今日はどこに出てるの？」\n' +
-        '「場所はどこ？」\n' +
-        'がすぐ分かる、志木Go mapです。\n\n' +
-        'Googleマップで出店場所も確認できます。\n' +
-        '志木のまちを少し楽しくする取り組みです。\n\n' +
-        'よかったらシェアお願いします。\n\n' +
-        'https://ichirohns-jpg.github.io/shiki.gomap-001/';
-
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(function() {
-          alert('コピーしました');
-        }).catch(function() {
-          fallbackCopy(text);
-        });
-      } else {
-        fallbackCopy(text);
-      }
-    }
-
-    function fallbackCopy(text) {
-      var t = document.createElement('textarea');
-      t.value = text;
-      document.body.appendChild(t);
-      t.select();
-      document.execCommand('copy');
-      document.body.removeChild(t);
-      alert('コピーしました');
+    function copyLink(){
+      const url = "https://ichirohns-jpg.github.io/shiki.gomap-001/";
+      navigator.clipboard.writeText(url).then(function(){
+        alert("リンクをコピーしました");
+      }).catch(function(){
+        prompt("このリンクをコピーしてください", url);
+      });
     }
   </script>
 </body>
