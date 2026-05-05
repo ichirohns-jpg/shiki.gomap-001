@@ -2,9 +2,9 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Go mapを開く</title>
+<title>Go mapを起動中</title>
 
 <style>
 *{box-sizing:border-box}
@@ -12,37 +12,55 @@
 html,body{
   margin:0;
   padding:0;
+  min-height:100%;
   background:#eef5fb;
   font-family:"Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
   color:#17324d;
-  -webkit-text-size-adjust:100%;
 }
 
 .page{
   width:100%;
-  max-width:760px;
+  max-width:640px;
   margin:0 auto;
-  padding:18px 14px 36px;
+  padding:36px 18px;
 }
 
 .card{
-  background:#fff;
-  border-radius:24px;
-  padding:24px 18px;
+  background:#ffffff;
+  border-radius:26px;
+  padding:28px 22px 32px;
   text-align:center;
-  box-shadow:0 6px 18px rgba(20,70,120,.12);
+  box-shadow:0 8px 24px rgba(20,70,120,.16);
 }
 
-.notice{
-  background:#fff3cd;
-  color:#000;
-  padding:16px 14px;
-  border-radius:16px;
-  margin-bottom:20px;
+.title{
+  font-size:30px;
   font-weight:900;
-  font-size:18px;
-  line-height:1.6;
-  border:2px solid #ffc107;
+  color:#134477;
+  margin:0 0 18px;
+}
+
+.msg{
+  font-size:20px;
+  line-height:1.8;
+  font-weight:800;
+  color:#49657f;
+  margin:0 0 24px;
+}
+
+.loader{
+  width:58px;
+  height:58px;
+  border:7px solid #d9ebff;
+  border-top:7px solid #2f80ed;
+  border-radius:50%;
+  margin:18px auto 24px;
+  animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+  0%{transform:rotate(0deg)}
+  100%{transform:rotate(360deg)}
 }
 
 .btn{
@@ -53,50 +71,60 @@ html,body{
   min-height:78px;
   border-radius:22px;
   color:#fff;
+  background:linear-gradient(135deg,#2f80ed,#1c73c9);
   font-size:27px;
   font-weight:900;
   text-decoration:none;
-  margin:16px 0;
-  box-shadow:0 7px 16px rgba(0,0,0,.18);
+  margin-top:20px;
 }
 
-.blue{
-  background:linear-gradient(135deg,#2f80ed,#1c73c9);
-}
-
-.small{
-  margin-top:18px;
+.notice{
+  margin-top:20px;
+  padding:16px;
+  border-radius:16px;
+  background:#fff3cd;
+  border:2px solid #ffc107;
+  font-weight:900;
   font-size:16px;
-  line-height:1.7;
-  color:#607488;
-  font-weight:700;
 }
 </style>
 </head>
 
 <body>
+
 <div class="page">
   <div class="card">
 
-    <div class="notice">
-      Facebookアプリで開いている場合は<br>
-      右上の「…」から<br>
-      <strong>ブラウザで開く</strong>を選んでください。<br>
-      そのあと下のボタンを押してください。
-    </div>
+    <h1 class="title">Go mapを開きます</h1>
 
-    <a class="btn blue"
+    <div class="loader"></div>
+
+    <p class="msg">
+      読み込んでいます…<br>
+      開かない場合は下のボタンを押してください
+    </p>
+
+    <!-- ★ここが本体 -->
+    <a class="btn"
        href="https://script.google.com/macros/s/AKfycbyzAMTakr5jWP-Ygj7H7dCMi4LnHWF73joHITw3DmznYTmL9HRHEWc4YzPIySPTmrzV/exec"
-       target="_blank"
-       rel="noopener noreferrer">
+       target="_blank">
       Go mapを開く
     </a>
 
-    <div class="small">
-      地図が開かない場合は、SafariやChromeでこのページを開いてからお試しください。
+    <div class="notice">
+      Facebookで開いている場合は<br>
+      右上の「…」→「ブラウザで開く」
     </div>
 
   </div>
 </div>
+
+<script>
+// 自動遷移（効けばラッキー）
+setTimeout(function(){
+  window.location.href = "https://script.google.com/macros/s/AKfycbyzAMTakr5jWP-Ygj7H7dCMi4LnHWF73joHITw3DmznYTmL9HRHEWc4YzPIySPTmrzV/exec";
+}, 700);
+</script>
+
 </body>
 </html>
