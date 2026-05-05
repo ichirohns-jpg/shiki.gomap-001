@@ -5,48 +5,54 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Go map 起動ゲート</title>
 <style>
-  body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f8f9fa; color: #333; padding: 20px; text-align: center; }
-  .btn { display: block; width: 100%; max-width: 300px; padding: 20px; margin: 10px 0; color: white; text-decoration: none; border-radius: 12px; font-weight: bold; font-size: 18px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-  .safari-btn { background: #007aff; } /* Appleブルー */
-  .chrome-btn { background: #4285f4; } /* Googleブルー */
-  .description { font-size: 14px; color: #666; margin-top: 20px; line-height: 1.5; }
+  body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #ffffff; color: #333; text-align: center; }
+  .btn { display: block; width: 85%; max-width: 320px; padding: 22px; color: white; text-decoration: none; border-radius: 16px; font-weight: bold; font-size: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: transform 0.1s; }
+  .btn:active { transform: scale(0.98); }
+  .safari { background: #007aff; }
+  .chrome { background: #4285f4; }
+  .msg { margin-bottom: 30px; line-height: 1.6; padding: 0 20px; }
+  .small { font-size: 12px; color: #888; margin-top: 15px; }
 </style>
 </head>
 <body>
 
-  <h2>Go map を起動する</h2>
-
-  <!-- iPhone/iPadユーザーだけに表示されるボタン -->
-  <div id="ios-ui" style="display:none;">
-    <p class="description">ホーム画面に追加するには<br>Safariで開く必要があります</p>
-    <a href="#" id="safari-link" class="btn safari-btn">Safariで起動する</a>
+  <div class="msg">
+    <b>Go mapを起動します</b><br>
+    下のボタンを押して外のブラウザで開いてください
   </div>
 
-  <!-- Android/PCユーザーだけに表示されるボタン -->
-  <div id="android-ui" style="display:none;">
-    <a href="#" id="chrome-link" class="btn chrome-btn">Chromeで起動する</a>
-  </div>
+  <!-- iPhone用ボタン（普段は隠す） -->
+  <a id="ios-btn" href="#" class="btn safari" style="display:none;">Safariで起動する</a>
+
+  <!-- Android用ボタン（普段は隠す） -->
+  <a id="android-btn" href="#" class="btn chrome" style="display:none;">Chromeで起動する</a>
+
+  <div class="small">※移動後、ホーム画面に保存できます</div>
 
 <script>
 const gasUrl = "https://script.google.com/macros/s/AKfycbyzAMTakr5jWP-Ygj7H7dCMi4LnHWF73joHITw3DmznYTmL9HRHEWc4YzPIySPTmrzV/exec";
 const ua = navigator.userAgent.toLowerCase();
 
-if (/iphone|ipad|ipod/.test(ua)) {
-  // iPhone用設定
-  document.getElementById('ios-ui').style.display = 'block';
-  const sBtn = document.getElementById('safari-link');
-  // さきほどの「ftpハック」を仕込んでSafariを強制起動させる
-  sBtn.href = "ftp://" + gasUrl.replace(/^https?:\/\//, "");
-} else {
-  // Android/その他用設定
-  document.getElementById('android-ui').style.display = 'block';
-  const cBtn = document.getElementById('chrome-link');
-  if (/android/.test(ua)) {
-    // AndroidならIntentでChromeを叩き起こす
-    cBtn.href = "intent://" + gasUrl.replace(/^https?:\/\//, "") + "#Intent;scheme=https;package=com.android.chrome;end;";
-  } else {
-    cBtn.href = gasUrl;
-  }
+// Android判定
+if (/android/.test(ua)) {
+  const btn = document.getElementById('android-btn');
+  btn.style.display = 'block';
+  // IntentスキームでFacebookを強制終了させてChromeで開く（Androidの裏技）
+  btn.href = "intent://" + gasUrl.replace(/^https?:\/\//, "") + "#Intent;scheme=https;package=com.android.chrome;end;";
+} 
+// iPhone/iPad判定
+else if (/iphone|ipad|ipod/.test(ua)) {
+  const btn = document.getElementById('ios-btn');
+  btn.style.display = 'block';
+  // ftpスキームを使い、FBブラウザを「未対応」と判断させてSafariへバトンタッチさせる（iPhoneの裏技）
+  btn.href = "ftp://" + gasUrl.replace(/^https?:\/\//, "");
+} 
+// その他（PCなど）
+else {
+  const btn = document.getElementById('android-btn');
+  btn.style.display = 'block';
+  btn.innerText = "ブラウザで開く";
+  btn.href = gasUrl;
 }
 </script>
 
