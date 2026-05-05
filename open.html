@@ -4,126 +4,78 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Go mapを起動中</title>
+<title>Go map 起動中</title>
 
 <style>
-*{box-sizing:border-box}
-
-html,body{
+body {
+  font-family:sans-serif;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  height:100vh;
   margin:0;
-  padding:0;
-  min-height:100%;
-  background:#eef5fb;
-  font-family:"Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
-  color:#17324d;
-}
-
-.page{
-  width:100%;
-  max-width:640px;
-  margin:0 auto;
-  padding:36px 18px;
-}
-
-.card{
   background:#ffffff;
-  border-radius:26px;
-  padding:28px 22px 32px;
-  text-align:center;
-  box-shadow:0 8px 24px rgba(20,70,120,.16);
 }
 
-.title{
-  font-size:30px;
-  font-weight:900;
-  color:#134477;
-  margin:0 0 18px;
-}
-
-.msg{
-  font-size:20px;
-  line-height:1.8;
-  font-weight:800;
-  color:#49657f;
-  margin:0 0 24px;
-}
-
-.loader{
-  width:58px;
-  height:58px;
-  border:7px solid #d9ebff;
-  border-top:7px solid #2f80ed;
+.spinner {
+  width:40px;
+  height:40px;
+  border:4px solid #f3f3f3;
+  border-top:4px solid #1877f2;
   border-radius:50%;
-  margin:18px auto 24px;
   animation:spin 1s linear infinite;
 }
 
-@keyframes spin{
+@keyframes spin {
   0%{transform:rotate(0deg)}
   100%{transform:rotate(360deg)}
 }
 
-.btn{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  width:100%;
-  min-height:78px;
-  border-radius:22px;
-  color:#fff;
-  background:linear-gradient(135deg,#2f80ed,#1c73c9);
-  font-size:27px;
-  font-weight:900;
+.btn {
+  display:none;
+  margin-top:20px;
+  padding:16px 32px;
+  background:#1877f2;
+  color:white;
   text-decoration:none;
-  margin-top:20px;
-}
-
-.notice{
-  margin-top:20px;
-  padding:16px;
-  border-radius:16px;
-  background:#fff3cd;
-  border:2px solid #ffc107;
-  font-weight:900;
-  font-size:16px;
+  border-radius:10px;
+  font-weight:bold;
+  font-size:18px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="page">
-  <div class="card">
-
-    <h1 class="title">Go mapを開きます</h1>
-
-    <div class="loader"></div>
-
-    <p class="msg">
-      読み込んでいます…<br>
-      開かない場合は下のボタンを押してください
-    </p>
-
-    <!-- ★ここが本体 -->
-    <a class="btn"
-       href="https://script.google.com/macros/s/AKfycbyzAMTakr5jWP-Ygj7H7dCMi4LnHWF73joHITw3DmznYTmL9HRHEWc4YzPIySPTmrzV/exec"
-       target="_blank">
-      Go mapを開く
-    </a>
-
-    <div class="notice">
-      Facebookで開いている場合は<br>
-      右上の「…」→「ブラウザで開く」
-    </div>
-
-  </div>
+<div id="loading">
+  <div class="spinner"></div>
+  <p>Go mapを開いています…</p>
 </div>
 
+<!-- 手動ボタン -->
+<a id="manual-btn" class="btn">Go mapを開く</a>
+
 <script>
-// 自動遷移（効けばラッキー）
-setTimeout(function(){
-  window.location.href = "https://script.google.com/macros/s/AKfycbyzAMTakr5jWP-Ygj7H7dCMi4LnHWF73joHITw3DmznYTmL9HRHEWc4YzPIySPTmrzV/exec";
-}, 700);
+const gasUrl = "https://script.google.com/macros/s/AKfycbyzAMTakr5jWP-Ygj7H7dCMi4LnHWF73joHITw3DmznYTmL9HRHEWc4YzPIySPTmrzV/exec";
+
+function redirect(){
+
+  // 自動遷移
+  window.location.replace(gasUrl);
+
+  // 失敗時ボタン表示
+  setTimeout(function(){
+    document.getElementById("loading").style.display = "none";
+
+    const btn = document.getElementById("manual-btn");
+    btn.href = gasUrl;
+    btn.style.display = "block";
+
+  },3000);
+}
+
+window.onload = redirect;
 </script>
 
 </body>
