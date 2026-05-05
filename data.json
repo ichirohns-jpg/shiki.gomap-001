@@ -1,12 +1,7 @@
 [
   {
-    "title": "キッチンカー1",
-    "detail": "ここに説明",
-    "url": "https://youtu.be/XXXXXXXX"
-  },
-  {
-    "title": "キッチンカー2",
-    "detail": "ここに説明",
-    "url": "https://youtu.be/YYYYYYYY"
+    "title": "志木Go map テスト",
+    "detail": "表示テストです。ここにキッチンカーの出店情報を入れていきます。",
+    "url": "https://youtu.be/dQw4w9WgXcQ"
   }
 ]
