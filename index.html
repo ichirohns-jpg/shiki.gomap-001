@@ -15,7 +15,6 @@
 <meta property="og:url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/">
 <meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg">
 <meta property="og:image:secure_url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg">
-<meta property="og:image:type" content="image/jpeg">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="志木キッチンカー GO MAP">
@@ -36,47 +35,38 @@ body{
 .page{
   max-width:760px;
   margin:0 auto;
-  padding:14px;
+  padding:16px;
 }
 
 .banner img{
   width:100%;
   border-radius:18px;
   display:block;
-  box-shadow:0 6px 18px rgba(0,0,0,.1);
+  box-shadow:0 6px 18px rgba(0,0,0,.10);
 }
 
 .card{
   background:#fff;
-  border-radius:24px;
-  padding:24px 18px;
+  border-radius:28px;
+  padding:34px 22px 30px;
   text-align:center;
-  box-shadow:0 6px 18px rgba(0,0,0,.1);
-  margin-top:18px;
-}
-
-.notice{
-  background:#fff3cd;
-  padding:12px;
-  border-radius:10px;
-  margin-bottom:15px;
-  font-weight:bold;
-  font-size:15px;
-  line-height:1.4;
-  border:2px solid #ffc107;
+  box-shadow:0 8px 24px rgba(0,0,0,.10);
+  margin-top:22px;
 }
 
 .title{
-  font-size:28px;
+  font-size:34px;
   font-weight:900;
   color:#134477;
-  margin:0;
+  margin:0 0 8px;
+  line-height:1.2;
 }
 
 .sub{
-  font-size:18px;
+  font-size:21px;
   color:#49657f;
-  margin:0 0 20px;
+  margin:0 0 28px;
+  font-weight:700;
 }
 
 .btn{
@@ -84,78 +74,102 @@ body{
   align-items:center;
   justify-content:center;
   width:100%;
-  min-height:70px;
-  border-radius:20px;
+  min-height:78px;
+  border-radius:22px;
   color:#fff;
-  font-size:24px;
+  font-size:28px;
   font-weight:900;
   text-decoration:none;
-  margin:14px 0;
+  margin:16px 0;
   border:none;
   cursor:pointer;
-  appearance:none;
-  -webkit-appearance:none;
+  -webkit-tap-highlight-color:transparent;
 }
 
 .blue{background:#2f80ed}
 .orange{background:#f45a00}
-.green{background:#27ae60}
 
-.small{
-  font-size:14px;
+.loading{
+  display:none;
+  background:#fff;
+  border-radius:28px;
+  padding:40px 22px;
+  text-align:center;
+  box-shadow:0 8px 24px rgba(0,0,0,.10);
+  margin-top:22px;
+}
+
+.loading h1{
+  color:#134477;
+  font-size:30px;
+  margin:0 0 14px;
+}
+
+.loading p{
+  color:#49657f;
+  font-size:18px;
+  font-weight:700;
   line-height:1.6;
-  color:#456;
-  margin-top:14px;
-  font-weight:bold;
 }
 </style>
 </head>
 
 <body>
-<div class="page">
+
+<div class="page" id="home">
 
   <div class="banner">
     <img src="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg" alt="志木キッチンカー GO MAP">
   </div>
 
   <div class="card">
-
-    <div class="notice">
-      ⚠️ Facebookで開かない場合は<br>
-      右上の「…」から「ブラウザで開く」を押してください。
-    </div>
-
     <h1 class="title">志木お助け隊DX</h1>
     <p class="sub">キッチンカー GO MAP</p>
 
     <a class="btn blue"
-       href="https://script.google.com/macros/s/AKfycbyk0noKfvnS0uGUttnBaXyznoLtbiD7tAQOZTqd8YDwNFAlw8Uf_f_EN47WFbHJ_--2/exec">
+       href="https://ichirohns-jpg.github.io/shiki.gomap-001/?open=1">
       Go mapを見る
     </a>
-
-    <button class="btn green" onclick="openGoMap()">
-      開かない時はこちら
-    </button>
 
     <a class="btn orange"
        href="https://forms.gle/jETDC4mjDRVoPtL16">
       出店はこちら
     </a>
+  </div>
 
-    <div class="small">
-      Facebook・Instagram内ブラウザでは地図が止まることがあります。<br>
-      その場合は「ブラウザで開く」で表示してください。
-    </div>
+</div>
 
+<div class="page" id="loading" style="display:none;">
+  <div class="banner">
+    <img src="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg" alt="志木キッチンカー GO MAP">
+  </div>
+
+  <div class="loading" style="display:block;">
+    <h1>Go mapを開いています</h1>
+    <p>しばらくお待ちください</p>
+
+    <a class="btn blue"
+       href="https://script.google.com/macros/s/AKfycbyk0noKfvnS0uGUttnBaXyznoLtbiD7tAQOZTqd8YDwNFAlw8Uf_f_EN47WFbHJ_--2/exec">
+      開かない時はこちら
+    </a>
   </div>
 </div>
 
 <script>
 const GO_MAP_URL = "https://script.google.com/macros/s/AKfycbyk0noKfvnS0uGUttnBaXyznoLtbiD7tAQOZTqd8YDwNFAlw8Uf_f_EN47WFbHJ_--2/exec";
 
-function openGoMap(){
-  location.href = GO_MAP_URL;
-}
+(function(){
+  const params = new URLSearchParams(window.location.search);
+
+  if(params.get("open") === "1"){
+    document.getElementById("home").style.display = "none";
+    document.getElementById("loading").style.display = "block";
+
+    setTimeout(function(){
+      window.location.href = GO_MAP_URL;
+    }, 400);
+  }
+})();
 </script>
 
 </body>
