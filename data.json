@@ -1,6 +1,12 @@
 [
   {
-    "title": "志木Go map テスト",
-    "detail": "表示テストです。動画なしで、まず画面が正しく出るか確認します。"
+    "title": "ページオーナー",
+    "detail": "志木キッチンカーGo mapの紹介動画です。出店情報をわかりやすく届けるためのページです。",
+    "url": "https://www.youtube.com/watch?v=5BiOF91ZI8k"
+  },
+  {
+    "title": "ページオーナー",
+    "detail": "志木Go mapの使い方や、SNSで情報を届けるための案内動画です。",
+    "url": "https://www.youtube.com/watch?v=PMZ6s-ZY-m8"
   }
 ]
