@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>志木Go mapを開く</title>
 <style>
+*{box-sizing:border-box}
 body{
   margin:0;
   font-family:"Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
@@ -14,45 +15,80 @@ body{
 .wrap{
   max-width:620px;
   margin:0 auto;
-  padding:40px 18px;
-  text-align:center;
+  padding:36px 18px;
 }
 .card{
   background:#fff;
   border-radius:26px;
-  padding:32px 22px;
+  padding:30px 22px 34px;
+  text-align:center;
   box-shadow:0 8px 24px rgba(20,70,120,.16);
 }
 h1{
-  font-size:30px;
-  margin:0 0 14px;
+  margin:0 0 12px;
+  font-size:32px;
+  line-height:1.3;
+  font-weight:900;
+  color:#0d4778;
 }
-p{
+.lead{
+  margin:0 0 26px;
   font-size:18px;
   line-height:1.7;
+  font-weight:700;
 }
 .btn{
   display:block;
-  margin:28px auto 0;
-  padding:20px 16px;
+  width:100%;
+  padding:20px 14px;
   border-radius:18px;
-  background:#1e88e5;
   color:#fff;
   text-decoration:none;
   font-size:22px;
   font-weight:900;
+  margin-top:16px;
+}
+.view{background:#1e88e5}
+.owner{background:#e87524}
+.sub{
+  display:block;
+  margin-top:8px;
+  font-size:14px;
+  font-weight:700;
+  opacity:.95;
+}
+.note{
+  margin-top:22px;
+  font-size:14px;
+  line-height:1.6;
+  color:#5d7284;
 }
 </style>
 </head>
+
 <body>
 <div class="wrap">
   <div class="card">
     <h1>志木Go map</h1>
-    <p>下のボタンを押すと<br>キッチンカー情報が開きます。</p>
 
-    <a class="btn" href="https://script.google.com/macros/s/AKfycbyk0noKfvnS0uGUttnBaXyznoLtbiD7tAQOZTqd8YDwNFAlw8Uf_f_EN47WFbHJ_--2/exec">
-      志木Go mapを開く
+    <p class="lead">
+      使うページを選んでください。
+    </p>
+
+    <a class="btn view" href="https://ichirohns-jpg.github.io/shiki.gomap-001/app.html">
+      志木Go mapを見る
+      <span class="sub">キッチンカー情報を見る側</span>
     </a>
+
+    <a class="btn owner" href="https://ichirohns-jpg.github.io/shiki.gomap-002/">
+      出店者・オーナー投稿
+      <span class="sub">出店情報を送る側</span>
+    </a>
+
+    <p class="note">
+      一般の方は「志木Go mapを見る」を押してください。<br>
+      キッチンカーオーナーさんは「出店者・オーナー投稿」を押してください。
+    </p>
   </div>
 </div>
 </body>
