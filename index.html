@@ -14,6 +14,8 @@
 <meta property="og:description" content="今日どこに来てる？すぐ見れる">
 <meta property="og:url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/">
 <meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg">
+<meta property="og:image:secure_url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg">
+<meta property="og:image:type" content="image/jpeg">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="志木キッチンカー GO MAP">
@@ -22,6 +24,7 @@
 
 <style>
 *{box-sizing:border-box}
+
 body{
   margin:0;
   padding:0;
@@ -29,17 +32,20 @@ body{
   font-family:"Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
   color:#17324d;
 }
+
 .page{
   max-width:760px;
   margin:0 auto;
   padding:14px;
 }
+
 .banner img{
   width:100%;
   border-radius:18px;
   display:block;
   box-shadow:0 6px 18px rgba(0,0,0,.1);
 }
+
 .card{
   background:#fff;
   border-radius:24px;
@@ -48,25 +54,37 @@ body{
   box-shadow:0 6px 18px rgba(0,0,0,.1);
   margin-top:18px;
 }
+
+.notice{
+  background:#fff3cd;
+  padding:12px;
+  border-radius:10px;
+  margin-bottom:15px;
+  font-weight:bold;
+  font-size:15px;
+  line-height:1.4;
+  border:2px solid #ffc107;
+}
+
 .title{
-  font-size:30px;
+  font-size:28px;
   font-weight:900;
   color:#134477;
-  margin:0 0 6px;
-  line-height:1.25;
+  margin:0;
 }
+
 .sub{
-  font-size:19px;
+  font-size:18px;
   color:#49657f;
   margin:0 0 20px;
-  font-weight:700;
 }
+
 .btn{
   display:flex;
   align-items:center;
   justify-content:center;
   width:100%;
-  min-height:72px;
+  min-height:70px;
   border-radius:20px;
   color:#fff;
   font-size:24px;
@@ -75,36 +93,20 @@ body{
   margin:14px 0;
   border:none;
   cursor:pointer;
+  appearance:none;
+  -webkit-appearance:none;
 }
+
 .blue{background:#2f80ed}
-.green{background:#27ae60}
 .orange{background:#f45a00}
-.notice{
-  background:#fff3cd;
-  padding:12px;
-  border-radius:12px;
-  margin-bottom:16px;
-  font-weight:bold;
-  font-size:15px;
-  line-height:1.5;
-  border:2px solid #ffc107;
-}
-.copy-area{
-  margin-top:20px;
-  background:#f8f9fa;
-  padding:15px;
-  border-radius:15px;
-  border:1px solid #ddd;
-}
-.copy-input{
-  width:100%;
-  padding:12px;
+.green{background:#27ae60}
+
+.small{
   font-size:14px;
-  border:1px solid #ccc;
-  border-radius:8px;
-  text-align:center;
-  margin-bottom:10px;
-  background:#fff;
+  line-height:1.6;
+  color:#456;
+  margin-top:14px;
+  font-weight:bold;
 }
 </style>
 </head>
@@ -119,76 +121,40 @@ body{
   <div class="card">
 
     <div class="notice">
-      ⚠️ Facebookで地図が開かない場合<br>
+      ⚠️ Facebookで開かない場合は<br>
       右上の「…」から「ブラウザで開く」を押してください。
     </div>
 
-    <h1 class="title">志木キッチンカー<br>GO MAP</h1>
-    <p class="sub">今日どこに来てる？すぐ見れる</p>
+    <h1 class="title">志木お助け隊DX</h1>
+    <p class="sub">キッチンカー GO MAP</p>
 
     <a class="btn blue"
-       href="https://script.google.com/macros/s/AKfycbyk0noKfvnS0uGUttnBaXyznoLtbiD7tAQOZTqd8YDwNFAlw8Uf_f_EN47WFbHJ_--2/exec"
-       target="_blank"
-       rel="noopener noreferrer">
+       href="https://script.google.com/macros/s/AKfycbyk0noKfvnS0uGUttnBaXyznoLtbiD7tAQOZTqd8YDwNFAlw8Uf_f_EN47WFbHJ_--2/exec">
       Go mapを見る
     </a>
 
+    <button class="btn green" onclick="openGoMap()">
+      開かない時はこちら
+    </button>
+
     <a class="btn orange"
-       href="https://forms.gle/jETDC4mjDRVoPtL16"
-       target="_blank"
-       rel="noopener noreferrer">
+       href="https://forms.gle/jETDC4mjDRVoPtL16">
       出店はこちら
     </a>
 
-    <div class="copy-area">
-      <p style="font-size:13px;margin:0 0 10px;font-weight:bold;">
-        ボタンが動かない場合はURLをコピー
-      </p>
-
-      <input type="text"
-             id="urlField"
-             class="copy-input"
-             value="https://ichirohns-jpg.github.io/shiki.gomap-001/"
-             readonly
-             onclick="this.select();">
-
-      <button class="btn green"
-              style="min-height:52px;font-size:18px;margin:0;"
-              onclick="handleCopy()">
-        URLをコピーする
-      </button>
+    <div class="small">
+      Facebook・Instagram内ブラウザでは地図が止まることがあります。<br>
+      その場合は「ブラウザで開く」で表示してください。
     </div>
 
   </div>
 </div>
 
 <script>
-function handleCopy(){
-  var url = "https://ichirohns-jpg.github.io/shiki.gomap-001/";
-  var input = document.getElementById("urlField");
+const GO_MAP_URL = "https://script.google.com/macros/s/AKfycbyk0noKfvnS0uGUttnBaXyznoLtbiD7tAQOZTqd8YDwNFAlw8Uf_f_EN47WFbHJ_--2/exec";
 
-  input.focus();
-  input.select();
-  input.setSelectionRange(0, 99999);
-
-  if(navigator.clipboard && window.isSecureContext){
-    navigator.clipboard.writeText(url).then(function(){
-      alert("コピーしました。SafariやChromeに貼り付けて開いてください。");
-    }).catch(function(){
-      fallbackCopy();
-    });
-  }else{
-    fallbackCopy();
-  }
-}
-
-function fallbackCopy(){
-  try{
-    document.execCommand("copy");
-    alert("コピーしました。SafariやChromeに貼り付けて開いてください。");
-  }catch(e){
-    alert("URLを長押ししてコピーしてください。");
-  }
+function openGoMap(){
+  location.href = GO_MAP_URL;
 }
 </script>
 
