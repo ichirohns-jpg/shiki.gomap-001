@@ -5,79 +5,147 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>志木Go map｜キッチンカー情報</title>
-<meta name="description" content="志木市周辺のキッチンカー出店情報をすぐに確認できます。今どこで出ているかがすぐ分かるマップです。">
+<meta name="description" content="志木市周辺のキッチンカー出店情報をすぐに確認できます。今どこで出ているかが分かる地域マップです。">
 
-<!-- OGP（SNS用） -->
+<!-- SNS表示用 OGP -->
 <meta property="og:title" content="志木Go map｜キッチンカー情報">
-<meta property="og:description" content="今どこでキッチンカーが出てる？志木周辺の出店情報をすぐチェック">
-<meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/ogp.png">
+<meta property="og:description" content="志木市周辺のキッチンカー出店情報をすぐに確認できます。">
+<meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg">
 <meta property="og:url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="志木Go map">
+<meta property="og:locale" content="ja_JP">
 
-<!-- Twitter -->
+<!-- X / Twitter -->
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="志木Go map｜キッチンカー情報">
+<meta name="twitter:description" content="志木市周辺のキッチンカー出店情報をすぐに確認できます。">
+<meta name="twitter:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg">
 
-<!-- ホーム画面用 -->
+<!-- iPhoneホーム画面用 -->
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
 <style>
-body{
-  margin:0;
-  font-family:"Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
-  background:#eef5fb;
-  text-align:center;
+*{
+  box-sizing:border-box;
 }
 
-.wrap{
-  max-width:600px;
+html,body{
+  margin:0;
+  padding:0;
+  min-height:100%;
+  background:#eef5fb;
+  font-family:"Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+  color:#17324d;
+  -webkit-text-size-adjust:100%;
+}
+
+.page{
+  width:100%;
+  max-width:640px;
   margin:0 auto;
-  padding:30px 16px;
+  padding:34px 18px;
 }
 
 .card{
-  background:#fff;
-  border-radius:20px;
-  padding:30px 20px;
-  box-shadow:0 8px 20px rgba(0,0,0,0.1);
+  background:#ffffff;
+  border-radius:26px;
+  padding:30px 22px 34px;
+  text-align:center;
+  box-shadow:0 8px 24px rgba(20,70,120,.16);
+}
+
+.logo{
+  width:100%;
+  max-width:420px;
+  border-radius:22px;
+  margin:0 auto 22px;
+  display:block;
 }
 
 h1{
-  font-size:26px;
-  margin-bottom:10px;
+  margin:0 0 12px;
+  font-size:34px;
+  line-height:1.25;
+  font-weight:900;
+  color:#0d4778;
 }
 
-p{
-  font-size:16px;
-  color:#555;
+.lead{
+  margin:0;
+  font-size:19px;
+  line-height:1.7;
+  font-weight:700;
+  color:#24445f;
+}
+
+.note{
+  margin:18px 0 0;
+  font-size:15px;
+  line-height:1.6;
+  color:#5d7284;
 }
 
 .btn{
   display:block;
-  margin:25px auto 0;
-  padding:16px;
-  font-size:18px;
-  font-weight:bold;
-  color:#fff;
+  width:100%;
+  margin:28px auto 0;
+  padding:19px 16px;
+  border-radius:18px;
   background:#1e88e5;
-  border-radius:12px;
+  color:#ffffff;
   text-decoration:none;
+  font-size:22px;
+  font-weight:900;
+  box-shadow:0 6px 16px rgba(30,136,229,.28);
+}
+
+.sub{
+  display:block;
+  margin-top:9px;
+  font-size:14px;
+  font-weight:700;
+  opacity:.95;
+}
+
+.footer{
+  margin-top:20px;
+  text-align:center;
+  font-size:13px;
+  color:#6d7f8d;
 }
 </style>
-
 </head>
 
 <body>
-<div class="wrap">
-  <div class="card">
+  <main class="page">
+    <section class="card">
 
-    <h1>志木Go map</h1>
-    <p>志木周辺のキッチンカー出店情報を<br>すぐにチェックできます</p>
+      <img class="logo" src="gomap-ogp.jpg" alt="志木Go map">
 
-    <a class="btn" href="open.html">
-      ▶ Go mapを見る
-    </a>
+      <h1>志木Go map</h1>
 
-  </div>
-</div>
+      <p class="lead">
+        志木市周辺の<br>
+        キッチンカー出店情報を<br>
+        見つけやすく届けます
+      </p>
+
+      <p class="note">
+        出店場所やお知らせを確認できます。<br>
+        下のボタンからGo mapを開いてください。
+      </p>
+
+      <a class="btn" href="open.html">
+        志木Go mapを開く
+        <span class="sub">キッチンカー情報を見る</span>
+      </a>
+
+    </section>
+
+    <div class="footer">
+      Shiki Go map
+    </div>
+  </main>
 </body>
 </html>
