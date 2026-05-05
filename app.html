@@ -15,12 +15,19 @@
 <script>
 const GAS_URL = "https://script.google.com/macros/s/AKfycbzhTd6DoEUjEYSY_ADQkjYC97fHdUUz4kEZ_cKFWoJGBYA-LCUBy85_7rBVqYBepWR9BA/exec";
 
-fetch(GAS_URL)
-.then(res => res.json())
-.then(data => {
+function loadData(){
+  const s = document.createElement("script");
+  s.src = GAS_URL + "?callback=showData&v=" + Date.now();
+  s.onerror = function(){
+    document.getElementById("list").innerHTML = "読み込みエラー";
+  };
+  document.body.appendChild(s);
+}
+
+function showData(data){
   let html = "";
 
-  data.forEach(item => {
+  data.forEach(function(item){
     let video = "";
 
     if(item.url){
@@ -57,10 +64,9 @@ fetch(GAS_URL)
   });
 
   document.getElementById("list").innerHTML = html || "現在、表示できる出店情報はありません。";
-})
-.catch(err => {
-  document.getElementById("list").innerHTML = "読み込みエラー";
-});
+}
+
+loadData();
 </script>
 
 </body>
