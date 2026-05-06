@@ -220,7 +220,10 @@ window.handleSheet = function(json){
 
       const item = {
         rowIndex:index,
+
+        rawDate:c[0] && c[0].v !== null && c[0].v !== undefined ? c[0].v : '',
         time:getCell(c[0]),
+
         name:getCell(c[1]),
         place:getCell(c[2]),
         msg:getCell(c[3]),
@@ -228,16 +231,20 @@ window.handleSheet = function(json){
         map:getCell(c[6])
       };
 
-      item.dateValue = parsePostDate(item.time, index);
+      item.dateValue = parseSheetDate(item.rawDate,item.time,index);
 
       return item;
 
     }).filter(d=>d.name || d.place || d.msg || d.media);
 
     ALL.sort((a,b)=>{
-      if(b.dateValue !== a.dateValue){
-        return b.dateValue - a.dateValue;
+      const da = Number(a.dateValue || 0);
+      const db = Number(b.dateValue || 0);
+
+      if(db !== da){
+        return db - da;
       }
+
       return b.rowIndex - a.rowIndex;
     });
 
@@ -411,4 +418,145 @@ function makeMedia(url,type){
 
   const yt = youtubeEmbed(url);
   if(yt){
-    return {kind:'youtube
+    return {kind:'youtube',url:yt};
+  }
+
+  const driveId = driveFileId(url);
+
+  if(driveId){
+    if(t.includes('video') || t.includes('movie') || isVideoUrl(url) || String(url).includes('/preview')){
+      return {
+        kind:'driveVideo',
+        url:'https://drive.google.com/file/d/' + driveId + '/preview'
+      };
+    }
+
+    return {
+      kind:'image',
+      url:'https://drive.google.com/thumbnail?id=' + driveId + '&sz=w2000'
+    };
+  }
+
+  if(t.includes('video') || isVideoUrl(url)){
+    return {kind:'video',url:url};
+  }
+
+  return {kind:'image',url:url};
+}
+
+function youtubeEmbed(url){
+  const s = String(url || '');
+
+  let m =
+    s.match(/youtube\.com\/embed\/([^?&/]+)/) ||
+    s.match(/youtube\.com\/shorts\/([^?&/]+)/) ||
+    s.match(/youtu\.be\/([^?&/]+)/) ||
+    s.match(/[?&]v=([^?&/]+)/);
+
+  if(!m || !m[1]) return '';
+
+  return 'https://www.youtube.com/embed/' + m[1];
+}
+
+function driveFileId(url){
+  const s = String(url || '');
+
+  let m =
+    s.match(/\/file\/d\/([^/]+)/) ||
+    s.match(/[?&]id=([^&]+)/) ||
+    s.match(/\/d\/([^/]+)/);
+
+  return m && m[1] ? m[1] : '';
+}
+
+function extractUrls(text){
+  return String(text || '').match(/https?:\/\/[^\s"'<>]+/g) || [];
+}
+
+function isVideoUrl(url){
+  return /\.(mp4|mov|m4v|webm|ogg)(\?|#|$)/i.test(String(url || ''));
+}
+
+function parseSheetDate(raw,display,index){
+  const r = String(raw || '');
+
+  let m = r.match(/Date\((\d+),(\d+),(\d+)(?:,(\d+),(\d+),(\d+))?\)/);
+
+  if(m){
+    return new Date(
+      Number(m[1]),
+      Number(m[2]),
+      Number(m[3]),
+      Number(m[4] || 0),
+      Number(m[5] || 0),
+      Number(m[6] || 0)
+    ).getTime();
+  }
+
+  const s = String(display || '')
+    .replace(/[年月]/g,'/')
+    .replace(/日/g,'')
+    .replace(/\./g,'/')
+    .replace(/-/g,'/')
+    .replace(/\s+/g,' ')
+    .trim();
+
+  m = s.match(/(\d{4})\/(\d{1,2})\/(\d{1,2})(?:\s+(\d{1,2}):(\d{1,2}))?/);
+
+  if(m){
+    return new Date(
+      Number(m[1]),
+      Number(m[2]) - 1,
+      Number(m[3]),
+      Number(m[4] || 0),
+      Number(m[5] || 0),
+      0
+    ).getTime();
+  }
+
+  m = s.match(/(\d{1,2})\/(\d{1,2})(?:\s+(\d{1,2}):(\d{1,2}))?/);
+
+  if(m){
+    return new Date(
+      2026,
+      Number(m[1]) - 1,
+      Number(m[2]),
+      Number(m[3] || 0),
+      Number(m[4] || 0),
+      0
+    ).getTime();
+  }
+
+  return index * 1000;
+}
+
+function getCell(c){
+  if(!c) return '';
+
+  if(c.f !== null && c.f !== undefined){
+    return String(c.f);
+  }
+
+  if(c.v !== null && c.v !== undefined){
+    return String(c.v);
+  }
+
+  return '';
+}
+
+function esc(s){
+  return String(s || '')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
+
+function escAttr(s){
+  return esc(s);
+}
+</script>
+
+</body>
+</html>
