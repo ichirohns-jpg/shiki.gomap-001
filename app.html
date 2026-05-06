@@ -7,54 +7,144 @@
 <title>志木Go map</title>
 
 <style>
+
 *{
   box-sizing:border-box;
 }
 
 body{
   margin:0;
-  background:#eef5fb;
-  font-family:"Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+  background:
+  linear-gradient(180deg,#eef5fb 0%,#ffffff 100%);
+  font-family:
+  "Hiragino Sans",
+  "Yu Gothic",
+  "Meiryo",
+  sans-serif;
   color:#17324d;
 }
 
 .wrap{
   max-width:760px;
   margin:0 auto;
-  padding:18px 14px 38px;
+  padding:20px 14px 50px;
 }
 
 .header{
   background:#fff;
-  border-radius:26px;
-  padding:24px 18px;
-  text-align:center;
-  box-shadow:0 8px 22px rgba(20,70,120,.12);
-  margin-bottom:18px;
+  border-radius:30px;
+  overflow:hidden;
+  box-shadow:
+  0 10px 28px rgba(20,70,120,.12);
+  margin-bottom:20px;
 }
 
-.header h1{
+.banner{
+  width:100%;
+  aspect-ratio:16/9;
+  object-fit:cover;
+  display:block;
+}
+
+.header-body{
+  padding:24px 20px 28px;
+}
+
+.title{
   margin:0;
-  font-size:38px;
+  text-align:center;
+  font-size:40px;
+  line-height:1.2;
   font-weight:900;
   color:#0d5fa8;
 }
 
-.header p{
-  margin:12px 0 0;
+.desc{
+  margin-top:16px;
+  text-align:center;
   font-size:19px;
-  line-height:1.6;
-  font-weight:800;
-  color:#526b7f;
+  line-height:1.8;
+  font-weight:700;
+  color:#5a6f80;
+}
+
+.tabs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin:22px 0;
+}
+
+.tab{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:62px;
+  border-radius:18px;
+  font-size:20px;
+  font-weight:900;
+  text-decoration:none;
+  border:0;
+}
+
+.active{
+  background:
+  linear-gradient(135deg,#1687e0,#0d5fa8);
+  color:#fff;
+}
+
+.normal{
+  background:#fff;
+  color:#456;
+  box-shadow:
+  0 6px 16px rgba(20,70,120,.08);
 }
 
 .card{
   background:#fff;
   border-radius:24px;
   overflow:hidden;
-  box-shadow:0 8px 22px rgba(20,70,120,.12);
-  margin:18px 0;
+  box-shadow:
+  0 8px 22px rgba(20,70,120,.10);
+  margin-bottom:20px;
   border-top:5px solid #0d5fa8;
+}
+
+.media{
+  width:100%;
+  display:flex;
+  overflow-x:auto;
+  overflow-y:hidden;
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
+  background:#e9eef4;
+}
+
+.slide{
+  flex:0 0 100%;
+  aspect-ratio:16/9;
+  scroll-snap-align:start;
+  background:#000;
+}
+
+.slide img,
+.slide iframe,
+.slide video{
+  width:100%;
+  height:100%;
+  display:block;
+  border:0;
+  object-fit:cover;
+}
+
+.noimage{
+  aspect-ratio:16/9;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#999;
+  font-size:22px;
+  background:#f1f1f1;
 }
 
 .body{
@@ -63,19 +153,20 @@ body{
 
 .time{
   font-size:14px;
-  color:#888;
+  color:#889;
   font-weight:800;
 }
 
 .name{
+  margin-top:8px;
   font-size:28px;
+  line-height:1.3;
   font-weight:900;
   color:#0d5fa8;
-  margin:8px 0;
-  line-height:1.3;
 }
 
 .place{
+  margin-top:10px;
   display:inline-block;
   background:#fff3e0;
   color:#e65100;
@@ -83,44 +174,58 @@ body{
   border-radius:8px;
   font-size:17px;
   font-weight:900;
-  margin:6px 0 12px;
 }
 
 .msg{
+  margin-top:14px;
   font-size:18px;
-  line-height:1.8;
-  white-space:pre-wrap;
+  line-height:1.85;
   color:#334;
-  margin:8px 0 14px;
+  white-space:pre-wrap;
 }
 
 .btn{
-  display:block;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   width:100%;
-  text-align:center;
-  padding:16px 12px;
-  border-radius:16px;
+  min-height:60px;
+  border-radius:18px;
   text-decoration:none;
-  color:#fff;
   font-size:18px;
   font-weight:900;
-  margin-top:12px;
-  border:0;
+  margin-top:16px;
 }
 
 .map{
-  background:linear-gradient(135deg,#1687e0,#0d5fa8);
+  background:
+  linear-gradient(135deg,#1687e0,#0d5fa8);
+  color:#fff;
+}
+
+.archive-group{
+  margin-top:34px;
+}
+
+.archive-title{
+  margin:0 0 14px;
+  font-size:28px;
+  font-weight:900;
+  color:#0d5fa8;
 }
 
 .home{
-  background:linear-gradient(135deg,#6c7a89,#34495e);
+  background:
+  linear-gradient(135deg,#6c7a89,#34495e);
+  color:#fff;
+  margin-top:30px;
 }
 
 .loading{
   text-align:center;
-  padding:30px;
-  color:#777;
+  padding:40px;
   font-size:20px;
+  color:#777;
 }
 
 </style>
@@ -131,28 +236,60 @@ body{
 <div class="wrap">
 
   <div class="header">
-    <h1>志木Go map</h1>
-    <p>
-      キッチンカーの出店情報を<br>
-     見やすくお届けします
-    </p>
+
+    <img
+      class="banner"
+      src="https://drive.google.com/thumbnail?id=1zcQqzRT2rV9GCW9sk4nISiM1ubH0qQ5U&sz=w2000"
+    >
+
+    <div class="header-body">
+
+      <h1 class="title">
+        志木Go map
+      </h1>
+
+      <div class="desc">
+        キッチンカーの出店情報を<br>
+        リアルタイムでお届けします
+      </div>
+
+    </div>
+
   </div>
 
-  <div id="list">
+  <div class="tabs">
+
+    <div class="tab active">
+      最新情報
+    </div>
+
+    <div class="tab normal">
+      アーカイブ
+    </div>
+
+  </div>
+
+  <div id="latest">
     <div class="loading">
       読み込み中...
     </div>
   </div>
 
-  <a class="btn home" href="https://ichirohns-jpg.github.io/shiki.gomap-001/">
-    トップに戻る
+  <div id="archive"></div>
+
+  <a
+    class="btn home"
+    href="https://ichirohns-jpg.github.io/shiki.gomap-001/"
+  >
+    ← トップに戻る
   </a>
 
 </div>
 
 <script>
 
-const SHEET_ID = '12pq1Flwl_Ol61frvAMhdFkpDzoTdGsnnzystje8jEXw';
+const SHEET_ID =
+'12pq1Flwl_Ol61frvAMhdFkpDzoTdGsnnzystje8jEXw';
 
 const url =
 'https://docs.google.com/spreadsheets/d/' +
@@ -160,60 +297,49 @@ SHEET_ID +
 '/gviz/tq?tqx=out:json';
 
 fetch(url)
-.then(r => r.text())
-.then(t => {
+.then(r=>r.text())
+.then(t=>{
 
-  const json = JSON.parse(
+  const json =
+  JSON.parse(
     t.substr(47).slice(0,-2)
   );
 
-  const rows = json.table.rows || [];
+  let rows =
+  json.table.rows || [];
 
-  let html = '';
-
-  rows.reverse();
-
-  rows.forEach(r => {
+  rows = rows.map(r=>{
 
     const c = r.c || [];
 
-    const time = c[0] ? c[0].v : '';
-    const name = c[1] ? c[1].v : '';
-    const place = c[2] ? c[2].v : '';
-    const msg = c[3] ? c[3].v : '';
-    const map = c[6] ? c[6].v : '';
+    return {
+      raw:c,
 
-    if(!name && !place && !msg){
-      return;
-    }
+      time:c[0] ? c[0].f || c[0].v || '' : '',
+      name:c[1] ? c[1].v || '' : '',
+      place:c[2] ? c[2].v || '' : '',
+      msg:c[3] ? c[3].v || '' : '',
+      media:c[4] ? c[4].v || '' : '',
+      map:c[6] ? c[6].v || '' : ''
+    };
 
-    html += `
-      <div class="card">
-        <div class="body">
+  }).filter(r=>
+    r.name || r.place || r.msg
+  );
 
-          <div class="time">${esc(time)}</div>
+  rows.reverse();
 
-          <div class="name">
-            ${esc(name)}
-          </div>
+  renderLatest(rows.slice(0,5));
+  renderArchive(rows.slice(5));
 
-          <div class="place">
-            📍 ${esc(place)}
-          </div>
+});
 
-          <div class="msg">
-            ${esc(msg)}
-          </div>
+function renderLatest(list){
 
-          ${
-            map
-            ? `<a class="btn map" href="${escAttr(map)}" target="_blank">Googleマップを見る</a>`
-            : ''
-          }
+  let html = '';
 
-        </div>
-      </div>
-    `;
+  list.forEach(d=>{
+    html += makeCard(d);
   });
 
   if(!html){
@@ -221,17 +347,190 @@ fetch(url)
     '<div class="loading">表示できる情報はありません</div>';
   }
 
-  document.getElementById('list').innerHTML = html;
+  document.getElementById('latest').innerHTML =
+  html;
+}
 
-});
+function renderArchive(list){
+
+  const groups = {};
+
+  list.forEach(d=>{
+
+    const month =
+    getMonthLabel(d.time);
+
+    if(!groups[month]){
+      groups[month] = [];
+    }
+
+    groups[month].push(d);
+
+  });
+
+  let html = '';
+
+  Object.keys(groups).forEach(month=>{
+
+    html += `
+      <div class="archive-group">
+        <h2 class="archive-title">
+          ${month}
+        </h2>
+    `;
+
+    groups[month].forEach(d=>{
+      html += makeCard(d);
+    });
+
+    html += '</div>';
+
+  });
+
+  document.getElementById('archive').innerHTML =
+  html;
+}
+
+function makeCard(d){
+
+  let mediaHtml = '';
+
+  const mediaList =
+  parseMedia(d.media);
+
+  if(mediaList.length){
+
+    mediaHtml += '<div class="media">';
+
+    mediaList.forEach(m=>{
+
+      mediaHtml += '<div class="slide">';
+
+      if(m.type === 'youtube'){
+
+        mediaHtml += `
+          <iframe
+            src="${escAttr(m.url)}"
+            allowfullscreen>
+          </iframe>
+        `;
+
+      }else{
+
+        mediaHtml += `
+          <img
+            src="${escAttr(m.url)}"
+            loading="lazy"
+          >
+        `;
+
+      }
+
+      mediaHtml += '</div>';
+
+    });
+
+    mediaHtml += '</div>';
+
+  }else{
+
+    mediaHtml =
+    '<div class="noimage">No Image</div>';
+
+  }
+
+  return `
+    <div class="card">
+
+      ${mediaHtml}
+
+      <div class="body">
+
+        <div class="time">
+          ${esc(d.time)}
+        </div>
+
+        <div class="name">
+          ${esc(d.name)}
+        </div>
+
+        <div class="place">
+          📍 ${esc(d.place)}
+        </div>
+
+        <div class="msg">
+          ${esc(d.msg)}
+        </div>
+
+        ${
+          d.map
+          ? `
+            <a
+              class="btn map"
+              href="${escAttr(d.map)}"
+              target="_blank">
+              Googleマップを見る
+            </a>
+          `
+          : ''
+        }
+
+      </div>
+
+    </div>
+  `;
+}
+
+function parseMedia(s){
+
+  if(!s) return [];
+
+  try{
+
+    const arr = JSON.parse(s);
+
+    return arr.map(x=>{
+
+      if(x.type === 'youtube'){
+        return {
+          type:'youtube',
+          url:x.url
+        };
+      }
+
+      return {
+        type:'image',
+        url:x.url
+      };
+
+    });
+
+  }catch(e){
+    return [];
+  }
+
+}
+
+function getMonthLabel(s){
+
+  const m =
+  String(s).match(/(\\d{4})\\/(\\d{2})/);
+
+  if(!m){
+    return 'その他';
+  }
+
+  return m[1] + '年' + Number(m[2]) + '月';
+
+}
 
 function esc(s){
   return String(s || '')
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;')
-    .replace(/'/g,'&#39;');
+  .replace(/&/g,'&amp;')
+  .replace(/</g,'&lt;')
+  .replace(/>/g,'&gt;')
+  .replace(/"/g,'&quot;')
+  .replace(/'/g,'&#39;');
 }
 
 function escAttr(s){
