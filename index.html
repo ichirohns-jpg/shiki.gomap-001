@@ -4,19 +4,103 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>志木Go map</title>
+
+<style>
+html,body{
+  margin:0;
+  padding:0;
+  width:100%;
+  min-height:100%;
+  background:#eef3f8;
+  font-family:"Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+}
+
+.wrap{
+  width:100%;
+  max-width:640px;
+  margin:0 auto;
+  padding:90px 22px 40px;
+  box-sizing:border-box;
+  text-align:center;
+}
+
+.title{
+  font-size:42px;
+  font-weight:900;
+  color:#14549a;
+  margin:0 0 28px;
+  line-height:1.2;
+}
+
+.sub{
+  font-size:24px;
+  font-weight:600;
+  color:#666;
+  line-height:1.6;
+  margin:0 0 70px;
+}
+
+.btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  min-height:118px;
+  border-radius:24px;
+  margin:0 0 34px;
+  color:#fff;
+  text-decoration:none;
+  font-size:34px;
+  font-weight:900;
+  box-sizing:border-box;
+}
+
+.blue{
+  background:#347fdb;
+}
+
+.orange{
+  background:#ff7518;
+}
+
+@media(max-width:480px){
+  .wrap{
+    padding-top:88px;
+  }
+
+  .title{
+    font-size:40px;
+  }
+
+  .sub{
+    font-size:23px;
+    margin-bottom:66px;
+  }
+
+  .btn{
+    min-height:116px;
+    font-size:32px;
+  }
+}
+</style>
 </head>
-<body style="margin:0;font-family:sans-serif;background:#eef3f8;text-align:center;">
 
-<div style="max-width:600px;margin:0 auto;padding:40px 20px;">
-  <h1 style="color:#004ea2;font-size:32px;">志木Go map</h1>
-  <p style="font-size:18px;line-height:1.7;color:#555;">
-    キッチンカーの出店情報を確認できます
-  </p>
+<body>
 
-  <a href="https://script.google.com/macros/s/AKfycbzhTd6DoEUjEYSY_ADQkjYC97fHdUUz4kEZ_cKFWoJGBYA-LCUBy85_7rBVqYBepWR9BA/exec"
-     style="display:block;background:#2f7edb;color:white;text-decoration:none;font-size:24px;font-weight:bold;padding:22px;border-radius:16px;margin-top:30px;">
+<div class="wrap">
+
+  <h1 class="title">志木Go map</h1>
+
+  <p class="sub">キッチンカーの出店情報をすぐ確認</p>
+
+  <a class="btn blue" href="https://script.google.com/macros/s/AKfycbzhTd6DoEUjEYSY_ADQkjYC97fHdUUz4kEZ_cKFWoJGBYA-LCUBy85_7rBVqYBepWR9BA/exec">
     出店情報を見る
   </a>
+
+  <a class="btn orange" href="https://script.google.com/macros/s/AKfycbzhTd6DoEUjEYSY_ADQkjYC97fHdUUz4kEZ_cKFWoJGBYA-LCUBy85_7rBVqYBepWR9BA/exec?p=s">
+    出店希望者はこちら
+  </a>
+
 </div>
 
 </body>
