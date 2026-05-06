@@ -58,13 +58,29 @@ body{margin:0;background:linear-gradient(180deg,#eef5fb 0%,#fff 100%);font-famil
 
 <script>
 const SHEET_ID='12pq1Flwl_Ol61frvAMhdFkpDzoTdGsnnzystje8jEXw';
-const SHEET_NAME='シート1';
+const SHEET_NAME='公開用';
 
 let ALL=[];
 
 window.handleSheet=function(json){
   try{
-    build(json);
+    const rows=json.table.rows||[];
+
+    ALL=rows.map((r,index)=>{
+      const c=r.c||[];
+      return{
+        rowIndex:index,
+        time:getCell(c[0]),
+        name:getCell(c[1]),
+        place:getCell(c[2]),
+        msg:getCell(c[3]),
+        media:getCell(c[4]),
+        map:getCell(c[6])
+      };
+    }).filter(d=>d.name||d.place||d.msg||d.media);
+
+    showLatest();
+
   }catch(e){
     document.getElementById('list').innerHTML='<div class="loading">読み込み失敗</div>';
   }
@@ -73,15 +89,11 @@ window.handleSheet=function(json){
 function loadSheet(){
   const script=document.createElement('script');
 
-  const query='select * order by A desc';
-
   script.src=
     'https://docs.google.com/spreadsheets/d/' +
     SHEET_ID +
     '/gviz/tq?sheet=' +
     encodeURIComponent(SHEET_NAME) +
-    '&tq=' +
-    encodeURIComponent(query) +
     '&tqx=out:json;responseHandler:handleSheet&v=' +
     Date.now();
 
@@ -89,27 +101,6 @@ function loadSheet(){
 }
 
 loadSheet();
-
-function build(json){
-  const rows=json.table.rows||[];
-
-  ALL=rows.map((r,index)=>{
-    const c=r.c||[];
-
-    return {
-      rowIndex:index,
-      time:getCell(c[0]),
-      name:getCell(c[1]),
-      place:getCell(c[2]),
-      msg:getCell(c[3]),
-      media:getCell(c[4]),
-      map:getCell(c[6])
-    };
-
-  }).filter(d=>d.name||d.place||d.msg||d.media);
-
-  showLatest();
-}
 
 function showLatest(){
   setTab('latest');
