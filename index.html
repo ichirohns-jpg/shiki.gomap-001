@@ -7,6 +7,7 @@
 <title>志木Go map</title>
 
 <link rel="manifest" href="manifest.json">
+
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="志木Go map">
@@ -20,20 +21,28 @@
 <meta property="og:title" content="志木Go map">
 <meta property="og:description" content="志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図。">
 <meta property="og:url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/">
-<meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=60">
+<meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=70">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="志木Go map">
 <meta name="twitter:description" content="志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図。">
-<meta name="twitter:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=60">
+<meta name="twitter:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=70">
 
 <style>
-*{box-sizing:border-box}
+
+*{
+  box-sizing:border-box;
+}
 
 body{
   margin:0;
-  background:linear-gradient(180deg,#eef5fb 0%,#ffffff 100%);
-  font-family:"Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+  background:
+  linear-gradient(180deg,#eef5fb 0%,#ffffff 100%);
+  font-family:
+  "Hiragino Sans",
+  "Yu Gothic",
+  "Meiryo",
+  sans-serif;
   color:#17324d;
 }
 
@@ -47,14 +56,14 @@ body{
   background:#ffffff;
   border-radius:32px;
   overflow:hidden;
-  box-shadow:0 10px 28px rgba(20,70,120,.12);
+  box-shadow:
+  0 10px 28px rgba(20,70,120,.12);
 }
 
 .hero-image{
   width:100%;
+  height:auto;
   display:block;
-  aspect-ratio:16/9;
-  object-fit:cover;
 }
 
 .hero-body{
@@ -90,24 +99,28 @@ body{
   align-items:center;
   justify-content:center;
   width:100%;
-  min-height:72px;
-  border-radius:22px;
+  min-height:76px;
+  border-radius:24px;
   text-decoration:none;
-  font-size:22px;
+  font-size:24px;
   font-weight:900;
   padding:18px;
 }
 
 .view{
-  background:linear-gradient(135deg,#1687e0,#0d5fa8);
+  background:
+  linear-gradient(135deg,#1687e0,#0d5fa8);
   color:#fff;
-  box-shadow:0 8px 20px rgba(13,95,168,.25);
+  box-shadow:
+  0 8px 20px rgba(13,95,168,.25);
 }
 
 .owner{
-  background:linear-gradient(135deg,#ff9b2f,#e46d18);
+  background:
+  linear-gradient(135deg,#ff9b2f,#e46d18);
   color:#fff;
-  box-shadow:0 8px 20px rgba(228,109,24,.22);
+  box-shadow:
+  0 8px 20px rgba(228,109,24,.22);
 }
 
 .info{
@@ -115,7 +128,8 @@ body{
   background:#ffffff;
   border-radius:24px;
   padding:22px 20px;
-  box-shadow:0 8px 22px rgba(20,70,120,.08);
+  box-shadow:
+  0 8px 22px rgba(20,70,120,.08);
 }
 
 .info-title{
@@ -138,10 +152,12 @@ body{
   font-size:14px;
   color:#789;
 }
+
 </style>
 </head>
 
 <body>
+
 <div class="wrap">
 
   <div class="hero">
@@ -154,37 +170,52 @@ body{
 
     <div class="hero-body">
 
-      <h1 class="title">志木Go map</h1>
+      <h1 class="title">
+        志木Go map
+      </h1>
 
       <div class="desc">
-        志木市のキッチンカーは今どこ？<br>
-        今日のご飯が見つかるリアルタイム地図。
+        キッチンカーの出店情報を<br>
+        リアルタイムでお届けします
       </div>
 
       <div class="buttons">
 
-        <a class="btn view" href="app.html">
+        <a
+          class="btn view"
+          href="app.html"
+        >
           🚚 出店情報を見る
         </a>
 
-        <a class="btn owner" href="owner.html">
-          ✍️ 出店者はこちら
+        <a
+          class="btn owner"
+          href="owner.html"
+        >
+          ✍️ 出店希望者はこちら
         </a>
 
       </div>
 
     </div>
+
   </div>
 
   <div class="info">
-    <h2 class="info-title">志木Go mapについて</h2>
+
+    <h2 class="info-title">
+      志木Go mapについて
+    </h2>
+
     <div class="info-text">
       志木市周辺で営業するキッチンカー情報を、
       スマートフォンで見やすくまとめたページです。<br><br>
+
       「今日はどこに来ている？」
       「近くで営業してる？」
       をすぐ確認できます。
     </div>
+
   </div>
 
   <div class="footer">
@@ -192,5 +223,6 @@ body{
   </div>
 
 </div>
+
 </body>
 </html>
