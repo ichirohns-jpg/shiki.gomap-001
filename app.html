@@ -68,9 +68,13 @@ window.handleSheet=function(json){
 
     ALL=rows.map((r,index)=>{
       const c=r.c||[];
+
+      const dateText=getCell(c[0]);
+
       return{
         rowIndex:index,
-        time:getCell(c[0]),
+        time:dateText,
+        sortDate:parseDateForSort(dateText),
         name:getCell(c[1]),
         place:getCell(c[2]),
         msg:getCell(c[3]),
@@ -78,6 +82,13 @@ window.handleSheet=function(json){
         map:getCell(c[6])
       };
     }).filter(d=>d.name||d.place||d.msg||d.media);
+
+    ALL.sort((a,b)=>{
+      if(b.sortDate!==a.sortDate){
+        return b.sortDate-a.sortDate;
+      }
+      return b.rowIndex-a.rowIndex;
+    });
 
     showLatest();
 
@@ -135,6 +146,40 @@ ${d.msg?`<div class="msg">${esc(d.msg)}</div>`:''}
 ${d.map?`<a class="btn map" href="${escAttr(d.map)}" target="_blank" rel="noopener">Googleマップを見る</a>`:''}
 </div>
 </div>`;
+}
+
+function parseDateForSort(v){
+  let s=String(v||'').trim();
+
+  s=s
+    .replace(/[年月]/g,'/')
+    .replace(/日/g,'')
+    .replace(/\./g,'/')
+    .replace(/-/g,'/')
+    .replace(/\s+/g,' ')
+    .trim();
+
+  let m=s.match(/(\d{4})\/(\d{1,2})\/(\d{1,2})/);
+
+  if(m){
+    return new Date(
+      Number(m[1]),
+      Number(m[2])-1,
+      Number(m[3])
+    ).getTime();
+  }
+
+  m=s.match(/(\d{1,2})\/(\d{1,2})/);
+
+  if(m){
+    return new Date(
+      2026,
+      Number(m[1])-1,
+      Number(m[2])
+    ).getTime();
+  }
+
+  return 0;
 }
 
 function mediaHtml(s){
@@ -249,4 +294,3 @@ function escAttr(s){return esc(s)}
 
 </body>
 </html>
-
