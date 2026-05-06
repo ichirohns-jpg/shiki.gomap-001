@@ -7,23 +7,18 @@
 <title>志木Go map</title>
 
 <style>
-*{
-  box-sizing:border-box;
-}
-
+*{box-sizing:border-box}
 body{
   margin:0;
   background:linear-gradient(180deg,#eef5fb 0%,#ffffff 100%);
   font-family:"Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
   color:#17324d;
 }
-
 .wrap{
   max-width:760px;
   margin:0 auto;
   padding:20px 14px 50px;
 }
-
 .header{
   background:#fff;
   border-radius:30px;
@@ -31,24 +26,20 @@ body{
   box-shadow:0 10px 28px rgba(20,70,120,.12);
   margin-bottom:20px;
 }
-
 .banner{
   width:100%;
   display:block;
 }
-
 .header-body{
   padding:24px 20px 28px;
   text-align:center;
 }
-
 .title{
   margin:0;
   font-size:40px;
   font-weight:900;
   color:#0d5fa8;
 }
-
 .desc{
   margin-top:14px;
   font-size:19px;
@@ -56,14 +47,12 @@ body{
   font-weight:800;
   color:#5a6f80;
 }
-
 .tabs{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:12px;
   margin:22px 0;
 }
-
 .tab{
   min-height:62px;
   border-radius:18px;
@@ -71,18 +60,15 @@ body{
   font-weight:900;
   border:0;
 }
-
 .active{
   background:linear-gradient(135deg,#1687e0,#0d5fa8);
   color:#fff;
 }
-
 .normal{
   background:#fff;
   color:#456;
   box-shadow:0 6px 16px rgba(20,70,120,.08);
 }
-
 .card{
   background:#fff;
   border-radius:24px;
@@ -91,7 +77,6 @@ body{
   margin-bottom:20px;
   border-top:5px solid #0d5fa8;
 }
-
 .media{
   width:100%;
   display:flex;
@@ -101,14 +86,12 @@ body{
   -webkit-overflow-scrolling:touch;
   background:#e9eef4;
 }
-
 .slide{
   flex:0 0 100%;
   aspect-ratio:16/9;
   scroll-snap-align:start;
   background:#000;
 }
-
 .slide img,
 .slide iframe{
   width:100%;
@@ -117,7 +100,6 @@ body{
   border:0;
   object-fit:cover;
 }
-
 .noimage{
   aspect-ratio:16/9;
   display:flex;
@@ -127,17 +109,14 @@ body{
   font-size:22px;
   background:#f1f1f1;
 }
-
 .body{
   padding:20px;
 }
-
 .time{
   font-size:14px;
   color:#889;
   font-weight:800;
 }
-
 .name{
   margin-top:8px;
   font-size:28px;
@@ -145,7 +124,6 @@ body{
   font-weight:900;
   color:#0d5fa8;
 }
-
 .place{
   margin-top:10px;
   display:inline-block;
@@ -156,7 +134,6 @@ body{
   font-size:17px;
   font-weight:900;
 }
-
 .msg{
   margin-top:14px;
   font-size:18px;
@@ -164,7 +141,6 @@ body{
   color:#334;
   white-space:pre-wrap;
 }
-
 .btn{
   display:flex;
   align-items:center;
@@ -177,25 +153,21 @@ body{
   font-weight:900;
   margin-top:16px;
 }
-
 .map{
   background:linear-gradient(135deg,#1687e0,#0d5fa8);
   color:#fff;
 }
-
 .home{
   background:linear-gradient(135deg,#6c7a89,#34495e);
   color:#fff;
   margin-top:30px;
 }
-
 .loading{
   text-align:center;
   padding:40px;
   font-size:20px;
   color:#777;
 }
-
 .archive-title{
   font-size:28px;
   font-weight:900;
@@ -209,61 +181,49 @@ body{
 
 <div class="wrap">
 
-  <div class="header">
+<div class="header">
 
-    <img
-      class="banner"
-      src="https://drive.google.com/thumbnail?id=1zcQqzRT2rV9GCW9sk4nISiM1ubH0qQ5U&sz=w2000"
-      alt="志木Go map"
-    >
+<img
+class="banner"
+src="https://drive.google.com/thumbnail?id=1zcQqzRT2rV9GCW9sk4nISiM1ubH0qQ5U&sz=w2000"
+>
 
-    <div class="header-body">
+<div class="header-body">
 
-      <h1 class="title">
-        志木Go map
-      </h1>
+<h1 class="title">
+志木Go map
+</h1>
 
-      <div class="desc">
-        キッチンカーの出店情報を<br>
-        リアルタイムでお届けします
-      </div>
+<div class="desc">
+キッチンカーの出店情報を<br>
+リアルタイムでお届けします
+</div>
 
-    </div>
+</div>
+</div>
 
-  </div>
+<div class="tabs">
 
-  <div class="tabs">
+<button class="tab active" onclick="showLatest()">
+最新情報
+</button>
 
-    <button
-      class="tab active"
-      onclick="showLatest()"
-    >
-      最新情報
-    </button>
+<button class="tab normal" onclick="showArchive()">
+アーカイブ
+</button>
 
-    <button
-      class="tab normal"
-      onclick="showArchive()"
-    >
-      アーカイブ
-    </button>
+</div>
 
-  </div>
+<div id="list">
+<div class="loading">読み込み中...</div>
+</div>
 
-  <div id="list">
-
-    <div class="loading">
-      読み込み中...
-    </div>
-
-  </div>
-
-  <a
-    class="btn home"
-    href="https://ichirohns-jpg.github.io/shiki.gomap-001/"
-  >
-    ← トップに戻る
-  </a>
+<a
+class="btn home"
+href="https://ichirohns-jpg.github.io/shiki.gomap-001/"
+>
+← トップに戻る
+</a>
 
 </div>
 
@@ -276,433 +236,333 @@ let ALL = [];
 
 window.handleSheet = function(json){
 
-  try{
+try{
 
-    const rows =
-      json.table.rows || [];
+const rows =
+json.table.rows || [];
 
-    ALL = rows.map((r,index)=>{
+ALL = rows.map((r,index)=>{
 
-      const c =
-        r.c || [];
+const c =
+r.c || [];
 
-      const timeText =
-        getCell(c[0]);
+return {
 
-      const timeValue =
-        parseDateValue(c[0], index);
+rowIndex:index,
 
-      return {
+time:getCell(c[0]),
 
-        rowIndex:index,
+sort:index,
 
-        time:timeText,
+name:getCell(c[1]),
+place:getCell(c[2]),
+msg:getCell(c[3]),
+media:getCell(c[4]),
+map:getCell(c[6])
 
-        sort:timeValue,
+};
 
-        name:getCell(c[1]),
-        place:getCell(c[2]),
-        msg:getCell(c[3]),
-        media:getCell(c[4]),
-        map:getCell(c[6])
+}).filter(d=>
+d.name ||
+d.place ||
+d.msg ||
+d.media
+);
 
-      };
+ALL.reverse();
 
-    }).filter(d=>
-      d.name ||
-      d.place ||
-      d.msg ||
-      d.media
-    );
+showLatest();
 
-    ALL.sort((a,b)=>{
+}catch(e){
 
-      if(b.sort !== a.sort){
-        return b.sort - a.sort;
-      }
+console.log(e);
 
-      return b.rowIndex - a.rowIndex;
+document.getElementById('list').innerHTML =
+'<div class="loading">読み込み失敗</div>';
 
-    });
-
-    showLatest();
-
-  }catch(e){
-
-    console.log(e);
-
-    document.getElementById('list').innerHTML =
-      '<div class="loading">読み込み失敗</div>';
-
-  }
+}
 
 };
 
 function loadSheet(){
 
-  const script =
-    document.createElement('script');
+const script =
+document.createElement('script');
 
-  script.src =
-    'https://docs.google.com/spreadsheets/d/' +
-    SHEET_ID +
-    '/gviz/tq?sheet=%E3%82%B7%E3%83%BC%E3%83%881&tqx=out:json;responseHandler:handleSheet&v=' +
-    Date.now();
+script.src =
+'https://docs.google.com/spreadsheets/d/' +
+SHEET_ID +
+'/gviz/tq?sheet=%E3%82%B7%E3%83%BC%E3%83%881&tqx=out:json;responseHandler:handleSheet&v=' +
+Date.now();
 
-  document.body.appendChild(script);
+document.body.appendChild(script);
 
 }
 
 loadSheet();
 
-function parseDateValue(c,index){
-
-  if(!c){
-    return index;
-  }
-
-  const v =
-    c.v || '';
-
-  const f =
-    c.f || '';
-
-  if(
-    typeof v === 'string' &&
-    v.indexOf('Date(') === 0
-  ){
-
-    const m =
-      v.match(
-        /Date\((\d+),(\d+),(\d+),?(\d+)?,?(\d+)?,?(\d+)?/
-      );
-
-    if(m){
-
-      const y  = Number(m[1]);
-      const mo = Number(m[2]);
-      const d  = Number(m[3]);
-      const h  = m[4] ? Number(m[4]) : 0;
-      const mi = m[5] ? Number(m[5]) : 0;
-      const se = m[6] ? Number(m[6]) : 0;
-
-      return new Date(
-        y,
-        mo,
-        d,
-        h,
-        mi,
-        se
-      ).getTime();
-
-    }
-
-  }
-
-  if(
-    Object.prototype.toString.call(v)
-    === '[object Date]'
-  ){
-    return v.getTime();
-  }
-
-  const text =
-    String(f || v)
-    .replace(/年/g,'/')
-    .replace(/月/g,'/')
-    .replace(/日/g,'')
-    .replace(/\./g,'/')
-    .replace(/-/g,'/');
-
-  const d2 =
-    new Date(text);
-
-  if(
-    !isNaN(d2.getTime())
-  ){
-    return d2.getTime();
-  }
-
-  return index;
-
-}
-
 function showLatest(){
 
-  render(
-    ALL.slice(0,5)
-  );
+render(
+ALL.slice(0,5)
+);
 
 }
 
 function showArchive(){
 
-  const old =
-    ALL.slice(5);
+const old =
+ALL.slice(5);
 
-  const groups = {};
+let html = '';
 
-  old.forEach(d=>{
+old.forEach(d=>{
 
-    const m =
-      getMonthLabel(d.time);
+html +=
+card(d);
 
-    if(!groups[m]){
-      groups[m] = [];
-    }
+});
 
-    groups[m].push(d);
-
-  });
-
-  let html = '';
-
-  Object.keys(groups).forEach(m=>{
-
-    html +=
-      '<div class="archive-title">' +
-      esc(m) +
-      '</div>';
-
-    groups[m].forEach(d=>{
-
-      html +=
-        card(d);
-
-    });
-
-  });
-
-  document.getElementById('list').innerHTML =
-    html ||
-    '<div class="loading">アーカイブはありません</div>';
+document.getElementById('list').innerHTML =
+html ||
+'<div class="loading">アーカイブはありません</div>';
 
 }
 
 function render(list){
 
-  let html = '';
+let html = '';
 
-  list.forEach(d=>{
+list.forEach(d=>{
 
-    html +=
-      card(d);
+html +=
+card(d);
 
-  });
+});
 
-  document.getElementById('list').innerHTML =
-    html ||
-    '<div class="loading">表示できる情報はありません</div>';
+document.getElementById('list').innerHTML =
+html ||
+'<div class="loading">表示できる情報はありません</div>';
 
 }
 
 function card(d){
 
-  return `
-    <div class="card">
+return `
+<div class="card">
 
-      ${mediaHtml(d.media)}
+${mediaHtml(d.media)}
 
-      <div class="body">
+<div class="body">
 
-        <div class="time">
-          ${esc(d.time)}
-        </div>
+<div class="time">
+${esc(d.time)}
+</div>
 
-        <div class="name">
-          ${esc(d.name)}
-        </div>
+<div class="name">
+${esc(d.name)}
+</div>
 
-        ${
-          d.place
-          ? `
-            <div class="place">
-              📍 ${esc(d.place)}
-            </div>
-          `
-          : ''
-        }
+${
+d.place
+? `
+<div class="place">
+📍 ${esc(d.place)}
+</div>
+`
+: ''
+}
 
-        ${
-          d.msg
-          ? `
-            <div class="msg">
-              ${esc(d.msg)}
-            </div>
-          `
-          : ''
-        }
+${
+d.msg
+? `
+<div class="msg">
+${esc(d.msg)}
+</div>
+`
+: ''
+}
 
-        ${
-          d.map
-          ? `
-            <a
-              class="btn map"
-              href="${escAttr(d.map)}"
-              target="_blank"
-            >
-              Googleマップを見る
-            </a>
-          `
-          : ''
-        }
+${
+d.map
+? `
+<a
+class="btn map"
+href="${escAttr(d.map)}"
+target="_blank"
+>
+Googleマップを見る
+</a>
+`
+: ''
+}
 
-      </div>
+</div>
 
-    </div>
-  `;
+</div>
+`;
 
 }
 
 function mediaHtml(s){
 
-  const media =
-    parseMedia(s);
+const media =
+parseMedia(s);
 
-  if(!media.length){
+if(!media.length){
 
-    return `
-      <div class="noimage">
-        No Image
-      </div>
-    `;
+return `
+<div class="noimage">
+No Image
+</div>
+`;
 
-  }
+}
 
-  let html =
-    '<div class="media">';
+let html =
+'<div class="media">';
 
-  media.forEach(m=>{
+media.forEach(m=>{
 
-    html +=
-      '<div class="slide">';
+html +=
+'<div class="slide">';
 
-    if(
-      m.type === 'youtube'
-    ){
+if(
+m.type === 'youtube'
+){
 
-      html += `
-        <iframe
-          src="${escAttr(m.url)}"
-          allowfullscreen
-        ></iframe>
-      `;
+html += `
+<iframe
+src="${escAttr(m.url)}"
+allowfullscreen
+></iframe>
+`;
 
-    }else{
+}else{
 
-      html += `
-        <img
-          src="${escAttr(m.url)}"
-          loading="lazy"
-        >
-      `;
+html += `
+<img
+src="${escAttr(m.url)}"
+loading="lazy"
+>
+`;
 
-    }
+}
 
-    html +=
-      '</div>';
+html +=
+'</div>';
 
-  });
+});
 
-  html +=
-    '</div>';
+html +=
+'</div>';
 
-  return html;
+return html;
 
 }
 
 function parseMedia(s){
 
-  if(!s){
-    return [];
-  }
+if(!s){
+return [];
+}
 
-  try{
+try{
 
-    const arr =
-      JSON.parse(s);
+const arr =
+JSON.parse(s);
 
-    return arr.map(x=>{
+return arr.map(x=>{
 
-      const url =
-        String(x.url || '');
+const url =
+String(x.url || '');
 
-      if(!url){
-        return null;
-      }
+if(!url){
+return null;
+}
 
-      if(
-        url.includes('youtube')
-      ){
+if(
+url.includes('youtube.com/embed/')
+){
 
-        return {
-          type:'youtube',
-          url:url
-        };
+return {
+type:'youtube',
+url:url
+};
 
-      }
+}
 
-      return {
-        type:'image',
-        url:url
-      };
+if(
+url.includes('youtu.be/')
+){
 
-    }).filter(Boolean);
+const id =
+url.split('youtu.be/')[1]
+.split('?')[0];
 
-  }catch(e){
+return {
+type:'youtube',
+url:'https://www.youtube.com/embed/' + id
+};
 
-    return [];
+}
 
-  }
+if(
+url.includes('watch?v=')
+){
+
+const id =
+url.split('watch?v=')[1]
+.split('&')[0];
+
+return {
+type:'youtube',
+url:'https://www.youtube.com/embed/' + id
+};
+
+}
+
+return {
+type:'image',
+url:url
+};
+
+}).filter(Boolean);
+
+}catch(e){
+
+return [];
+
+}
 
 }
 
 function getCell(c){
 
-  if(!c){
-    return '';
-  }
-
-  return c.f ||
-         c.v ||
-         '';
-
+if(!c){
+return '';
 }
 
-function getMonthLabel(s){
-
-  const m =
-    String(s).match(
-      /(\d{4})[\/年.-](\d{1,2})/
-    );
-
-  if(!m){
-    return 'その他';
-  }
-
-  return (
-    m[1] +
-    '年' +
-    Number(m[2]) +
-    '月'
-  );
+return c.f ||
+c.v ||
+'';
 
 }
 
 function esc(s){
 
-  return String(s || '')
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;')
-    .replace(/'/g,'&#39;');
+return String(s || '')
+.replace(/&/g,'&amp;')
+.replace(/</g,'&lt;')
+.replace(/>/g,'&gt;')
+.replace(/"/g,'&quot;')
+.replace(/'/g,'&#39;');
 
 }
 
 function escAttr(s){
 
-  return esc(s);
+return esc(s);
 
 }
 
