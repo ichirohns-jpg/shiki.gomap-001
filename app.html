@@ -41,30 +41,27 @@ body{
 
 .banner{
   width:100%;
-  aspect-ratio:16/9;
-  object-fit:cover;
+  height:auto;
   display:block;
 }
 
 .header-body{
   padding:24px 20px 28px;
+  text-align:center;
 }
 
 .title{
   margin:0;
-  text-align:center;
   font-size:40px;
-  line-height:1.2;
   font-weight:900;
   color:#0d5fa8;
 }
 
 .desc{
-  margin-top:16px;
-  text-align:center;
+  margin-top:14px;
   font-size:19px;
-  line-height:1.8;
-  font-weight:700;
+  line-height:1.7;
+  font-weight:800;
   color:#5a6f80;
 }
 
@@ -76,14 +73,10 @@ body{
 }
 
 .tab{
-  display:flex;
-  align-items:center;
-  justify-content:center;
   min-height:62px;
   border-radius:18px;
   font-size:20px;
   font-weight:900;
-  text-decoration:none;
   border:0;
 }
 
@@ -128,8 +121,7 @@ body{
 }
 
 .slide img,
-.slide iframe,
-.slide video{
+.slide iframe{
   width:100%;
   height:100%;
   display:block;
@@ -203,17 +195,6 @@ body{
   color:#fff;
 }
 
-.archive-group{
-  margin-top:34px;
-}
-
-.archive-title{
-  margin:0 0 14px;
-  font-size:28px;
-  font-weight:900;
-  color:#0d5fa8;
-}
-
 .home{
   background:
   linear-gradient(135deg,#6c7a89,#34495e);
@@ -226,6 +207,13 @@ body{
   padding:40px;
   font-size:20px;
   color:#777;
+}
+
+.archive-title{
+  font-size:28px;
+  font-weight:900;
+  color:#0d5fa8;
+  margin:34px 0 14px;
 }
 
 </style>
@@ -259,23 +247,29 @@ body{
 
   <div class="tabs">
 
-    <div class="tab active">
+    <button
+      class="tab active"
+      onclick="showLatest()"
+    >
       最新情報
-    </div>
+    </button>
 
-    <div class="tab normal">
+    <button
+      class="tab normal"
+      onclick="showArchive()"
+    >
       アーカイブ
-    </div>
+    </button>
 
   </div>
 
-  <div id="latest">
+  <div id="list">
+
     <div class="loading">
       読み込み中...
     </div>
-  </div>
 
-  <div id="archive"></div>
+  </div>
 
   <a
     class="btn home"
@@ -291,74 +285,80 @@ body{
 const SHEET_ID =
 '12pq1Flwl_Ol61frvAMhdFkpDzoTdGsnnzystje8jEXw';
 
-const url =
-'https://docs.google.com/spreadsheets/d/' +
-SHEET_ID +
-'/gviz/tq?tqx=out:json';
+let ALL = [];
 
-fetch(url)
-.then(r=>r.text())
-.then(t=>{
+window.handleSheet = function(json){
 
-  const json =
-  JSON.parse(
-    t.substr(47).slice(0,-2)
-  );
-
-  let rows =
+  const rows =
   json.table.rows || [];
 
-  rows = rows.map(r=>{
+  ALL = rows.map(r=>{
 
     const c = r.c || [];
 
     return {
-      raw:c,
 
-      time:c[0] ? c[0].f || c[0].v || '' : '',
-      name:c[1] ? c[1].v || '' : '',
-      place:c[2] ? c[2].v || '' : '',
-      msg:c[3] ? c[3].v || '' : '',
-      media:c[4] ? c[4].v || '' : '',
-      map:c[6] ? c[6].v || '' : ''
+      time:getText(c[0]),
+      sort:getSort(c[0]),
+
+      name:getText(c[1]),
+      place:getText(c[2]),
+      msg:getText(c[3]),
+      media:getText(c[4]),
+      map:getText(c[6])
+
     };
 
   }).filter(r=>
-    r.name || r.place || r.msg
+    r.name ||
+    r.place ||
+    r.msg ||
+    r.media
   );
 
-  rows.reverse();
+  ALL.sort((a,b)=>
+    b.sort - a.sort
+  );
 
-  renderLatest(rows.slice(0,5));
-  renderArchive(rows.slice(5));
+  showLatest();
 
-});
+};
 
-function renderLatest(list){
+function loadSheet(){
 
-  let html = '';
+  const s =
+  document.createElement('script');
 
-  list.forEach(d=>{
-    html += makeCard(d);
-  });
+  s.src =
+  'https://docs.google.com/spreadsheets/d/' +
+  SHEET_ID +
+  '/gviz/tq?callback=handleSheet';
 
-  if(!html){
-    html =
-    '<div class="loading">表示できる情報はありません</div>';
-  }
+  document.body.appendChild(s);
 
-  document.getElementById('latest').innerHTML =
-  html;
 }
 
-function renderArchive(list){
+loadSheet();
+
+function showLatest(){
+
+  render(
+    ALL.slice(0,5)
+  );
+
+}
+
+function showArchive(){
+
+  const old =
+  ALL.slice(5);
 
   const groups = {};
 
-  list.forEach(d=>{
+  old.forEach(d=>{
 
     const month =
-    getMonthLabel(d.time);
+    getMonth(d.time);
 
     if(!groups[month]){
       groups[month] = [];
@@ -370,79 +370,50 @@ function renderArchive(list){
 
   let html = '';
 
-  Object.keys(groups).forEach(month=>{
+  Object.keys(groups).forEach(m=>{
 
     html += `
-      <div class="archive-group">
-        <h2 class="archive-title">
-          ${month}
-        </h2>
+      <div class="archive-title">
+        ${esc(m)}
+      </div>
     `;
 
-    groups[month].forEach(d=>{
-      html += makeCard(d);
-    });
+    groups[m].forEach(d=>{
 
-    html += '</div>';
+      html += card(d);
+
+    });
 
   });
 
-  document.getElementById('archive').innerHTML =
-  html;
+  document.getElementById('list').innerHTML =
+  html ||
+  '<div class="loading">アーカイブはありません</div>';
+
 }
 
-function makeCard(d){
+function render(list){
 
-  let mediaHtml = '';
+  let html = '';
 
-  const mediaList =
-  parseMedia(d.media);
+  list.forEach(d=>{
 
-  if(mediaList.length){
+    html += card(d);
 
-    mediaHtml += '<div class="media">';
+  });
 
-    mediaList.forEach(m=>{
+  document.getElementById('list').innerHTML =
+  html ||
+  '<div class="loading">表示できる情報はありません</div>';
 
-      mediaHtml += '<div class="slide">';
+}
 
-      if(m.type === 'youtube'){
-
-        mediaHtml += `
-          <iframe
-            src="${escAttr(m.url)}"
-            allowfullscreen>
-          </iframe>
-        `;
-
-      }else{
-
-        mediaHtml += `
-          <img
-            src="${escAttr(m.url)}"
-            loading="lazy"
-          >
-        `;
-
-      }
-
-      mediaHtml += '</div>';
-
-    });
-
-    mediaHtml += '</div>';
-
-  }else{
-
-    mediaHtml =
-    '<div class="noimage">No Image</div>';
-
-  }
+function card(d){
 
   return `
     <div class="card">
 
-      ${mediaHtml}
+      ${mediaHtml(d.media)}
 
       <div class="body">
 
@@ -454,13 +425,25 @@ function makeCard(d){
           ${esc(d.name)}
         </div>
 
-        <div class="place">
-          📍 ${esc(d.place)}
-        </div>
+        ${
+          d.place
+          ? `
+            <div class="place">
+              📍 ${esc(d.place)}
+            </div>
+          `
+          : ''
+        }
 
-        <div class="msg">
-          ${esc(d.msg)}
-        </div>
+        ${
+          d.msg
+          ? `
+            <div class="msg">
+              ${esc(d.msg)}
+            </div>
+          `
+          : ''
+        }
 
         ${
           d.map
@@ -468,7 +451,8 @@ function makeCard(d){
             <a
               class="btn map"
               href="${escAttr(d.map)}"
-              target="_blank">
+              target="_blank"
+            >
               Googleマップを見る
             </a>
           `
@@ -479,6 +463,62 @@ function makeCard(d){
 
     </div>
   `;
+
+}
+
+function mediaHtml(s){
+
+  const media =
+  parseMedia(s);
+
+  if(!media.length){
+
+    return `
+      <div class="noimage">
+        No Image
+      </div>
+    `;
+
+  }
+
+  let html =
+  '<div class="media">';
+
+  media.forEach(m=>{
+
+    html +=
+    '<div class="slide">';
+
+    if(
+      m.type === 'youtube'
+    ){
+
+      html += `
+        <iframe
+          src="${escAttr(m.url)}"
+          allowfullscreen
+        ></iframe>
+      `;
+
+    }else{
+
+      html += `
+        <img
+          src="${escAttr(m.url)}"
+          loading="lazy"
+        >
+      `;
+
+    }
+
+    html += '</div>';
+
+  });
+
+  html += '</div>';
+
+  return html;
+
 }
 
 function parseMedia(s){
@@ -487,15 +527,20 @@ function parseMedia(s){
 
   try{
 
-    const arr = JSON.parse(s);
+    const arr =
+    JSON.parse(s);
 
     return arr.map(x=>{
 
-      if(x.type === 'youtube'){
+      if(
+        x.type === 'youtube'
+      ){
+
         return {
           type:'youtube',
           url:x.url
         };
+
       }
 
       return {
@@ -506,35 +551,79 @@ function parseMedia(s){
     });
 
   }catch(e){
+
     return [];
+
   }
 
 }
 
-function getMonthLabel(s){
+function getText(c){
+
+  if(!c) return '';
+
+  return c.f ||
+         c.v ||
+         '';
+
+}
+
+function getSort(c){
+
+  if(!c) return 0;
+
+  const s =
+  c.f || c.v || '';
+
+  const d =
+  new Date(
+    String(s)
+      .replace(/\./g,'/')
+      .replace(/-/g,'/')
+  );
+
+  return isNaN(d.getTime())
+    ? 0
+    : d.getTime();
+
+}
+
+function getMonth(s){
 
   const m =
-  String(s).match(/(\\d{4})\\/(\\d{2})/);
+  String(s)
+  .match(/(\d{4})\/(\d{2})/);
 
   if(!m){
+
     return 'その他';
+
   }
 
-  return m[1] + '年' + Number(m[2]) + '月';
+  return (
+    m[1] +
+    '年' +
+    Number(m[2]) +
+    '月'
+  );
 
 }
 
 function esc(s){
+
   return String(s || '')
   .replace(/&/g,'&amp;')
   .replace(/</g,'&lt;')
   .replace(/>/g,'&gt;')
   .replace(/"/g,'&quot;')
   .replace(/'/g,'&#39;');
+
 }
 
 function escAttr(s){
+
   return esc(s);
+
 }
 
 </script>
