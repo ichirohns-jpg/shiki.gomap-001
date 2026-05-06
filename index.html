@@ -1,208 +1,145 @@
+function doGet(e) {
+  var p = e && e.parameter && e.parameter.p ? e.parameter.p : '';
+
+  // 出店希望者フォームは今まで通り。ここは壊さない。
+  if (p === 's') {
+    return HtmlService.createHtmlOutput(senderHtml_())
+      .setTitle('出店希望者はこちら')
+      .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+  }
+
+  // 青ボタン：出店情報を見る
+  return HtmlService.createHtmlOutput(viewHtml_())
+    .setTitle('志木Go map')
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+}
+
+function viewHtml_() {
+  var ss = SpreadsheetApp.openById('12pq1Flwl_Ol61frvAMhdFkpDzoTdGsnnzystje8jEXw');
+  var sh = ss.getSheetByName('シート1') || ss.getSheets()[0];
+  var values = sh.getDataRange().getValues();
+
+  var rows = values.slice(1).reverse();
+
+  var cards = rows.map(function(r) {
+    var date = r[0] || '';
+    var title = r[1] || '';
+    var place = r[2] || '';
+    var detail = r[3] || '';
+    var url = r[4] || '';
+
+    if (!title && !place && !detail) return '';
+
+    return `
+      <div class="card">
+        ${date ? `<div class="date">${escapeHtml_(date)}</div>` : ''}
+        ${title ? `<div class="title">${escapeHtml_(title)}</div>` : ''}
+        ${place ? `<div class="place">📍 ${escapeHtml_(place)}</div>` : ''}
+        ${detail ? `<div class="detail">${escapeHtml_(detail).replace(/\n/g, '<br>')}</div>` : ''}
+        ${url ? `<a class="link" href="${escapeAttr_(url)}" target="_blank">詳しく見る</a>` : ''}
+      </div>
+    `;
+  }).join('');
+
+  if (!cards) {
+    cards = `<div class="card"><div class="title">現在、出店情報はありません</div></div>`;
+  }
+
+  return `
 <!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>志木Go map</title>
-
-<meta property="og:title" content="志木Go map">
-<meta property="og:description" content="キッチンカーの出店情報をすぐ確認">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/">
-<meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/ogp.jpg">
-
 <style>
 *{box-sizing:border-box}
-
 html,body{
   margin:0;
   padding:0;
-  width:100%;
-  min-height:100%;
   background:#eef4fb;
   font-family:"Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
   color:#17324d;
 }
-
 .wrap{
   max-width:640px;
   margin:0 auto;
-  padding:92px 28px 40px;
-  text-align:center;
+  padding:22px 14px 40px;
 }
-
 h1{
-  margin:0 0 26px;
-  font-size:42px;
-  font-weight:900;
+  text-align:center;
+  font-size:38px;
   color:#0b63a5;
-  line-height:1.2;
-}
-
-.lead{
-  margin:0 0 70px;
-  font-size:23px;
-  font-weight:700;
-  color:#666;
-  line-height:1.5;
-}
-
-.btn{
-  display:block;
-  width:100%;
-  padding:34px 18px;
-  margin:0 0 34px;
-  border-radius:22px;
-  text-decoration:none;
-  color:#fff;
-  font-size:31px;
+  margin:24px 0 8px;
   font-weight:900;
-  line-height:1.2;
-  border:none;
-  cursor:pointer;
 }
-
-.blue{background:#2f83dc}
-.orange{background:#ff7318}
-
-#list{
-  display:none;
-  margin-top:34px;
-  text-align:left;
+.lead{
+  text-align:center;
+  font-size:19px;
+  font-weight:800;
+  color:#666;
+  margin:0 0 24px;
 }
-
 .card{
   background:#fff;
-  border-radius:22px;
+  border-radius:24px;
   padding:22px;
   margin:18px 0;
   box-shadow:0 8px 22px rgba(30,80,120,.16);
 }
-
-.card .date{
-  font-size:15px;
+.date{
+  font-size:16px;
   color:#777;
-  font-weight:700;
+  font-weight:800;
+  margin-bottom:8px;
 }
-
-.card h2{
-  font-size:26px;
-  margin:8px 0 12px;
+.title{
+  font-size:28px;
   color:#0b63a5;
-}
-
-.card .place{
-  font-size:19px;
   font-weight:900;
-  margin:8px 0;
+  line-height:1.35;
+  margin-bottom:12px;
 }
-
-.card p{
-  font-size:18px;
+.place{
+  font-size:21px;
+  font-weight:900;
+  margin:10px 0;
+}
+.detail{
+  font-size:19px;
   line-height:1.75;
-  margin:14px 0;
-  white-space:pre-wrap;
-}
-
-.card a{
-  display:block;
-  text-align:center;
   margin-top:14px;
-  padding:16px;
-  border-radius:14px;
-  background:#2f83dc;
-  color:#fff;
-  text-decoration:none;
-  font-size:19px;
-  font-weight:900;
 }
-
-.loading{
+.link{
+  display:block;
+  margin-top:18px;
+  padding:18px;
+  border-radius:16px;
+  background:#2f83dc;
+  color:white;
   text-align:center;
-  font-size:20px;
+  text-decoration:none;
+  font-size:21px;
   font-weight:900;
-  color:#666;
 }
 </style>
 </head>
-
 <body>
 <div class="wrap">
-
   <h1>志木Go map</h1>
-
-  <p class="lead">
-    キッチンカーの出店情報をすぐ確認
-  </p>
-
-  <button class="btn blue" onclick="showList()">
-    出店情報を見る
-  </button>
-
-  <a class="btn orange" href="https://script.google.com/macros/s/AKfycby85mr045pIXgHCb-y83WxzMiMbfDNLNCykculWmatkAFvAge0vh5VjRHRLAyPJyhIV/exec?p=s">
-    出店希望者はこちら
-  </a>
-
-  <div id="list"></div>
-
+  <div class="lead">キッチンカーの出店情報</div>
+  ${cards}
 </div>
-
-<script>
-const DATA_URL = "https://script.google.com/macros/s/AKfycby85mr045pIXgHCb-y83WxzMiMbfDNLNCykculWmatkAFvAge0vh5VjRHRLAyPJyhIV/exec";
-
-async function showList(){
-  const box = document.getElementById("list");
-  box.style.display = "block";
-  box.innerHTML = '<div class="loading">出店情報を読み込み中...</div>';
-
-  try{
-    const res = await fetch(DATA_URL);
-    const data = await res.json();
-
-    if(!Array.isArray(data) || data.length === 0){
-      box.innerHTML = '<div class="card"><h2>現在、出店情報はありません</h2></div>';
-      return;
-    }
-
-    data.reverse();
-
-    box.innerHTML = data.map(item => {
-      const date = esc(item.date || "");
-      const title = esc(item.title || "出店情報");
-      const place = esc(item.place || "");
-      const detail = esc(item.detail || "");
-      const url = escAttr(item.url || "");
-      const status = esc(item.status || "");
-
-      return `
-        <div class="card">
-          ${date ? `<div class="date">${date}</div>` : ""}
-          <h2>${title}</h2>
-          ${place ? `<div class="place">📍 ${place}</div>` : ""}
-          ${status ? `<div class="place">${status}</div>` : ""}
-          ${detail ? `<p>${detail}</p>` : ""}
-          ${url ? `<a href="${url}" target="_blank" rel="noopener">詳しく見る</a>` : ""}
-        </div>
-      `;
-    }).join("");
-
-  }catch(e){
-    box.innerHTML = '<div class="card"><h2>出店情報を読み込めませんでした</h2><p>少し時間をおいて、もう一度開いてください。</p></div>';
-  }
-}
-
-function esc(str){
-  return String(str)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;");
-}
-
-function escAttr(str){
-  return esc(str).replace(/"/g,"&quot;");
-}
-</script>
-
 </body>
 </html>
+`;
+}
+
+function escapeHtml_(s) {
+  return String(s || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+function escapeAttr_(s) {
+  return escapeHtml_(s).replace(/"/g, '&quot;');
+}
