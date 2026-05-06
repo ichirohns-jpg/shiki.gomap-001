@@ -3,195 +3,169 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>志木Go map</title>
 
 <style>
 *{box-sizing:border-box}
-
 body{
-  margin:0;
-  background:linear-gradient(180deg,#eef5fb 0%,#ffffff 100%);
-  font-family:"Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
-  color:#17324d;
+margin:0;
+background:linear-gradient(180deg,#eef5fb 0%,#ffffff 100%);
+font-family:"Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+color:#17324d;
 }
-
 .wrap{
-  max-width:760px;
-  margin:0 auto;
-  padding:20px 14px 50px;
+max-width:760px;
+margin:0 auto;
+padding:20px 14px 50px;
 }
-
 .header{
-  background:#fff;
-  border-radius:30px;
-  overflow:hidden;
-  box-shadow:0 10px 28px rgba(20,70,120,.12);
-  margin-bottom:20px;
+background:#fff;
+border-radius:30px;
+overflow:hidden;
+box-shadow:0 10px 28px rgba(20,70,120,.12);
+margin-bottom:20px;
 }
-
 .banner{
-  width:100%;
-  display:block;
+width:100%;
+display:block;
 }
-
 .header-body{
-  padding:24px 20px 28px;
-  text-align:center;
+padding:24px 20px 28px;
+text-align:center;
 }
-
 .title{
-  margin:0;
-  font-size:40px;
-  font-weight:900;
-  color:#0d5fa8;
+margin:0;
+font-size:40px;
+font-weight:900;
+color:#0d5fa8;
 }
-
 .desc{
-  margin-top:14px;
-  font-size:19px;
-  line-height:1.7;
-  font-weight:800;
-  color:#5a6f80;
+margin-top:14px;
+font-size:19px;
+line-height:1.7;
+font-weight:800;
+color:#5a6f80;
 }
-
 .tabs{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  margin:22px 0;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+margin:22px 0;
 }
-
 .tab{
-  min-height:62px;
-  border-radius:18px;
-  font-size:20px;
-  font-weight:900;
-  border:0;
+min-height:62px;
+border-radius:18px;
+font-size:20px;
+font-weight:900;
+border:0;
 }
-
 .active{
-  background:linear-gradient(135deg,#1687e0,#0d5fa8);
-  color:#fff;
+background:linear-gradient(135deg,#1687e0,#0d5fa8);
+color:#fff;
 }
-
 .normal{
-  background:#fff;
-  color:#456;
-  box-shadow:0 6px 16px rgba(20,70,120,.08);
+background:#fff;
+color:#456;
+box-shadow:0 6px 16px rgba(20,70,120,.08);
 }
-
 .card{
-  background:#fff;
-  border-radius:24px;
-  overflow:hidden;
-  box-shadow:0 8px 22px rgba(20,70,120,.10);
-  margin-bottom:20px;
-  border-top:5px solid #0d5fa8;
+background:#fff;
+border-radius:24px;
+overflow:hidden;
+box-shadow:0 8px 22px rgba(20,70,120,.10);
+margin-bottom:20px;
+border-top:5px solid #0d5fa8;
 }
-
 .media{
-  width:100%;
-  display:flex;
-  overflow-x:auto;
-  overflow-y:hidden;
-  scroll-snap-type:x mandatory;
-  -webkit-overflow-scrolling:touch;
-  background:#e9eef4;
+width:100%;
+display:flex;
+overflow-x:auto;
+overflow-y:hidden;
+scroll-snap-type:x mandatory;
+-webkit-overflow-scrolling:touch;
+background:#e9eef4;
 }
-
 .slide{
-  flex:0 0 100%;
-  aspect-ratio:16/9;
-  scroll-snap-align:start;
-  background:#000;
+flex:0 0 100%;
+aspect-ratio:16/9;
+scroll-snap-align:start;
+background:#000;
 }
-
 .slide img,
 .slide iframe{
-  width:100%;
-  height:100%;
-  display:block;
-  border:0;
-  object-fit:cover;
+width:100%;
+height:100%;
+display:block;
+border:0;
+object-fit:cover;
 }
-
 .noimage{
-  aspect-ratio:16/9;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#999;
-  font-size:22px;
-  background:#f1f1f1;
+aspect-ratio:16/9;
+display:flex;
+align-items:center;
+justify-content:center;
+color:#999;
+font-size:22px;
+background:#f1f1f1;
 }
-
 .body{
-  padding:20px;
+padding:20px;
 }
-
 .time{
-  font-size:14px;
-  color:#889;
-  font-weight:800;
+font-size:14px;
+color:#889;
+font-weight:800;
 }
-
 .name{
-  margin-top:8px;
-  font-size:28px;
-  line-height:1.3;
-  font-weight:900;
-  color:#0d5fa8;
+margin-top:8px;
+font-size:28px;
+line-height:1.3;
+font-weight:900;
+color:#0d5fa8;
 }
-
 .place{
-  margin-top:10px;
-  display:inline-block;
-  background:#fff3e0;
-  color:#e65100;
-  padding:7px 12px;
-  border-radius:8px;
-  font-size:17px;
-  font-weight:900;
+margin-top:10px;
+display:inline-block;
+background:#fff3e0;
+color:#e65100;
+padding:7px 12px;
+border-radius:8px;
+font-size:17px;
+font-weight:900;
 }
-
 .msg{
-  margin-top:14px;
-  font-size:18px;
-  line-height:1.85;
-  color:#334;
-  white-space:pre-wrap;
+margin-top:14px;
+font-size:18px;
+line-height:1.85;
+color:#334;
+white-space:pre-wrap;
 }
-
 .btn{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  width:100%;
-  min-height:60px;
-  border-radius:18px;
-  text-decoration:none;
-  font-size:18px;
-  font-weight:900;
-  margin-top:16px;
+display:flex;
+align-items:center;
+justify-content:center;
+width:100%;
+min-height:60px;
+border-radius:18px;
+text-decoration:none;
+font-size:18px;
+font-weight:900;
+margin-top:16px;
 }
-
 .map{
-  background:linear-gradient(135deg,#1687e0,#0d5fa8);
-  color:#fff;
+background:linear-gradient(135deg,#1687e0,#0d5fa8);
+color:#fff;
 }
-
 .home{
-  background:linear-gradient(135deg,#6c7a89,#34495e);
-  color:#fff;
-  margin-top:30px;
+background:linear-gradient(135deg,#6c7a89,#34495e);
+color:#fff;
+margin-top:30px;
 }
-
 .loading{
-  text-align:center;
-  padding:40px;
-  font-size:20px;
-  color:#777;
+text-align:center;
+padding:40px;
+font-size:20px;
+color:#777;
 }
 </style>
 </head>
@@ -287,7 +261,27 @@ d.media
 );
 
 ALL.sort((a,b)=>{
+
+const da =
+new Date(
+String(a.time)
+.replace(/年|月/g,'/')
+.replace(/日/g,'')
+);
+
+const db =
+new Date(
+String(b.time)
+.replace(/年|月/g,'/')
+.replace(/日/g,'')
+);
+
+if(!isNaN(db) && !isNaN(da)){
+return db - da;
+}
+
 return b.rowIndex - a.rowIndex;
+
 });
 
 showLatest();
