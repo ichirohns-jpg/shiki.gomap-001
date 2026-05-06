@@ -61,72 +61,54 @@ const SHEET_ID='12pq1Flwl_Ol61frvAMhdFkpDzoTdGsnnzystje8jEXw';
 const SHEET_NAME='シート1';
 
 let ALL=[];
-let loaded=false;
 
 window.handleSheet=function(json){
-  loaded=true;
-  build(json);
+  try{
+    build(json);
+  }catch(e){
+    document.getElementById('list').innerHTML='<div class="loading">読み込み失敗</div>';
+  }
 };
 
 function loadSheet(){
-  const base='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?';
+  const script=document.createElement('script');
 
-  const s=document.createElement('script');
-  s.src=base+'sheet='+encodeURIComponent(SHEET_NAME)+'&tqx=out:json;responseHandler:handleSheet&v='+Date.now();
-  document.body.appendChild(s);
+  const query='select * order by A desc';
 
-  setTimeout(function(){
-    if(!loaded){
-      const s2=document.createElement('script');
-      s2.src=base+'tqx=out:json;responseHandler:handleSheet&v='+Date.now();
-      document.body.appendChild(s2);
-    }
-  },2500);
+  script.src=
+    'https://docs.google.com/spreadsheets/d/' +
+    SHEET_ID +
+    '/gviz/tq?sheet=' +
+    encodeURIComponent(SHEET_NAME) +
+    '&tq=' +
+    encodeURIComponent(query) +
+    '&tqx=out:json;responseHandler:handleSheet&v=' +
+    Date.now();
+
+  document.body.appendChild(script);
 }
 
 loadSheet();
 
 function build(json){
-  try{
-    const rows=json.table.rows||[];
+  const rows=json.table.rows||[];
 
-    ALL=rows.map((r,index)=>{
-      const c=r.c||[];
-      const dateCell=c[0]||null;
+  ALL=rows.map((r,index)=>{
+    const c=r.c||[];
 
-      const item={
-        rowIndex:index,
-        dateRaw:dateCell && dateCell.v!==null && dateCell.v!==undefined ? dateCell.v : '',
-        dateText:dateCell && dateCell.f!==null && dateCell.f!==undefined ? dateCell.f : getCell(dateCell),
-        time:getCell(dateCell),
-        name:getCell(c[1]),
-        place:getCell(c[2]),
-        msg:getCell(c[3]),
-        media:getCell(c[4]),
-        map:getCell(c[6])
-      };
+    return {
+      rowIndex:index,
+      time:getCell(c[0]),
+      name:getCell(c[1]),
+      place:getCell(c[2]),
+      msg:getCell(c[3]),
+      media:getCell(c[4]),
+      map:getCell(c[6])
+    };
 
-      item.dateValue=parseDateCell(item.dateRaw,item.dateText,index);
-      return item;
+  }).filter(d=>d.name||d.place||d.msg||d.media);
 
-    }).filter(d=>d.name||d.place||d.msg||d.media);
-
-    ALL.sort((a,b)=>{
-      const db=Number(b.dateValue||0);
-      const da=Number(a.dateValue||0);
-
-      if(db!==da){
-        return db-da;
-      }
-
-      return b.rowIndex-a.rowIndex;
-    });
-
-    showLatest();
-
-  }catch(e){
-    document.getElementById('list').innerHTML='<div class="loading">読み込み失敗</div>';
-  }
+  showLatest();
 }
 
 function showLatest(){
@@ -193,11 +175,20 @@ function parseMedia(s){
     const data=JSON.parse(text);
     if(Array.isArray(data)){
       data.forEach(x=>{
-        if(typeof x==='string')urls.push({url:x,type:''});
-        else if(x&&typeof x==='object')urls.push({url:String(x.url||x.src||x.link||'').trim(),type:String(x.type||x.kind||'').trim()});
+        if(typeof x==='string'){
+          urls.push({url:x,type:''});
+        }else if(x&&typeof x==='object'){
+          urls.push({
+            url:String(x.url||x.src||x.link||'').trim(),
+            type:String(x.type||x.kind||'').trim()
+          });
+        }
       });
     }else if(data&&typeof data==='object'){
-      urls.push({url:String(data.url||data.src||data.link||'').trim(),type:String(data.type||data.kind||'').trim()});
+      urls.push({
+        url:String(data.url||data.src||data.link||'').trim(),
+        type:String(data.type||data.kind||'').trim()
+      });
     }
   }catch(e){
     urls=extractUrls(text).map(u=>({url:u,type:''}));
@@ -246,66 +237,6 @@ function isVideoUrl(url){
   return /\.(mp4|mov|m4v|webm|ogg)(\?|#|$)/i.test(String(url||''));
 }
 
-function parseDateCell(raw,display,index){
-  const r=String(raw||'').trim();
-  const f=String(display||'').trim();
-
-  let m=r.match(/Date\((\d+),(\d+),(\d+)(?:,(\d+),(\d+),(\d+))?\)/);
-  if(m){
-    return new Date(
-      Number(m[1]),
-      Number(m[2]),
-      Number(m[3]),
-      Number(m[4]||0),
-      Number(m[5]||0),
-      Number(m[6]||0)
-    ).getTime();
-  }
-
-  if(/^\d+(\.\d+)?$/.test(r)){
-    const serial=Number(r);
-    if(serial>30000){
-      return Math.round((serial-25569)*86400*1000);
-    }
-  }
-
-  const combined=(f+' '+r).trim();
-
-  const s=combined
-    .replace(/[年月]/g,'/')
-    .replace(/日/g,'')
-    .replace(/\./g,'/')
-    .replace(/-/g,'/')
-    .replace(/\s+/g,' ')
-    .trim();
-
-  m=s.match(/(\d{4})\/(\d{1,2})\/(\d{1,2})(?:\s+(\d{1,2}):(\d{1,2}))?/);
-  if(m){
-    return new Date(
-      Number(m[1]),
-      Number(m[2])-1,
-      Number(m[3]),
-      Number(m[4]||0),
-      Number(m[5]||0),
-      0
-    ).getTime();
-  }
-
-  m=s.match(/(\d{1,2})\/(\d{1,2})(?:\s+(\d{1,2}):(\d{1,2}))?/);
-  if(m){
-    return new Date(
-      2026,
-      Number(m[1])-1,
-      Number(m[2]),
-      Number(m[3]||0),
-      Number(m[4]||0),
-      0
-    ).getTime();
-  }
-
-  return index*1000;
-}
-
 function getCell(c){
   if(!c)return'';
   if(c.f!==null&&c.f!==undefined)return String(c.f);
@@ -314,7 +245,12 @@ function getCell(c){
 }
 
 function esc(s){
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  return String(s||'')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
 }
 
 function escAttr(s){return esc(s)}
