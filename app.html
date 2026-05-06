@@ -7,20 +7,12 @@
 <title>志木Go map</title>
 
 <style>
-
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
   margin:0;
-  background:
-  linear-gradient(180deg,#eef5fb 0%,#ffffff 100%);
-  font-family:
-  "Hiragino Sans",
-  "Yu Gothic",
-  "Meiryo",
-  sans-serif;
+  background:linear-gradient(180deg,#eef5fb 0%,#ffffff 100%);
+  font-family:"Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
   color:#17324d;
 }
 
@@ -34,8 +26,7 @@ body{
   background:#fff;
   border-radius:30px;
   overflow:hidden;
-  box-shadow:
-  0 10px 28px rgba(20,70,120,.12);
+  box-shadow:0 10px 28px rgba(20,70,120,.12);
   margin-bottom:20px;
 }
 
@@ -80,24 +71,21 @@ body{
 }
 
 .active{
-  background:
-  linear-gradient(135deg,#1687e0,#0d5fa8);
+  background:linear-gradient(135deg,#1687e0,#0d5fa8);
   color:#fff;
 }
 
 .normal{
   background:#fff;
   color:#456;
-  box-shadow:
-  0 6px 16px rgba(20,70,120,.08);
+  box-shadow:0 6px 16px rgba(20,70,120,.08);
 }
 
 .card{
   background:#fff;
   border-radius:24px;
   overflow:hidden;
-  box-shadow:
-  0 8px 22px rgba(20,70,120,.10);
+  box-shadow:0 8px 22px rgba(20,70,120,.10);
   margin-bottom:20px;
   border-top:5px solid #0d5fa8;
 }
@@ -189,14 +177,12 @@ body{
 }
 
 .map{
-  background:
-  linear-gradient(135deg,#1687e0,#0d5fa8);
+  background:linear-gradient(135deg,#1687e0,#0d5fa8);
   color:#fff;
 }
 
 .home{
-  background:
-  linear-gradient(135deg,#6c7a89,#34495e);
+  background:linear-gradient(135deg,#6c7a89,#34495e);
   color:#fff;
   margin-top:30px;
 }
@@ -214,7 +200,6 @@ body{
   color:#0d5fa8;
   margin:34px 0 14px;
 }
-
 </style>
 </head>
 
@@ -223,66 +208,38 @@ body{
 <div class="wrap">
 
   <div class="header">
-
     <img
       class="banner"
       src="https://drive.google.com/thumbnail?id=1zcQqzRT2rV9GCW9sk4nISiM1ubH0qQ5U&sz=w2000"
+      alt="志木Go map"
     >
 
     <div class="header-body">
-
-      <h1 class="title">
-        志木Go map
-      </h1>
-
+      <h1 class="title">志木Go map</h1>
       <div class="desc">
         キッチンカーの出店情報を<br>
         リアルタイムでお届けします
       </div>
-
     </div>
-
   </div>
 
   <div class="tabs">
-
-    <button
-      class="tab active"
-      onclick="showLatest()"
-    >
-      最新情報
-    </button>
-
-    <button
-      class="tab normal"
-      onclick="showArchive()"
-    >
-      アーカイブ
-    </button>
-
+    <button class="tab active" onclick="showLatest()">最新情報</button>
+    <button class="tab normal" onclick="showArchive()">アーカイブ</button>
   </div>
 
   <div id="list">
-
-    <div class="loading">
-      読み込み中...
-    </div>
-
+    <div class="loading">読み込み中...</div>
   </div>
 
-  <a
-    class="btn home"
-    href="https://ichirohns-jpg.github.io/shiki.gomap-001/"
-  >
+  <a class="btn home" href="https://ichirohns-jpg.github.io/shiki.gomap-001/">
     ← トップに戻る
   </a>
 
 </div>
 
 <script>
-
-const SHEET_ID =
-'12pq1Flwl_Ol61frvAMhdFkpDzoTdGsnnzystje8jEXw';
+const SHEET_ID = '12pq1Flwl_Ol61frvAMhdFkpDzoTdGsnnzystje8jEXw';
 
 let ALL = [];
 
@@ -290,31 +247,24 @@ window.handleSheet = function(json){
 
   try{
 
-    const rows =
-    json.table.rows || [];
+    const rows = json.table.rows || [];
 
     ALL = rows.map((r,index)=>{
 
       const c = r.c || [];
 
       return {
+        time: getCell(c[0]),
+        sort: getSortValue(c[0], index),
 
-        time:getCell(c[0]),
-
-        sort:
-          new Date(
-            getCell(c[0])
-          ).getTime() || index,
-
-        name:getCell(c[1]),
-        place:getCell(c[2]),
-        msg:getCell(c[3]),
-        media:getCell(c[4]),
-        map:getCell(c[6])
-
+        name: getCell(c[1]),
+        place: getCell(c[2]),
+        msg: getCell(c[3]),
+        media: getCell(c[4]),
+        map: getCell(c[6])
       };
 
-    }).filter(d=>
+    }).filter(d =>
       d.name ||
       d.place ||
       d.msg ||
@@ -322,7 +272,10 @@ window.handleSheet = function(json){
     );
 
     ALL.sort((a,b)=>{
-      return b.sort - a.sort;
+      if(b.sort !== a.sort){
+        return b.sort - a.sort;
+      }
+      return 0;
     });
 
     showLatest();
@@ -338,8 +291,7 @@ window.handleSheet = function(json){
 
 function loadSheet(){
 
-  const script =
-  document.createElement('script');
+  const script = document.createElement('script');
 
   script.src =
   'https://docs.google.com/spreadsheets/d/' +
@@ -353,29 +305,20 @@ function loadSheet(){
 loadSheet();
 
 function showLatest(){
-
-  render(
-    ALL.slice(0,5)
-  );
-
+  render(ALL.slice(0,5));
 }
 
 function showArchive(){
 
-  const old =
-  ALL.slice(5);
-
+  const old = ALL.slice(5);
   let html = '';
 
   old.forEach(d=>{
-
     html += card(d);
-
   });
 
   document.getElementById('list').innerHTML =
-  html ||
-  '<div class="loading">アーカイブはありません</div>';
+  html || '<div class="loading">アーカイブはありません</div>';
 
 }
 
@@ -384,14 +327,11 @@ function render(list){
   let html = '';
 
   list.forEach(d=>{
-
     html += card(d);
-
   });
 
   document.getElementById('list').innerHTML =
-  html ||
-  '<div class="loading">表示できる情報はありません</div>';
+  html || '<div class="loading">表示できる情報はありません</div>';
 
 }
 
@@ -455,47 +395,36 @@ function card(d){
 
 function mediaHtml(s){
 
-  const media =
-  parseMedia(s);
+  const media = parseMedia(s);
 
   if(!media.length){
-
     return `
       <div class="noimage">
         No Image
       </div>
     `;
-
   }
 
-  let html =
-  '<div class="media">';
+  let html = '<div class="media">';
 
   media.forEach(m=>{
 
-    html +=
-    '<div class="slide">';
+    html += '<div class="slide">';
 
-    if(
-      m.type === 'youtube'
-    ){
-
+    if(m.type === 'youtube'){
       html += `
         <iframe
           src="${escAttr(m.url)}"
           allowfullscreen
         ></iframe>
       `;
-
     }else{
-
       html += `
         <img
           src="${escAttr(m.url)}"
           loading="lazy"
         >
       `;
-
     }
 
     html += '</div>';
@@ -514,23 +443,17 @@ function parseMedia(s){
 
   try{
 
-    const arr =
-    JSON.parse(s);
+    const arr = JSON.parse(s);
 
     return arr.map(x=>{
 
-      const url =
-      String(x.url || '');
+      const url = String(x.url || '');
 
-      if(
-        url.includes('youtube')
-      ){
-
+      if(url.includes('youtube')){
         return {
           type:'youtube',
           url:url
         };
-
       }
 
       return {
@@ -538,12 +461,10 @@ function parseMedia(s){
         url:url
       };
 
-    });
+    }).filter(x=>x.url);
 
   }catch(e){
-
     return [];
-
   }
 
 }
@@ -552,10 +473,49 @@ function getCell(c){
 
   if(!c) return '';
 
-  return c.f ||
-         c.v ||
-         '';
+  return c.f || c.v || '';
 
+}
+
+function getSortValue(c,index){
+
+  if(!c){
+    return index;
+  }
+
+  const v = c.v || '';
+  const f = c.f || '';
+
+  if(typeof v === 'string' && v.indexOf('Date(') === 0){
+
+    const m = v.match(/Date\((\d+),(\d+),(\d+),?(\d+)?,?(\d+)?/);
+
+    if(m){
+      const y = Number(m[1]);
+      const mo = Number(m[2]);
+      const d = Number(m[3]);
+      const h = m[4] ? Number(m[4]) : 0;
+      const mi = m[5] ? Number(m[5]) : 0;
+
+      return new Date(y,mo,d,h,mi).getTime();
+    }
+  }
+
+  if(Object.prototype.toString.call(v) === '[object Date]'){
+    return v.getTime();
+  }
+
+  const text = String(f || v)
+    .replace(/\./g,'/')
+    .replace(/-/g,'/');
+
+  const d2 = new Date(text);
+
+  if(!isNaN(d2.getTime())){
+    return d2.getTime();
+  }
+
+  return index;
 }
 
 function esc(s){
@@ -570,11 +530,8 @@ function esc(s){
 }
 
 function escAttr(s){
-
   return esc(s);
-
 }
-
 </script>
 
 </body>
