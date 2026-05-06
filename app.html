@@ -3,232 +3,578 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>志木Go map</title>
+
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#eef5fb;font-family:"Hiragino Sans","Yu Gothic","Meiryo",sans-serif;color:#17324d}
-.wrap{max-width:760px;margin:0 auto;padding:20px 14px 50px}
-.header{background:#fff;border-radius:30px;overflow:hidden;box-shadow:0 10px 28px rgba(20,70,120,.12);margin-bottom:20px}
-.banner{width:100%;height:auto;display:block}
-.header-body{padding:24px 20px 28px;text-align:center}
-.title{margin:0;font-size:40px;font-weight:900;color:#0d5fa8}
-.desc{margin-top:14px;font-size:19px;line-height:1.7;font-weight:800;color:#5a6f80}
-.tabs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:22px 0}
-.tab{min-height:62px;border-radius:18px;font-size:20px;font-weight:900;border:0}
-.active{background:linear-gradient(135deg,#1687e0,#0d5fa8);color:#fff}
-.normal{background:#fff;color:#456;box-shadow:0 6px 16px rgba(20,70,120,.08)}
-.card{background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 8px 22px rgba(20,70,120,.10);margin-bottom:20px;border-top:5px solid #0d5fa8}
-.media{width:100%;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;background:#e9eef4}
-.slide{flex:0 0 100%;aspect-ratio:16/9;scroll-snap-align:start;background:#000}
-.slide img,.slide iframe{width:100%;height:100%;display:block;border:0;object-fit:cover}
-.noimage{aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;color:#999;font-size:22px;background:#f1f1f1}
-.body{padding:20px}
-.time{font-size:14px;color:#889;font-weight:800}
-.name{margin-top:8px;font-size:28px;line-height:1.3;font-weight:900;color:#0d5fa8}
-.place{margin-top:10px;display:inline-block;background:#fff3e0;color:#e65100;padding:7px 12px;border-radius:8px;font-size:17px;font-weight:900}
-.msg{margin-top:14px;font-size:18px;line-height:1.85;color:#334;white-space:pre-wrap}
-.btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:60px;border-radius:18px;text-decoration:none;font-size:18px;font-weight:900;margin-top:16px}
-.map{background:linear-gradient(135deg,#1687e0,#0d5fa8);color:#fff}
-.home{background:linear-gradient(135deg,#6c7a89,#34495e);color:#fff;margin-top:30px}
-.loading{text-align:center;padding:40px;font-size:20px;color:#777}
-.archive-title{font-size:28px;font-weight:900;color:#0d5fa8;margin:34px 0 14px}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  background:
+  linear-gradient(180deg,#eef5fb 0%,#ffffff 100%);
+  font-family:
+  "Hiragino Sans",
+  "Yu Gothic",
+  "Meiryo",
+  sans-serif;
+  color:#17324d;
+}
+
+.wrap{
+  max-width:760px;
+  margin:0 auto;
+  padding:20px 14px 50px;
+}
+
+.header{
+  background:#fff;
+  border-radius:30px;
+  overflow:hidden;
+  box-shadow:
+  0 10px 28px rgba(20,70,120,.12);
+  margin-bottom:20px;
+}
+
+.banner{
+  width:100%;
+  display:block;
+}
+
+.header-body{
+  padding:24px 20px 28px;
+  text-align:center;
+}
+
+.title{
+  margin:0;
+  font-size:40px;
+  font-weight:900;
+  color:#0d5fa8;
+}
+
+.desc{
+  margin-top:14px;
+  font-size:19px;
+  line-height:1.7;
+  font-weight:800;
+  color:#5a6f80;
+}
+
+.tabs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin:22px 0;
+}
+
+.tab{
+  min-height:62px;
+  border-radius:18px;
+  font-size:20px;
+  font-weight:900;
+  border:0;
+}
+
+.active{
+  background:
+  linear-gradient(135deg,#1687e0,#0d5fa8);
+  color:#fff;
+}
+
+.normal{
+  background:#fff;
+  color:#456;
+  box-shadow:
+  0 6px 16px rgba(20,70,120,.08);
+}
+
+.card{
+  background:#fff;
+  border-radius:24px;
+  overflow:hidden;
+  box-shadow:
+  0 8px 22px rgba(20,70,120,.10);
+  margin-bottom:20px;
+  border-top:5px solid #0d5fa8;
+}
+
+.media{
+  width:100%;
+  display:flex;
+  overflow-x:auto;
+  overflow-y:hidden;
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
+  background:#e9eef4;
+}
+
+.slide{
+  flex:0 0 100%;
+  aspect-ratio:16/9;
+  scroll-snap-align:start;
+  background:#000;
+}
+
+.slide img,
+.slide iframe{
+  width:100%;
+  height:100%;
+  display:block;
+  border:0;
+  object-fit:cover;
+}
+
+.noimage{
+  aspect-ratio:16/9;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#999;
+  font-size:22px;
+  background:#f1f1f1;
+}
+
+.body{
+  padding:20px;
+}
+
+.time{
+  font-size:14px;
+  color:#889;
+  font-weight:800;
+}
+
+.name{
+  margin-top:8px;
+  font-size:28px;
+  line-height:1.3;
+  font-weight:900;
+  color:#0d5fa8;
+}
+
+.place{
+  margin-top:10px;
+  display:inline-block;
+  background:#fff3e0;
+  color:#e65100;
+  padding:7px 12px;
+  border-radius:8px;
+  font-size:17px;
+  font-weight:900;
+}
+
+.msg{
+  margin-top:14px;
+  font-size:18px;
+  line-height:1.85;
+  color:#334;
+  white-space:pre-wrap;
+}
+
+.btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  min-height:60px;
+  border-radius:18px;
+  text-decoration:none;
+  font-size:18px;
+  font-weight:900;
+  margin-top:16px;
+}
+
+.map{
+  background:
+  linear-gradient(135deg,#1687e0,#0d5fa8);
+  color:#fff;
+}
+
+.home{
+  background:
+  linear-gradient(135deg,#6c7a89,#34495e);
+  color:#fff;
+  margin-top:30px;
+}
+
+.loading{
+  text-align:center;
+  padding:40px;
+  font-size:20px;
+  color:#777;
+}
+
+.archive-title{
+  font-size:28px;
+  font-weight:900;
+  color:#0d5fa8;
+  margin:34px 0 14px;
+}
+
 </style>
 </head>
+
 <body>
 
 <div class="wrap">
 
   <div class="header">
-    <img class="banner" src="https://drive.google.com/thumbnail?id=1zcQqzRT2rV9GCW9sk4nISiM1ubH0qQ5U&sz=w2000">
+
+    <img
+      class="banner"
+      src="https://drive.google.com/thumbnail?id=1zcQqzRT2rV9GCW9sk4nISiM1ubH0qQ5U&sz=w2000"
+    >
+
     <div class="header-body">
-      <h1 class="title">志木Go map</h1>
-      <div class="desc">キッチンカーの出店情報を<br>リアルタイムでお届けします</div>
+
+      <h1 class="title">
+        志木Go map
+      </h1>
+
+      <div class="desc">
+        キッチンカーの出店情報を<br>
+        リアルタイムでお届けします
+      </div>
+
     </div>
+
   </div>
 
   <div class="tabs">
-    <button class="tab active" onclick="showLatest()">最新情報</button>
-    <button class="tab normal" onclick="showArchive()">アーカイブ</button>
+
+    <button
+      class="tab active"
+      onclick="showLatest()"
+    >
+      最新情報
+    </button>
+
+    <button
+      class="tab normal"
+      onclick="showArchive()"
+    >
+      アーカイブ
+    </button>
+
   </div>
 
-  <div id="list"><div class="loading">読み込み中...</div></div>
+  <div id="list">
 
-  <a class="btn home" href="https://ichirohns-jpg.github.io/shiki.gomap-001/">← トップに戻る</a>
+    <div class="loading">
+      読み込み中...
+    </div>
+
+  </div>
+
+  <a
+    class="btn home"
+    href="https://ichirohns-jpg.github.io/shiki.gomap-001/"
+  >
+    ← トップに戻る
+  </a>
 
 </div>
 
 <script>
-const SHEET_ID='12pq1Flwl_Ol61frvAMhdFkpDzoTdGsnnzystje8jEXw';
-let ALL=[];
 
-window.handleSheet=function(res){
+const SHEET_ID =
+'12pq1Flwl_Ol61frvAMhdFkpDzoTdGsnnzystje8jEXw';
+
+let ALL = [];
+
+window.handleSheet = function(json){
+
   try{
-    const rows=(res.table&&res.table.rows)?res.table.rows:[];
-    ALL=rows.map((r,i)=>{
-      const c=r.c||[];
+
+    const rows =
+    json.table.rows || [];
+
+    ALL = rows.map((r,index)=>{
+
+      const c = r.c || [];
+
       return {
+
         time:getCell(c[0]),
-        sort:getSort(c[0],i),
+
+        sort:
+          new Date(
+            getCell(c[0])
+          ).getTime() || index,
+
         name:getCell(c[1]),
         place:getCell(c[2]),
         msg:getCell(c[3]),
         media:getCell(c[4]),
         map:getCell(c[6])
-      };
-    }).filter(d=>d.name||d.place||d.msg||d.media);
 
-    ALL.sort((a,b)=>b.sort-a.sort);
+      };
+
+    }).filter(d=>
+      d.name ||
+      d.place ||
+      d.msg ||
+      d.media
+    );
+
+    ALL.sort((a,b)=>{
+      return b.sort - a.sort;
+    });
+
     showLatest();
+
   }catch(e){
-    document.getElementById('list').innerHTML='<div class="loading">読み込みに失敗しました</div>';
+
+    document.getElementById('list').innerHTML =
+    '<div class="loading">読み込み失敗</div>';
+
   }
+
 };
 
 function loadSheet(){
-  const s=document.createElement('script');
-  s.src='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?sheet=%E3%82%B7%E3%83%BC%E3%83%881&tqx=out:json;responseHandler:handleSheet';
-  document.body.appendChild(s);
+
+  const script =
+  document.createElement('script');
+
+  script.src =
+  'https://docs.google.com/spreadsheets/d/' +
+  SHEET_ID +
+  '/gviz/tq?sheet=%E3%82%B7%E3%83%BC%E3%83%881&tqx=out:json;responseHandler:handleSheet';
+
+  document.body.appendChild(script);
+
 }
+
 loadSheet();
 
 function showLatest(){
-  render(ALL.slice(0,5));
+
+  render(
+    ALL.slice(0,5)
+  );
+
 }
 
 function showArchive(){
-  const old=ALL.slice(5);
-  const groups={};
+
+  const old =
+  ALL.slice(5);
+
+  let html = '';
 
   old.forEach(d=>{
-    const m=getMonth(d.time);
-    if(!groups[m])groups[m]=[];
-    groups[m].push(d);
+
+    html += card(d);
+
   });
 
-  let html='';
-  Object.keys(groups).forEach(m=>{
-    html+='<div class="archive-title">'+esc(m)+'</div>';
-    groups[m].forEach(d=>html+=card(d));
-  });
+  document.getElementById('list').innerHTML =
+  html ||
+  '<div class="loading">アーカイブはありません</div>';
 
-  document.getElementById('list').innerHTML=html||'<div class="loading">アーカイブはありません</div>';
 }
 
 function render(list){
-  let html='';
-  list.forEach(d=>html+=card(d));
-  document.getElementById('list').innerHTML=html||'<div class="loading">表示できる情報はありません</div>';
+
+  let html = '';
+
+  list.forEach(d=>{
+
+    html += card(d);
+
+  });
+
+  document.getElementById('list').innerHTML =
+  html ||
+  '<div class="loading">表示できる情報はありません</div>';
+
 }
 
 function card(d){
+
   return `
-  <div class="card">
-    ${mediaHtml(d.media)}
-    <div class="body">
-      <div class="time">${esc(d.time)}</div>
-      <div class="name">${esc(d.name)}</div>
-      ${d.place?`<div class="place">📍 ${esc(d.place)}</div>`:''}
-      ${d.msg?`<div class="msg">${esc(d.msg)}</div>`:''}
-      ${d.map?`<a class="btn map" href="${escAttr(d.map)}" target="_blank">Googleマップを見る</a>`:''}
+    <div class="card">
+
+      ${mediaHtml(d.media)}
+
+      <div class="body">
+
+        <div class="time">
+          ${esc(d.time)}
+        </div>
+
+        <div class="name">
+          ${esc(d.name)}
+        </div>
+
+        ${
+          d.place
+          ? `
+            <div class="place">
+              📍 ${esc(d.place)}
+            </div>
+          `
+          : ''
+        }
+
+        ${
+          d.msg
+          ? `
+            <div class="msg">
+              ${esc(d.msg)}
+            </div>
+          `
+          : ''
+        }
+
+        ${
+          d.map
+          ? `
+            <a
+              class="btn map"
+              href="${escAttr(d.map)}"
+              target="_blank"
+            >
+              Googleマップを見る
+            </a>
+          `
+          : ''
+        }
+
+      </div>
+
     </div>
-  </div>`;
+  `;
+
 }
 
 function mediaHtml(s){
-  const list=parseMedia(s);
-  if(!list.length)return '<div class="noimage">No Image</div>';
 
-  let html='<div class="media">';
-  list.forEach(m=>{
-    html+='<div class="slide">';
-    if(m.type==='youtube'||m.type==='driveVideo'){
-      html+=`<iframe src="${escAttr(m.url)}" allowfullscreen></iframe>`;
+  const media =
+  parseMedia(s);
+
+  if(!media.length){
+
+    return `
+      <div class="noimage">
+        No Image
+      </div>
+    `;
+
+  }
+
+  let html =
+  '<div class="media">';
+
+  media.forEach(m=>{
+
+    html +=
+    '<div class="slide">';
+
+    if(
+      m.type === 'youtube'
+    ){
+
+      html += `
+        <iframe
+          src="${escAttr(m.url)}"
+          allowfullscreen
+        ></iframe>
+      `;
+
     }else{
-      html+=`<img src="${escAttr(m.url)}" loading="lazy">`;
+
+      html += `
+        <img
+          src="${escAttr(m.url)}"
+          loading="lazy"
+        >
+      `;
+
     }
-    html+='</div>';
+
+    html += '</div>';
+
   });
-  html+='</div>';
+
+  html += '</div>';
+
   return html;
+
 }
 
 function parseMedia(s){
-  if(!s)return [];
+
+  if(!s) return [];
+
   try{
-    const arr=JSON.parse(s);
-    if(Array.isArray(arr)){
-      return arr.slice(0,5).map(x=>normalizeMedia(x)).filter(x=>x&&x.url);
-    }
-  }catch(e){}
 
-  const urls=String(s).match(/https?:\/\/[^\s　]+/g)||[];
-  return urls.slice(0,5).map(u=>normalizeMedia({url:u})).filter(x=>x&&x.url);
-}
+    const arr =
+    JSON.parse(s);
 
-function normalizeMedia(x){
-  const url=String(x.url||'').trim();
-  if(!url)return null;
+    return arr.map(x=>{
 
-  const yt=youtubeId(url);
-  if(yt)return {type:'youtube',url:'https://www.youtube.com/embed/'+yt};
+      const url =
+      String(x.url || '');
 
-  const did=driveId(url);
-  if(did)return {type:'image',url:'https://drive.google.com/thumbnail?id='+did+'&sz=w1600'};
+      if(
+        url.includes('youtube')
+      ){
 
-  return {type:'image',url:url};
-}
+        return {
+          type:'youtube',
+          url:url
+        };
 
-function youtubeId(url){
-  let m;
-  m=url.match(/youtube\.com\/watch\?v=([^&]+)/); if(m)return m[1];
-  m=url.match(/youtu\.be\/([^?&]+)/); if(m)return m[1];
-  m=url.match(/youtube\.com\/shorts\/([^?&]+)/); if(m)return m[1];
-  m=url.match(/youtube\.com\/embed\/([^?&]+)/); if(m)return m[1];
-  return '';
-}
+      }
 
-function driveId(url){
-  let m;
-  m=url.match(/\/d\/([^/]+)/); if(m)return m[1];
-  m=url.match(/[?&]id=([^&]+)/); if(m)return m[1];
-  return '';
+      return {
+        type:'image',
+        url:url
+      };
+
+    });
+
+  }catch(e){
+
+    return [];
+
+  }
+
 }
 
 function getCell(c){
-  if(!c)return '';
-  return c.f||c.v||'';
-}
 
-function getSort(c,i){
-  if(!c)return i;
-  const v=c.v||'';
-  const f=c.f||'';
+  if(!c) return '';
 
-  if(typeof v==='string'&&v.indexOf('Date(')===0){
-    const m=v.match(/Date\((\d+),(\d+),(\d+)/);
-    if(m)return new Date(Number(m[1]),Number(m[2]),Number(m[3])).getTime()+i;
-  }
+  return c.f ||
+         c.v ||
+         '';
 
-  const d=new Date(String(f||v).replace(/\./g,'/').replace(/-/g,'/'));
-  return isNaN(d.getTime())?i:d.getTime()+i;
-}
-
-function getMonth(s){
-  const m=String(s).match(/(\d{4})\/(\d{1,2})/);
-  if(!m)return 'その他';
-  return m[1]+'年'+Number(m[2])+'月';
 }
 
 function esc(s){
-  return String(s||'')
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;')
-    .replace(/'/g,'&#39;');
+
+  return String(s || '')
+  .replace(/&/g,'&amp;')
+  .replace(/</g,'&lt;')
+  .replace(/>/g,'&gt;')
+  .replace(/"/g,'&quot;')
+  .replace(/'/g,'&#39;');
+
 }
 
-function escAttr(s){return esc(s);}
+function escAttr(s){
+
+  return esc(s);
+
+}
+
 </script>
 
 </body>
