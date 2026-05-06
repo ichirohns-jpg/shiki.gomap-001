@@ -92,7 +92,8 @@ scroll-snap-align:start;
 background:#000;
 }
 .slide img,
-.slide iframe{
+.slide iframe,
+.slide video{
 width:100%;
 height:100%;
 display:block;
@@ -175,195 +176,132 @@ color:#777;
 <div class="wrap">
 
 <div class="header">
-
 <img
 class="banner"
 src="https://drive.google.com/thumbnail?id=1zcQqzRT2rV9GCW9sk4nISiM1ubH0qQ5U&sz=w2000"
 >
 
 <div class="header-body">
-
-<h1 class="title">
-志木Go map
-</h1>
-
+<h1 class="title">志木Go map</h1>
 <div class="desc">
 キッチンカーの出店情報を<br>
 リアルタイムでお届けします
 </div>
-
 </div>
 </div>
 
 <div class="tabs">
-
-<button class="tab active" onclick="showLatest()">
-最新情報
-</button>
-
-<button class="tab normal" onclick="showArchive()">
-アーカイブ
-</button>
-
+<button id="latestBtn" class="tab active" onclick="showLatest()">最新情報</button>
+<button id="archiveBtn" class="tab normal" onclick="showArchive()">アーカイブ</button>
 </div>
 
 <div id="list">
 <div class="loading">読み込み中...</div>
 </div>
 
-<a
-class="btn home"
-href="https://ichirohns-jpg.github.io/shiki.gomap-001/"
->
+<a class="btn home" href="https://ichirohns-jpg.github.io/shiki.gomap-001/">
 ← トップに戻る
 </a>
 
 </div>
 
 <script>
-
-const SHEET_ID =
-'12pq1Flwl_Ol61frvAMhdFkpDzoTdGsnnzystje8jEXw';
+const SHEET_ID = '12pq1Flwl_Ol61frvAMhdFkpDzoTdGsnnzystje8jEXw';
+const SHEET_NAME = 'シート1';
 
 let ALL = [];
 
 window.handleSheet = function(json){
+  try{
+    const rows = json.table.rows || [];
 
-try{
+    ALL = rows.map((r,index)=>{
+      const c = r.c || [];
 
-const rows =
-json.table.rows || [];
+      return {
+        rowIndex:index,
+        time:getCell(c[0]),
+        name:getCell(c[1]),
+        place:getCell(c[2]),
+        msg:getCell(c[3]),
+        media:getCell(c[4]),
+        map:getCell(c[6])
+      };
+    }).filter(d=>d.name || d.place || d.msg || d.media);
 
-ALL = rows.map((r,index)=>{
+    ALL.sort((a,b)=>{
+      const da = parseDate(a.time);
+      const db = parseDate(b.time);
 
-const c =
-r.c || [];
+      if(db !== da){
+        return db - da;
+      }
 
-return {
+      return b.rowIndex - a.rowIndex;
+    });
 
-rowIndex:index,
+    showLatest();
 
-time:getCell(c[0]),
-
-name:getCell(c[1]),
-place:getCell(c[2]),
-msg:getCell(c[3]),
-media:getCell(c[4]),
-map:getCell(c[6])
-
-};
-
-}).filter(d=>
-d.name ||
-d.place ||
-d.msg ||
-d.media
-);
-
-ALL.sort((a,b)=>{
-
-const da =
-new Date(
-String(a.time)
-.replace(/年|月/g,'/')
-.replace(/日/g,'')
-);
-
-const db =
-new Date(
-String(b.time)
-.replace(/年|月/g,'/')
-.replace(/日/g,'')
-);
-
-if(!isNaN(db) && !isNaN(da)){
-return db - da;
-}
-
-return b.rowIndex - a.rowIndex;
-
-});
-
-showLatest();
-
-}catch(e){
-
-console.log(e);
-
-document.getElementById('list').innerHTML =
-'<div class="loading">読み込み失敗</div>';
-
-}
-
+  }catch(e){
+    console.log(e);
+    document.getElementById('list').innerHTML =
+      '<div class="loading">読み込み失敗</div>';
+  }
 };
 
 function loadSheet(){
+  const script = document.createElement('script');
 
-const script =
-document.createElement('script');
+  script.src =
+    'https://docs.google.com/spreadsheets/d/' +
+    SHEET_ID +
+    '/gviz/tq?sheet=' +
+    encodeURIComponent(SHEET_NAME) +
+    '&tqx=out:json;responseHandler:handleSheet&v=' +
+    Date.now();
 
-script.src =
-'https://docs.google.com/spreadsheets/d/' +
-SHEET_ID +
-'/gviz/tq?sheet=%E3%82%B7%E3%83%BC%E3%83%881&tqx=out:json;responseHandler:handleSheet&v=' +
-Date.now();
-
-document.body.appendChild(script);
-
+  document.body.appendChild(script);
 }
 
 loadSheet();
 
 function showLatest(){
-
-render(
-ALL.slice(0,5)
-);
-
+  setTab('latest');
+  render(ALL.slice(0,5));
 }
 
 function showArchive(){
-
-const old =
-ALL.slice(5);
-
-let html = '';
-
-old.forEach(d=>{
-
-html +=
-card(d);
-
-});
-
-document.getElementById('list').innerHTML =
-html ||
-'<div class="loading">アーカイブはありません</div>';
-
+  setTab('archive');
+  render(ALL.slice(5), 'アーカイブはありません');
 }
 
-function render(list){
+function setTab(mode){
+  const latest = document.getElementById('latestBtn');
+  const archive = document.getElementById('archiveBtn');
 
-let html = '';
+  if(mode === 'latest'){
+    latest.className = 'tab active';
+    archive.className = 'tab normal';
+  }else{
+    latest.className = 'tab normal';
+    archive.className = 'tab active';
+  }
+}
 
-list.forEach(d=>{
+function render(list, emptyText){
+  let html = '';
 
-html +=
-card(d);
+  list.forEach(d=>{
+    html += card(d);
+  });
 
-});
-
-document.getElementById('list').innerHTML =
-html ||
-'<div class="loading">表示できる情報はありません</div>';
-
+  document.getElementById('list').innerHTML =
+    html || '<div class="loading">' + (emptyText || '表示できる情報はありません') + '</div>';
 }
 
 function card(d){
-
-return `
+  return `
 <div class="card">
-
 ${mediaHtml(d.media)}
 
 <div class="body">
@@ -399,11 +337,7 @@ ${esc(d.msg)}
 ${
 d.map
 ? `
-<a
-class="btn map"
-href="${escAttr(d.map)}"
-target="_blank"
->
+<a class="btn map" href="${escAttr(d.map)}" target="_blank" rel="noopener">
 Googleマップを見る
 </a>
 `
@@ -411,144 +345,236 @@ Googleマップを見る
 }
 
 </div>
-
 </div>
 `;
-
 }
 
 function mediaHtml(s){
+  const media = parseMedia(s);
 
-const media =
-parseMedia(s);
-
-if(!media.length){
-
-return `
+  if(!media.length){
+    return `
 <div class="noimage">
 No Image
 </div>
 `;
+  }
 
-}
+  let html = '<div class="media">';
 
-let html =
-'<div class="media">';
+  media.forEach(m=>{
+    html += '<div class="slide">';
 
-media.forEach(m=>{
-
-html +=
-'<div class="slide">';
-
-if(
-m.type === 'youtube'
-){
-
-html += `
+    if(m.type === 'youtube'){
+      html += `
 <iframe
 src="${escAttr(m.url)}"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
 allowfullscreen
-></iframe>
+loading="lazy">
+</iframe>
 `;
-
-}else{
-
-html += `
+    }else if(m.type === 'video'){
+      html += `
+<video
+src="${escAttr(m.url)}"
+controls
+playsinline
+preload="metadata">
+</video>
+`;
+    }else{
+      html += `
 <img
 src="${escAttr(m.url)}"
 loading="lazy"
 >
 `;
+    }
 
-}
+    html += '</div>';
+  });
 
-html +=
-'</div>';
-
-});
-
-html +=
-'</div>';
-
-return html;
-
+  html += '</div>';
+  return html;
 }
 
 function parseMedia(s){
+  if(!s){
+    return [];
+  }
 
-if(!s){
-return [];
+  let list = [];
+
+  try{
+    const arr = JSON.parse(s);
+
+    if(Array.isArray(arr)){
+      arr.forEach(x=>{
+        const url = String((x && x.url) ? x.url : '').trim();
+        if(url){
+          list.push(url);
+        }
+      });
+    }
+  }catch(e){
+    list = extractUrls(String(s));
+  }
+
+  return list.map(toMediaObject).filter(Boolean);
 }
 
-try{
-
-const arr =
-JSON.parse(s);
-
-return arr.map(x=>{
-
-const url =
-String(x.url || '');
-
-if(!url){
-return null;
+function extractUrls(text){
+  const m = String(text || '').match(/https?:\/\/[^\s"'<>]+/g);
+  return m || [];
 }
 
-if(
-url.includes('youtube.com/embed/')
-){
+function toMediaObject(url){
+  if(!url){
+    return null;
+  }
 
-return {
-type:'youtube',
-url:url
-};
+  const yt = youtubeEmbedUrl(url);
+  if(yt){
+    return {
+      type:'youtube',
+      url:yt
+    };
+  }
 
+  const driveId = googleDriveId(url);
+  if(driveId){
+    if(isLikelyVideo(url)){
+      return {
+        type:'youtube',
+        url:'https://drive.google.com/file/d/' + driveId + '/preview'
+      };
+    }
+
+    return {
+      type:'image',
+      url:'https://drive.google.com/thumbnail?id=' + driveId + '&sz=w2000'
+    };
+  }
+
+  if(isVideoUrl(url)){
+    return {
+      type:'video',
+      url:url
+    };
+  }
+
+  return {
+    type:'image',
+    url:url
+  };
 }
 
-return {
-type:'image',
-url:url
-};
+function youtubeEmbedUrl(url){
+  const s = String(url || '');
 
-}).filter(Boolean);
+  let id = '';
 
-}catch(e){
+  let m =
+    s.match(/youtube\.com\/embed\/([^?&/]+)/) ||
+    s.match(/youtube\.com\/shorts\/([^?&/]+)/) ||
+    s.match(/youtu\.be\/([^?&/]+)/) ||
+    s.match(/[?&]v=([^?&/]+)/);
 
-return [];
+  if(m && m[1]){
+    id = m[1];
+  }
 
+  if(!id){
+    return '';
+  }
+
+  return 'https://www.youtube.com/embed/' + id;
 }
 
+function googleDriveId(url){
+  const s = String(url || '');
+
+  let m =
+    s.match(/\/file\/d\/([^/]+)/) ||
+    s.match(/[?&]id=([^&]+)/) ||
+    s.match(/\/d\/([^/]+)/);
+
+  return m && m[1] ? m[1] : '';
+}
+
+function isVideoUrl(url){
+  return /\.(mp4|mov|m4v|webm|ogg)(\?|#|$)/i.test(String(url || ''));
+}
+
+function isLikelyVideo(url){
+  const s = String(url || '').toLowerCase();
+
+  return isVideoUrl(s) ||
+    s.includes('/preview') ||
+    s.includes('video');
+}
+
+function parseDate(v){
+  if(!v){
+    return 0;
+  }
+
+  const raw = String(v).trim();
+
+  if(!raw){
+    return 0;
+  }
+
+  let s = raw
+    .replace(/[年月]/g,'/')
+    .replace(/日/g,'')
+    .replace(/\./g,'/')
+    .replace(/-/g,'/')
+    .replace(/\s+/g,' ')
+    .trim();
+
+  let t = Date.parse(s);
+
+  if(!isNaN(t)){
+    return t;
+  }
+
+  const m = s.match(/(\d{4})\/(\d{1,2})\/(\d{1,2})(?:\s+(\d{1,2}):(\d{1,2}))?/);
+
+  if(m){
+    const y = Number(m[1]);
+    const mo = Number(m[2]) - 1;
+    const d = Number(m[3]);
+    const h = Number(m[4] || 0);
+    const mi = Number(m[5] || 0);
+
+    return new Date(y,mo,d,h,mi,0).getTime();
+  }
+
+  return 0;
 }
 
 function getCell(c){
+  if(!c){
+    return '';
+  }
 
-if(!c){
-return '';
-}
-
-return c.f ||
-c.v ||
-'';
-
+  return c.f || c.v || '';
 }
 
 function esc(s){
-
-return String(s || '')
-.replace(/&/g,'&amp;')
-.replace(/</g,'&lt;')
-.replace(/>/g,'&gt;')
-.replace(/"/g,'&quot;')
-.replace(/'/g,'&#39;');
-
+  return String(s || '')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
 }
 
 function escAttr(s){
-
-return esc(s);
-
+  return esc(s);
 }
-
 </script>
 
 </body>
