@@ -3,62 +3,184 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>志木Go map</title>
+
+<title>志木キッチンカーGo map</title>
+
+<meta name="description" content="志木市周辺のキッチンカー出店情報を見るページです。出店募集もこちらから。">
+
+<!-- OGP -->
+<meta property="og:title" content="志木キッチンカーGo map">
+<meta property="og:description" content="志木市周辺のキッチンカー出店情報を見るページです。">
+<meta property="og:type" content="website">
+
+<!-- ここ超重要 -->
+<meta property="og:image" content="https://drive.google.com/thumbnail?id=1zcQqzRT2rV9GCW9sk4nISiM1ubH0qQ5U&sz=w1200">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<meta name="twitter:card" content="summary_large_image">
+
 <style>
-*{box-sizing:border-box}
-html,body{
+*{
+  box-sizing:border-box;
+}
+
+body{
   margin:0;
   padding:0;
-  width:100%;
-  min-height:100%;
-  background:#eef4fb;
-  font-family:"Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+  font-family:
+    "Hiragino Sans",
+    "Yu Gothic",
+    "Meiryo",
+    sans-serif;
+
+  background:
+    linear-gradient(
+      180deg,
+      #fff6e8 0%,
+      #eef7ff 100%
+    );
+
+  color:#24323f;
 }
+
 .wrap{
+  width:100%;
   max-width:640px;
   margin:0 auto;
-  padding:92px 28px 40px;
+  padding:22px 18px 40px;
+}
+
+.card{
+  background:#ffffff;
+  border-radius:28px;
+  padding:22px;
+  box-shadow:
+    0 10px 28px rgba(0,0,0,.14);
+}
+
+.banner{
+  width:100%;
+  display:block;
+  border-radius:22px;
+  margin-bottom:22px;
+}
+
+.title{
   text-align:center;
-}
-h1{
-  margin:0 0 26px;
-  font-size:42px;
+  font-size:34px;
+  line-height:1.3;
   font-weight:900;
-  color:#0b63a5;
+  color:#ea6b00;
+  margin-bottom:18px;
 }
-.lead{
-  margin:0 0 70px;
-  font-size:23px;
+
+.text{
+  text-align:center;
+  font-size:19px;
+  line-height:1.8;
   font-weight:700;
-  color:#666;
+  margin-bottom:28px;
 }
+
 .btn{
   display:block;
   width:100%;
-  padding:34px 18px;
-  margin:0 0 34px;
-  border-radius:22px;
   text-decoration:none;
-  color:#fff;
-  font-size:31px;
+  text-align:center;
+  border-radius:24px;
+  padding:24px 16px;
+  margin-bottom:18px;
+  font-size:28px;
+  line-height:1.4;
   font-weight:900;
+  box-shadow:
+    0 8px 18px rgba(0,0,0,.16);
 }
-.blue{background:#2f83dc}
-.orange{background:#ff7318}
+
+.view{
+  background:#ff8b00;
+  color:#ffffff;
+}
+
+.entry{
+  background:#1e88e5;
+  color:#ffffff;
+}
+
+.sub{
+  display:block;
+  margin-top:8px;
+  font-size:16px;
+  line-height:1.6;
+  font-weight:700;
+}
+
+.note{
+  margin-top:10px;
+  text-align:center;
+  font-size:15px;
+  line-height:1.8;
+  color:#555;
+}
 </style>
 </head>
+
 <body>
+
 <div class="wrap">
-  <h1>志木Go map</h1>
-  <p class="lead">キッチンカーの出店情報をすぐ確認</p>
 
-  <a class="btn blue" href="https://script.google.com/macros/s/AKfycby85mr045pIXgHCb-y83WxzMiMbfDNLNCykculWmatkAFvAge0vh5VjRHRLAyPJyhIV/exec">
-    出店情報を見る
-  </a>
+  <div class="card">
 
-  <a class="btn orange" href="https://script.google.com/macros/s/AKfycby85mr045pIXgHCb-y83WxzMiMbfDNLNCykculWmatkAFvAge0vh5VjRHRLAyPJyhIV/exec?p=s">
-    出店希望者はこちら
-  </a>
+    <img
+      class="banner"
+      src="https://drive.google.com/thumbnail?id=1zcQqzRT2rV9GCW9sk4nISiM1ubH0qQ5U&sz=w1600"
+      alt="志木キッチンカーGo map">
+
+    <div class="title">
+      志木キッチンカー<br>
+      Go map
+    </div>
+
+    <div class="text">
+      志木市周辺の<br>
+      キッチンカー出店情報を<br>
+      見つけやすくまとめています。
+    </div>
+
+    <a
+      class="btn view"
+      href="https://script.google.com/macros/s/AKfycby85mr045pIXgHCb-y83WxzMiMbfDNLNCykculWmatkAFvAge0vh5VjRHRLAyPJyhIV/exec">
+
+      出店情報を見る
+
+      <span class="sub">
+        今日のキッチンカー情報はこちら
+      </span>
+
+    </a>
+
+    <a
+      class="btn entry"
+      href="https://forms.gle/zrDqUMsHXihy5tRJ6">
+
+      出店募集
+
+      <span class="sub">
+        出店登録・掲載はこちら
+      </span>
+
+    </a>
+
+    <div class="note">
+      登録・掲載は無料です。<br>
+      キッチンカー情報を地域の人に届けるためのページです。
+    </div>
+
+  </div>
+
 </div>
+
 </body>
 </html>
