@@ -2,8 +2,29 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<meta property="fb:app_id" content="1519320129765759">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>志木Go map</title>
+<meta name="description" content="キッチンカーの出店情報をリアルタイムでお届けします。">
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="志木Go map">
+<meta property="og:title" content="志木Go map">
+<meta property="og:description" content="キッチンカーの出店情報をリアルタイムでお届けします。">
+<meta property="og:url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/app.html">
+<meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/top-banner.jpg?v=501">
+<meta property="og:image:secure_url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/top-banner.jpg?v=501">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="志木Go map">
+<meta name="twitter:description" content="キッチンカーの出店情報をリアルタイムでお届けします。">
+<meta name="twitter:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/top-banner.jpg?v=501">
+
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:linear-gradient(180deg,#eef5fb 0%,#fff 100%);font-family:"Hiragino Sans","Yu Gothic","Meiryo",sans-serif;color:#17324d}
@@ -17,6 +38,7 @@ body{margin:0;background:linear-gradient(180deg,#eef5fb 0%,#fff 100%);font-famil
 .tab{min-height:62px;border-radius:18px;font-size:20px;font-weight:900;border:0}
 .active{background:linear-gradient(135deg,#1687e0,#0d5fa8);color:#fff}
 .normal{background:#fff;color:#456;box-shadow:0 6px 16px rgba(20,70,120,.08)}
+.note{margin:18px 0;background:#fff;border-radius:20px;padding:16px;font-size:16px;line-height:1.7;font-weight:800;color:#5b6d7c;text-align:center;box-shadow:0 6px 16px rgba(20,70,120,.08)}
 .card{background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 8px 22px rgba(20,70,120,.10);margin-bottom:20px;border-top:5px solid #0d5fa8}
 .media{width:100%;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;background:#e9eef4}
 .slide{flex:0 0 100%;aspect-ratio:16/9;scroll-snap-align:start;background:#000}
@@ -31,6 +53,15 @@ body{margin:0;background:linear-gradient(180deg,#eef5fb 0%,#fff 100%);font-famil
 .map{background:linear-gradient(135deg,#1687e0,#0d5fa8);color:#fff}
 .home{background:linear-gradient(135deg,#6c7a89,#34495e);color:#fff;margin-top:30px}
 .loading{text-align:center;padding:40px;font-size:20px;color:#777}
+
+.share{margin-top:20px;padding-top:14px;border-top:1px solid #e4edf5}
+.share-title{font-size:15px;font-weight:900;color:#678;margin-bottom:10px}
+.share-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.share a,.share button{min-height:46px;border:0;border-radius:14px;color:#fff;font-size:15px;font-weight:900;text-decoration:none;display:flex;align-items:center;justify-content:center;font-family:inherit}
+.fb{background:#1877f2}
+.x{background:#000}
+.line{background:#06c755}
+.copy{background:#e1306c}
 </style>
 </head>
 
@@ -45,10 +76,12 @@ body{margin:0;background:linear-gradient(180deg,#eef5fb 0%,#fff 100%);font-famil
 </div>
 </div>
 
-<div class="tabs">
+<div class="tabs" id="tabs">
 <button id="latestBtn" class="tab active" onclick="showLatest()">最新情報</button>
 <button id="archiveBtn" class="tab normal" onclick="showArchive()">アーカイブ</button>
 </div>
+
+<div class="note" id="note">新しい出店情報から順番に表示します。</div>
 
 <div id="list"><div class="loading">読み込み中...</div></div>
 
@@ -60,6 +93,9 @@ body{margin:0;background:linear-gradient(180deg,#eef5fb 0%,#fff 100%);font-famil
 const SHEET_ID='12pq1Flwl_Ol61frvAMhdFkpDzoTdGsnnzystje8jEXw';
 const SHEET_NAME='公開用';
 
+const SITE_ROOT='https://ichirohns-jpg.github.io/shiki.gomap-001/';
+const BASE_URL=SITE_ROOT+'app.html';
+
 let ALL=[];
 
 window.handleSheet=function(json){
@@ -68,10 +104,10 @@ window.handleSheet=function(json){
 
     ALL=rows.map((r,index)=>{
       const c=r.c||[];
-
       const dateText=getCell(c[0]);
 
       return{
+        id:String(index+1),
         rowIndex:index,
         time:dateText,
         sortDate:parseDateForSort(dateText),
@@ -84,13 +120,16 @@ window.handleSheet=function(json){
     }).filter(d=>d.name||d.place||d.msg||d.media);
 
     ALL.sort((a,b)=>{
-      if(b.sortDate!==a.sortDate){
-        return b.sortDate-a.sortDate;
-      }
+      if(b.sortDate!==a.sortDate)return b.sortDate-a.sortDate;
       return b.rowIndex-a.rowIndex;
     });
 
-    showLatest();
+    const id=getParam('id');
+    if(id){
+      showSingle(id);
+    }else{
+      showLatest();
+    }
 
   }catch(e){
     document.getElementById('list').innerHTML='<div class="loading">読み込み失敗</div>';
@@ -99,26 +138,35 @@ window.handleSheet=function(json){
 
 function loadSheet(){
   const script=document.createElement('script');
-
-  script.src=
-    'https://docs.google.com/spreadsheets/d/' +
-    SHEET_ID +
-    '/gviz/tq?sheet=' +
-    encodeURIComponent(SHEET_NAME) +
-    '&tqx=out:json;responseHandler:handleSheet&v=' +
-    Date.now();
-
+  script.src='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?sheet='+encodeURIComponent(SHEET_NAME)+'&tqx=out:json;responseHandler:handleSheet&v='+Date.now();
   document.body.appendChild(script);
 }
-
 loadSheet();
 
+function showSingle(id){
+  document.getElementById('tabs').style.display='none';
+  document.getElementById('note').innerHTML='この出店情報を表示しています。';
+
+  const item=ALL.find(d=>d.id===String(id));
+
+  if(!item){
+    document.getElementById('list').innerHTML='<div class="loading">記事が見つかりません</div>';
+    return;
+  }
+
+  render([item],'記事が見つかりません');
+}
+
 function showLatest(){
+  document.getElementById('tabs').style.display='grid';
+  document.getElementById('note').innerHTML='新しい出店情報から順番に表示します。';
   setTab('latest');
   render(ALL.slice(0,5),'表示できる情報はありません');
 }
 
 function showArchive(){
+  document.getElementById('tabs').style.display='grid';
+  document.getElementById('note').innerHTML='過去の出店情報を表示しています。';
   setTab('archive');
   render(ALL.slice(5),'アーカイブはありません');
 }
@@ -144,8 +192,74 @@ ${mediaHtml(d.media)}
 ${d.place?`<div class="place">📍 ${esc(d.place)}</div>`:''}
 ${d.msg?`<div class="msg">${esc(d.msg)}</div>`:''}
 ${d.map?`<a class="btn map" href="${escAttr(d.map)}" target="_blank" rel="noopener">Googleマップを見る</a>`:''}
+${shareHtml(d)}
 </div>
 </div>`;
+}
+
+function shareHtml(d){
+  const title=d.name||'志木Go map';
+  const place=d.place||'';
+  const msg=d.msg||'';
+  const articleUrl=BASE_URL+'?id='+encodeURIComponent(d.id);
+
+  const shareNo=String(d.id).padStart(3,'0');
+  const facebookOgpUrl=SITE_ROOT+'share-'+shareNo+'.html';
+
+  const copyText=
+title+'\n\n'+
+(place?'場所：'+place+'\n\n':'')+
+(msg?msg+'\n\n':'')+
+articleUrl;
+
+  const xText=title+'\n'+articleUrl;
+  const x='https://twitter.com/intent/tweet?text='+encodeURIComponent(xText);
+
+  const lineText=title+'\n'+articleUrl;
+  const line='https://line.me/R/msg/text/?'+encodeURIComponent(lineText);
+
+  return `
+<div class="share">
+<div class="share-title">この出店情報をシェアする</div>
+<div class="share-grid">
+<button class="fb" onclick='shareToFacebook(${JSON.stringify(copyText)},${JSON.stringify(facebookOgpUrl)})'>Facebook</button>
+<a class="x" href="${escAttr(x)}" target="_blank" rel="noopener noreferrer">X</a>
+<a class="line" href="${escAttr(line)}" target="_blank" rel="noopener noreferrer">LINE</a>
+<button class="copy" onclick='copyShareText(${JSON.stringify(copyText)})'>文章コピー</button>
+</div>
+</div>`;
+}
+
+async function shareToFacebook(copyText,shareUrl){
+  var copied=false;
+
+  try{
+    await navigator.clipboard.writeText(copyText);
+    copied=true;
+  }catch(e){
+    copied=false;
+  }
+
+  if(copied){
+    alert('投稿用文章をコピーしました。Facebookが開いたら、投稿欄を長押しして「貼り付け」してください。');
+  }else{
+    prompt('この文章をコピーしてください',copyText);
+  }
+
+  const fbUrl='https://www.facebook.com/sharer/sharer.php?u='
+    +encodeURIComponent(shareUrl)
+    +'&quote='
+    +encodeURIComponent(copyText);
+
+  location.href=fbUrl;
+}
+
+function copyShareText(text){
+  navigator.clipboard.writeText(text).then(()=>{
+    alert('投稿用文章をコピーしました。FacebookやLINEで貼り付けできます。');
+  }).catch(()=>{
+    prompt('この文章をコピーしてください',text);
+  });
 }
 
 function parseDateForSort(v){
@@ -162,21 +276,13 @@ function parseDateForSort(v){
   let m=s.match(/(\d{4})\/(\d{1,2})\/(\d{1,2})/);
 
   if(m){
-    return new Date(
-      Number(m[1]),
-      Number(m[2])-1,
-      Number(m[3])
-    ).getTime();
+    return new Date(Number(m[1]),Number(m[2])-1,Number(m[3])).getTime();
   }
 
   m=s.match(/(\d{1,2})\/(\d{1,2})/);
 
   if(m){
-    return new Date(
-      2026,
-      Number(m[1])-1,
-      Number(m[2])
-    ).getTime();
+    return new Date(2026,Number(m[1])-1,Number(m[2])).getTime();
   }
 
   return 0;
@@ -271,6 +377,11 @@ function extractUrls(text){
 
 function isVideoUrl(url){
   return /\.(mp4|mov|m4v|webm|ogg)(\?|#|$)/i.test(String(url||''));
+}
+
+function getParam(name){
+  const p=new URLSearchParams(window.location.search);
+  return p.get(name)||'';
 }
 
 function getCell(c){
