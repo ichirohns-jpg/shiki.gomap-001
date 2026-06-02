@@ -1,967 +1,416 @@
-/**
- * 志木キッチンカー GO MAP - 緊急復旧版
- * ・デザインは大きく変えない
- * ・E列メディアURLを優先
- * ・E列が空、または読めない場合はD列メッセージ内URLも拾う
- * ・YouTube shorts / watch / youtu.be 対応
- * ・Google Drive画像 / 動画対応
- * ・トップ最新5件、6件目以降はアーカイブ
- * ・不要な「ホーム画面に追加」説明記事は強制非表示
- */
-
-const BANNER_ID = '1zcQqzRT2rV9GCW9sk4nISiM1ubH0qQ5U';
-const SS_ID = '12pq1Flwl_Ol61frvAMhdFkpDzoTdGsnnzystje8jEXw';
-const FOLDER_NAME = '志木キッチンカーメディア';
-const TZ = 'Asia/Tokyo';
-
-const MAIN_COUNT = 5;
-const PAGE_SIZE = 5;
-const MAX_MEDIA = 5;
-
-const SITE_TITLE = '志木Go map';
-const SITE_DESCRIPTION = '志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図。';
-
-/**
- * 表に出すURL
- */
-const SHARE_URL = 'https://ichirohns-jpg.github.io/shiki.gomap-001/';
-
-/**
- * 見る用URL
- */
-const GITHUB_URL = SHARE_URL;
-
-/**
- * SNSカード用画像
- */
-const SOCIAL_IMAGE_URL = 'https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=restore01';
-
-/* =========================================================
-   入口
-========================================================= */
-
-function doGet(e) {
-  const page = e && e.parameter && e.parameter.p ? String(e.parameter.p) : '';
-
-  let html;
-  if (page === 's') {
-    html = getSenderHtml();
-  } else if (page === 'archive') {
-    html = getUserHtml(true);
-  } else {
-    html = getUserHtml(false);
-  }
-
-  return HtmlService.createHtmlOutput(html)
-    .setTitle(SITE_TITLE)
-    .addMetaTag('viewport', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no')
-    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
-}
-
-/* =========================================================
-   投稿保存
-========================================================= */
-
-function uploadAndSave(d) {
-  try {
-    const sheet = getMainSheet_();
-
-    const name = String(d && d.n ? d.n : '').trim();
-    const place = String(d && d.p ? d.p : '').trim();
-    const msg = String(d && d.m ? d.m : '').trim();
-    const lat = String(d && d.lt ? d.lt : '').trim();
-    const lng = String(d && d.lg ? d.lg : '').trim();
-
-    const mediaList = [];
-
-    const youtubeId = extractYouTubeId_(msg);
-    if (youtubeId) {
-      mediaList.push({
-        type: 'youtube',
-        url: makeYouTubeEmbedUrl_(youtubeId)
-      });
-    }
-
-    const files = d && Array.isArray(d.files) ? d.files : [];
-
-    if (files.length > 0) {
-      const folder = getOrCreateFolder_();
-
-      for (let i = 0; i < files.length; i++) {
-        if (mediaList.length >= MAX_MEDIA) break;
-
-        const fileObj = files[i];
-        if (!fileObj || !fileObj.data) continue;
-
-        const dataUrl = String(fileObj.data || '');
-        const fileName = String(fileObj.name || ('media_' + new Date().getTime()));
-
-        const contentType = dataUrl.substring(5, dataUrl.indexOf(';'));
-        const base64 = dataUrl.substring(dataUrl.indexOf('base64,') + 7);
-        const bytes = Utilities.base64Decode(base64);
-
-        const file = folder.createFile(Utilities.newBlob(bytes, contentType, fileName));
-        file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-
-        if (contentType.indexOf('video/') === 0) {
-          mediaList.push({
-            type: 'driveVideo',
-            url: 'https://drive.google.com/file/d/' + file.getId() + '/preview'
-          });
-        } else {
-          mediaList.push({
-            type: 'image',
-            url: 'https://drive.google.com/thumbnail?id=' + file.getId() + '&sz=w1600'
-          });
-        }
-      }
-    }
-
-    const mapUrl = lat && lng
-      ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(lat + ',' + lng)
-      : '';
-
-    sheet.insertRowBefore(2);
-    sheet.getRange(2, 1, 1, 7).setValues([[
-      new Date(),
-      name,
-      place,
-      msg,
-      JSON.stringify(mediaList),
-      lat && lng ? lat + ',' + lng : '',
-      mapUrl
-    ]]);
-
-    SpreadsheetApp.flush();
-
-    return {
-      ok: true,
-      mapUrl: mapUrl
-    };
-  } catch (e) {
-    return {
-      ok: false,
-      error: e.toString()
-    };
-  }
-}
-
-/* =========================================================
-   データ取得
-========================================================= */
-
-function getEvents() {
-  const sheet = getMainSheet_();
-  const rows = sheet.getDataRange().getValues();
-
-  if (rows.length <= 1) return [];
-
-  rows.shift();
-
-  const data = rows.map(function(r) {
-    const dt = r[0] instanceof Date ? r[0] : new Date(r[0]);
-    const timeMs = !isNaN(dt.getTime()) ? dt.getTime() : 0;
-
-    const timeText = timeMs
-      ? Utilities.formatDate(dt, TZ, 'yyyy/MM/dd HH:mm')
-      : String(r[0] || '');
-
-    const msg = String(r[3] || '');
-    const mediaCell = String(r[4] || '');
-
-    let media = parseMediaList_(mediaCell);
-
-    if (!media || media.length === 0) {
-      media = parseMediaList_(msg);
-    }
-
-    return {
-      time: timeText,
-      timeMs: timeMs,
-      name: String(r[1] || ''),
-      place: String(r[2] || ''),
-      msg: msg,
-      media: media,
-      map: String(r[6] || '')
-    };
-  }).filter(function(r) {
-    return shouldShowEvent_(r);
-  });
-
-  data.sort(function(a, b) {
-    return (b.timeMs || 0) - (a.timeMs || 0);
-  });
-
-  return data;
-}
-
-/**
- * 表示する記事だけ通す
- * ここで不要な説明記事を強制的に消す
- */
-function shouldShowEvent_(r) {
-  if (!r || !r.name) return false;
-
-  const text = String(
-    (r.time || '') + ' ' +
-    (r.name || '') + ' ' +
-    (r.place || '') + ' ' +
-    (r.msg || '') + ' ' +
-    JSON.stringify(r.media || []) + ' ' +
-    (r.map || '')
-  );
-
-  if (text.indexOf('Safariで開いたページ') !== -1) return false;
-  if (text.indexOf('ホーム画面に追加') !== -1) return false;
-  if (text.indexOf('スマートフォンのホーム画面') !== -1) return false;
-  if (text.indexOf('CsCl68YL36o') !== -1) return false;
-
-  return true;
-}
-
-/* =========================================================
-   メディア処理
-========================================================= */
-
-function parseMediaList_(value) {
-  const s = String(value || '').trim();
-  if (!s) return [];
-
-  try {
-    const arr = JSON.parse(s);
-    if (Array.isArray(arr)) {
-      return arr.slice(0, MAX_MEDIA).map(function(x) {
-        return normalizeMediaItem_(x);
-      }).filter(function(x) {
-        return x && x.url;
-      });
-    }
-  } catch (e) {
-  }
-
-  const urls = extractUrls_(s);
-  const targets = urls.length ? urls : [s];
-
-  const media = [];
-
-  for (let i = 0; i < targets.length; i++) {
-    if (media.length >= MAX_MEDIA) break;
-
-    const target = String(targets[i] || '').trim();
-    if (!target) continue;
-
-    const youtubeId = extractYouTubeId_(target);
-    if (youtubeId) {
-      media.push({
-        type: 'youtube',
-        url: makeYouTubeEmbedUrl_(youtubeId)
-      });
-      continue;
-    }
-
-    if (/youtube\.com\/embed/i.test(target)) {
-      media.push({
-        type: 'youtube',
-        url: target
-      });
-      continue;
-    }
-
-    if (/drive\.google\.com\/thumbnail/i.test(target)) {
-      media.push({
-        type: 'image',
-        url: target
-      });
-      continue;
-    }
-
-    if (/drive\.google\.com\/file\/d\//i.test(target)) {
-      media.push({
-        type: 'driveVideo',
-        url: toDrivePreviewUrl_(target)
-      });
-      continue;
-    }
-
-    if (/[?&]id=([a-zA-Z0-9_-]+)/.test(target) && /drive\.google\.com/i.test(target)) {
-      media.push({
-        type: 'driveVideo',
-        url: toDrivePreviewUrl_(target)
-      });
-      continue;
-    }
-
-    if (/\.(mp4|mov|webm|m4v)(\?.*)?$/i.test(target)) {
-      media.push({
-        type: 'video',
-        url: target
-      });
-      continue;
-    }
-
-    if (/\.(jpg|jpeg|png|gif|webp)(\?.*)?$/i.test(target)) {
-      media.push({
-        type: 'image',
-        url: target
-      });
-      continue;
-    }
-  }
-
-  return media;
-}
-
-function normalizeMediaItem_(x) {
-  const type = String(x && x.type ? x.type : '').trim();
-  const url = String(x && x.url ? x.url : '').trim();
-
-  if (!url) return null;
-
-  const youtubeId = extractYouTubeId_(url);
-  if (youtubeId) {
-    return {
-      type: 'youtube',
-      url: makeYouTubeEmbedUrl_(youtubeId)
-    };
-  }
-
-  if (type === 'youtube') {
-    return {
-      type: 'youtube',
-      url: url
-    };
-  }
-
-  if (type === 'driveVideo') {
-    return {
-      type: 'driveVideo',
-      url: toDrivePreviewUrl_(url)
-    };
-  }
-
-  if (type === 'video') {
-    return {
-      type: 'video',
-      url: url
-    };
-  }
-
-  if (/drive\.google\.com\/file\/d\//i.test(url)) {
-    return {
-      type: 'driveVideo',
-      url: toDrivePreviewUrl_(url)
-    };
-  }
-
-  return {
-    type: type || 'image',
-    url: url
-  };
-}
-
-/* =========================================================
-   表示側HTML
-========================================================= */
-
-function getUserHtml(isArchive) {
-  const bannerUrl = 'https://drive.google.com/thumbnail?id=' + BANNER_ID + '&sz=w1200';
-  const baseUrl = ScriptApp.getService().getUrl();
-  const pageTitle = isArchive ? 'アーカイブ' : SITE_TITLE;
-
-  return `
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
+<meta charset="UTF-8">
+<meta property="fb:app_id" content="1519320129765759">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>${escapeHtml_(SITE_TITLE)}</title>
+<title>志木Go map</title>
+<meta name="description" content="キッチンカーの出店情報をリアルタイムでお届けします。">
 
-  <meta name="description" content="${escapeHtml_(SITE_DESCRIPTION)}">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="志木Go map">
+<meta property="og:title" content="志木Go map">
+<meta property="og:description" content="キッチンカーの出店情報をリアルタイムでお届けします。">
+<meta property="og:url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/app.html">
+<meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=505">
+<meta property="og:image:secure_url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=505">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 
-  <meta property="og:type" content="website">
-  <meta property="og:locale" content="ja_JP">
-  <meta property="og:site_name" content="${escapeHtml_(SITE_TITLE)}">
-  <meta property="og:url" content="${escapeHtml_(SHARE_URL)}">
-  <meta property="og:title" content="${escapeHtml_(SITE_TITLE)}">
-  <meta property="og:description" content="${escapeHtml_(SITE_DESCRIPTION)}">
-  <meta property="og:image" content="${escapeHtml_(SOCIAL_IMAGE_URL)}">
-  <meta property="og:image:secure_url" content="${escapeHtml_(SOCIAL_IMAGE_URL)}">
-  <meta property="og:image:type" content="image/jpeg">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="${escapeHtml_(SITE_TITLE)}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="志木Go map">
+<meta name="twitter:description" content="キッチンカーの出店情報をリアルタイムでお届けします。">
+<meta name="twitter:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=505">
 
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="${escapeHtml_(SITE_TITLE)}">
-  <meta name="twitter:description" content="${escapeHtml_(SITE_DESCRIPTION)}">
-  <meta name="twitter:image" content="${escapeHtml_(SOCIAL_IMAGE_URL)}">
-
-  <style>
-    body {
-      font-family: sans-serif;
-      background: #f2f5f8;
-      margin: 0;
-      padding: 0;
-      color: #333;
-    }
-
-    .header {
-      width: 100%;
-      max-width: 800px;
-      margin: 0 auto;
-      background: white;
-    }
-
-    .banner {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    .page-title {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 18px 15px 0;
-      font-size: 24px;
-      font-weight: bold;
-      color: #004ea2;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 20px;
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 20px 15px;
-    }
-
-    .card {
-      background: white;
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.05);
-      border-top: 5px solid #004ea2;
-      margin-bottom: 10px;
-    }
-
-    .media {
-      width: 100%;
-      height: 350px;
-      background: #eee;
-      display: flex;
-      overflow-x: auto;
-      overflow-y: hidden;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .media-slide {
-      flex: 0 0 100%;
-      height: 350px;
-      scroll-snap-align: start;
-      background: #000;
-    }
-
-    .media img,
-    .media video,
-    .media iframe {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border: none;
-      display: block;
-    }
-
-    .no-image {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 350px;
-      color: #aaa;
-      font-size: 22px;
-      background: #f1f1f1;
-    }
-
-    .p-20 {
-      padding: 20px;
-    }
-
-    .time-text {
-      font-size: 13px;
-      color: #999;
-    }
-
-    .shop-name {
-      font-size: 24px;
-      font-weight: bold;
-      color: #004ea2;
-      margin: 8px 0;
-      word-break: break-word;
-    }
-
-    .loc {
-      background: #fff3e0;
-      color: #e65100;
-      padding: 6px 12px;
-      border-radius: 5px;
-      font-weight: bold;
-      display: inline-block;
-      margin-bottom: 12px;
-      word-break: break-word;
-    }
-
-    .msg {
-      font-size: 18px;
-      line-height: 1.8;
-      white-space: pre-wrap;
-      margin-bottom: 15px;
-      word-break: break-word;
-    }
-
-    .btn {
-      display: block;
-      text-align: center;
-      padding: 14px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: bold;
-      background: #004ea2;
-      color: white;
-    }
-
-    .bottom-actions {
-      display: none;
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 24px 15px 40px;
-      gap: 12px;
-      grid-template-columns: 1fr 1fr;
-    }
-
-    .bottom-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 56px;
-      border-radius: 10px;
-      text-decoration: none;
-      font-weight: bold;
-      cursor: pointer;
-      border: none;
-      font-size: 17px;
-      box-sizing: border-box;
-    }
-
-    .copy-btn {
-      background: #f0f0f0;
-      color: #333;
-      border: 1px solid #ddd;
-    }
-
-    .archive-btn {
-      background: #004ea2;
-      color: white;
-    }
-
-    #loading {
-      text-align: center;
-      padding: 20px;
-      color: #999;
-    }
-  </style>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#eef5fb 0%,#fff 100%);font-family:"Hiragino Sans","Yu Gothic","Meiryo",sans-serif;color:#17324d}
+.wrap{max-width:760px;margin:0 auto;padding:20px 14px 50px}
+.header{background:#fff;border-radius:30px;overflow:hidden;box-shadow:0 10px 28px rgba(20,70,120,.12);margin-bottom:20px}
+.banner{width:100%;display:block}
+.header-body{padding:24px 20px 28px;text-align:center}
+.title{margin:0;font-size:40px;font-weight:900;color:#0d5fa8}
+.desc{margin-top:14px;font-size:19px;line-height:1.7;font-weight:800;color:#5a6f80}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:22px 0}
+.tab{min-height:62px;border-radius:18px;font-size:20px;font-weight:900;border:0}
+.active{background:linear-gradient(135deg,#1687e0,#0d5fa8);color:#fff}
+.normal{background:#fff;color:#456;box-shadow:0 6px 16px rgba(20,70,120,.08)}
+.note{margin:18px 0;background:#fff;border-radius:20px;padding:16px;font-size:16px;line-height:1.7;font-weight:800;color:#5b6d7c;text-align:center;box-shadow:0 6px 16px rgba(20,70,120,.08)}
+.card{background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 8px 22px rgba(20,70,120,.10);margin-bottom:20px;border-top:5px solid #0d5fa8}
+.media{width:100%;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;background:#e9eef4}
+.slide{flex:0 0 100%;aspect-ratio:16/9;scroll-snap-align:start;background:#000}
+.slide img,.slide iframe,.slide video{width:100%;height:100%;display:block;border:0;object-fit:cover}
+.noimage{aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;color:#999;font-size:22px;background:#f1f1f1}
+.body{padding:20px}
+.time{font-size:14px;color:#889;font-weight:800}
+.name{margin-top:8px;font-size:28px;line-height:1.3;font-weight:900;color:#0d5fa8}
+.place{margin-top:10px;display:inline-block;background:#fff3e0;color:#e65100;padding:7px 12px;border-radius:8px;font-size:17px;font-weight:900}
+.msg{margin-top:14px;font-size:18px;line-height:1.85;color:#334;white-space:pre-wrap}
+.btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:60px;border-radius:18px;text-decoration:none;font-size:18px;font-weight:900;margin-top:16px}
+.map{background:linear-gradient(135deg,#1687e0,#0d5fa8);color:#fff}
+.home{background:linear-gradient(135deg,#6c7a89,#34495e);color:#fff;margin-top:30px}
+.loading{text-align:center;padding:40px;font-size:20px;color:#777}
+.share{margin-top:20px;padding-top:14px;border-top:1px solid #e4edf5}
+.share-title{font-size:15px;font-weight:900;color:#678;margin-bottom:10px}
+.share-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.share a,.share button{min-height:46px;border:0;border-radius:14px;color:#fff;font-size:15px;font-weight:900;text-decoration:none;display:flex;align-items:center;justify-content:center;font-family:inherit}
+.fb{background:#1877f2}
+.x{background:#000}
+.line{background:#06c755}
+.copy{background:#e1306c}
+</style>
 </head>
 
 <body>
-  <div class="header">
-    <img src="${bannerUrl}" class="banner">
-  </div>
+<div class="wrap">
 
-  <div class="page-title">${pageTitle}</div>
+<div class="header">
+<img class="banner" src="https://drive.google.com/thumbnail?id=1zcQqzRT2rV9GCW9sk4nISiM1ubH0qQ5U&sz=w2000">
+<div class="header-body">
+<h1 class="title">志木Go map</h1>
+<div class="desc">キッチンカーの出店情報を<br>リアルタイムでお届けします</div>
+</div>
+</div>
 
-  <div id="list" class="grid"></div>
-  <div id="loading">読み込み中...</div>
+<div class="tabs" id="tabs">
+<button id="latestBtn" class="tab active" onclick="showLatest()">最新情報</button>
+<button id="archiveBtn" class="tab normal" onclick="showArchive()">アーカイブ</button>
+</div>
 
-  <div id="bottom-actions" class="bottom-actions">
-    <button onclick="copyUrl()" class="bottom-btn copy-btn">URLコピー</button>
-    <a class="bottom-btn archive-btn" href="${isArchive ? baseUrl : baseUrl + '?p=archive'}">${isArchive ? '最新に戻る' : 'アーカイブ'}</a>
-  </div>
+<div class="note" id="note">新しい出店情報から順番に表示します。</div>
 
-  <script>
-    const SHARE_URL = "${SHARE_URL}";
-    const MAIN_COUNT = ${MAIN_COUNT};
-    const PAGE_SIZE = ${PAGE_SIZE};
-    const IS_ARCHIVE = ${isArchive ? 'true' : 'false'};
+<div id="list"><div class="loading">読み込み中...</div></div>
 
-    let all = [];
-    let visible = [];
-    let idx = 0;
-    let loadingLock = false;
+<a class="btn home" href="https://ichirohns-jpg.github.io/shiki.gomap-001/">← トップに戻る</a>
 
-    google.script.run
-      .withSuccessHandler(function(data) {
-        all = data || [];
-        visible = IS_ARCHIVE ? all.slice(MAIN_COUNT) : all.slice(0, MAIN_COUNT);
+</div>
 
-        if (visible.length === 0) {
-          document.getElementById('list').innerHTML =
-            '<p style="grid-column:1/-1;text-align:center;padding:40px;color:#999;">表示できる情報はありません</p>';
-        }
+<script>
+const SHEET_ID='12pq1Flwl_Ol61frvAMhdFkpDzoTdGsnnzystje8jEXw';
+const SHEET_NAME='公開用';
 
-        render();
-      })
-      .withFailureHandler(function() {
-        document.getElementById('list').innerHTML =
-          '<p style="grid-column:1/-1;text-align:center;padding:40px;color:#999;">読み込みに失敗しました</p>';
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('bottom-actions').style.display = 'grid';
-      })
-      .getEvents();
+const SITE_ROOT='https://ichirohns-jpg.github.io/shiki.gomap-001/';
+const BASE_URL=SITE_ROOT+'app.html';
 
-    function render() {
-      if (idx >= visible.length) {
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('bottom-actions').style.display = 'grid';
-        return;
-      }
+let ALL=[];
 
-      const list = document.getElementById('list');
-      const batch = visible.slice(idx, idx + PAGE_SIZE);
+window.handleSheet=function(json){
+  try{
+    const rows=json.table.rows||[];
 
-      batch.forEach(function(d) {
-        const div = document.createElement('div');
-        div.className = 'card';
+    ALL=rows.map((r,index)=>{
+      const c=r.c||[];
+      const dateText=getCell(c[0]);
 
-        let mH = '<div class="media">';
+      return{
+        id:String(index+1),
+        rowIndex:index,
+        time:dateText,
+        sortDate:parseDateForSort(dateText),
+        name:getCell(c[1]),
+        place:getCell(c[2]),
+        msg:getCell(c[3]),
+        media:getCell(c[4]),
+        map:getCell(c[6])
+      };
+    }).filter(d=>d.name||d.place||d.msg||d.media);
 
-        if (!d.media || !d.media.length) {
-          mH += '<div class="no-image">No Image</div>';
-        } else {
-          d.media.forEach(function(m) {
-            mH += '<div class="media-slide">';
+    ALL.sort((a,b)=>{
+      if(b.sortDate!==a.sortDate)return b.sortDate-a.sortDate;
+      return b.rowIndex-a.rowIndex;
+    });
 
-            if (m.type === 'youtube' || m.type === 'driveVideo') {
-              mH += '<iframe src="' + escAttr(m.url) + '" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
-            } else if (m.type === 'video') {
-              mH += '<video src="' + escAttr(m.url) + '" controls muted playsinline></video>';
-            } else {
-              mH += '<img src="' + escAttr(m.url) + '" loading="lazy">';
-            }
-
-            mH += '</div>';
-          });
-        }
-
-        mH += '</div>';
-
-        div.innerHTML =
-          mH +
-          '<div class="p-20">' +
-            '<div class="time-text">' + esc(d.time) + '</div>' +
-            '<div class="shop-name">' + esc(d.name) + '</div>' +
-            '<div class="loc">📍 ' + esc(d.place) + '</div>' +
-            '<div class="msg">' + esc(d.msg) + '</div>' +
-            (d.map ? '<a href="' + escAttr(d.map) + '" class="btn" target="_blank" rel="noopener noreferrer">Googleマップを見る</a>' : '') +
-          '</div>';
-
-        list.appendChild(div);
-      });
-
-      idx += PAGE_SIZE;
-
-      if (idx >= visible.length) {
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('bottom-actions').style.display = 'grid';
-      }
+    const id=getParam('id');
+    if(id){
+      showSingle(id);
+    }else{
+      showLatest();
     }
 
-    function copyUrl() {
-      const shareText =
-        '🚚 志木Go map\\n' +
-        '志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図。\\n' +
-        SHARE_URL;
+  }catch(e){
+    document.getElementById('list').innerHTML='<div class="loading">読み込み失敗</div>';
+  }
+};
 
-      const t = document.createElement('textarea');
-      t.value = shareText;
-      document.body.appendChild(t);
-      t.select();
-      t.setSelectionRange(0, 99999);
+function loadSheet(){
+  const script=document.createElement('script');
+  script.src='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?sheet='+encodeURIComponent(SHEET_NAME)+'&tqx=out:json;responseHandler:handleSheet&v='+Date.now();
+  document.body.appendChild(script);
+}
+loadSheet();
 
-      try {
-        document.execCommand('copy');
-        alert('紹介文とリンクをコピーしました！');
-      } catch (e) {
-        prompt('コピーしてシェアしてください：', shareText);
-      }
+function showSingle(id){
+  document.getElementById('tabs').style.display='none';
+  document.getElementById('note').innerHTML='この出店情報を表示しています。';
 
-      document.body.removeChild(t);
-    }
+  const item=ALL.find(d=>d.id===String(id));
 
-    window.onscroll = function() {
-      if (loadingLock) return;
+  if(!item){
+    document.getElementById('list').innerHTML='<div class="loading">記事が見つかりません</div>';
+    return;
+  }
 
-      if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 300) {
-        loadingLock = true;
-        render();
-        setTimeout(function() {
-          loadingLock = false;
-        }, 500);
-      }
-    };
-
-    function esc(s) {
-      return String(s || '').replace(/[&<>"']/g, function(m) {
-        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[m];
-      });
-    }
-
-    function escAttr(s) {
-      return esc(s);
-    }
-  </script>
-</body>
-</html>`;
+  render([item],'記事が見つかりません');
 }
 
-/* =========================================================
-   投稿側HTML
-========================================================= */
+function showLatest(){
+  document.getElementById('tabs').style.display='grid';
+  document.getElementById('note').innerHTML='新しい出店情報から順番に表示します。';
+  setTab('latest');
+  render(ALL.slice(0,5),'表示できる情報はありません');
+}
 
-function getSenderHtml() {
+function showArchive(){
+  document.getElementById('tabs').style.display='grid';
+  document.getElementById('note').innerHTML='過去の出店情報を表示しています。';
+  setTab('archive');
+  render(ALL.slice(5),'アーカイブはありません');
+}
+
+function setTab(mode){
+  document.getElementById('latestBtn').className=mode==='latest'?'tab active':'tab normal';
+  document.getElementById('archiveBtn').className=mode==='archive'?'tab active':'tab normal';
+}
+
+function render(list,emptyText){
+  let html='';
+  list.forEach(d=>html+=card(d));
+  document.getElementById('list').innerHTML=html||'<div class="loading">'+emptyText+'</div>';
+}
+
+function card(d){
+return `
+<div class="card">
+${mediaHtml(d.media)}
+<div class="body">
+<div class="time">${esc(d.time)}</div>
+<div class="name">${esc(d.name)}</div>
+${d.place?`<div class="place">📍 ${esc(d.place)}</div>`:''}
+${d.msg?`<div class="msg">${esc(d.msg)}</div>`:''}
+${d.map?`<a class="btn map" href="${escAttr(d.map)}" target="_blank" rel="noopener">Googleマップを見る</a>`:''}
+${shareHtml(d)}
+</div>
+</div>`;
+}
+
+function shareHtml(d){
+  const title=d.name||'志木Go map';
+  const place=d.place||'';
+  const msg=d.msg||'';
+  const articleUrl=BASE_URL+'?id='+encodeURIComponent(d.id);
+  const shareUrl=SITE_ROOT+'share.html?id='+encodeURIComponent(d.id);
+
+  const shareText =
+'【志木Go map】\n\n' +
+title + '\n\n' +
+(place ? '場所：' + place + '\n\n' : '') +
+(msg ? msg + '\n\n' : '') +
+'詳しくはこちら\n' +
+shareUrl;
+
+  const xText =
+'【志木Go map】\n\n' +
+title + '\n\n' +
+(place ? '場所：' + place + '\n\n' : '') +
+(msg ? msg + '\n\n' : '') +
+'詳しくはこちら';
+
+  const x='https://twitter.com/intent/tweet?text='
+    +encodeURIComponent(xText)
+    +'&url='
+    +encodeURIComponent(shareUrl);
+
+  const line='https://line.me/R/msg/text/?'+encodeURIComponent(shareText);
+
   return `
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <title>投稿パネル</title>
+<div class="share">
+<div class="share-title">この出店情報をシェアする</div>
+<div class="share-grid">
+<button class="fb" onclick='shareToFacebook(${JSON.stringify(shareText)},${JSON.stringify(shareUrl)})'>Facebook</button>
+<a class="x" href="${escAttr(x)}" target="_blank" rel="noopener noreferrer">X</a>
+<a class="line" href="${escAttr(line)}" target="_blank" rel="noopener noreferrer">LINE</a>
+<button class="copy" onclick='copyShareText(${JSON.stringify(shareText)})'>文章コピー</button>
+</div>
+</div>`;
+}
 
-  <style>
-    body {
-      font-family: sans-serif;
-      background: #fff5f0;
-      padding: 20px;
-      text-align: center;
+async function shareToFacebook(copyText,shareUrl){
+  var copied=false;
+
+  try{
+    await navigator.clipboard.writeText(copyText);
+    copied=true;
+  }catch(e){
+    copied=false;
+  }
+
+  if(copied){
+    alert('投稿用文章をコピーしました。Facebookが開いたら、投稿欄を長押しして「貼り付け」してください。');
+  }else{
+    prompt('この文章をコピーしてください',copyText);
+  }
+
+  const fbUrl='https://www.facebook.com/sharer/sharer.php?u='
+    +encodeURIComponent(shareUrl)
+    +'&quote='
+    +encodeURIComponent(copyText);
+
+  location.href=fbUrl;
+}
+
+function copyShareText(text){
+  navigator.clipboard.writeText(text).then(()=>{
+    alert('投稿用文章をコピーしました。Facebook・LINE・Xで貼り付けできます。');
+  }).catch(()=>{
+    prompt('この文章をコピーしてください',text);
+  });
+}
+
+function parseDateForSort(v){
+  let s=String(v||'').trim();
+
+  s=s
+    .replace(/[年月]/g,'/')
+    .replace(/日/g,'')
+    .replace(/\./g,'/')
+    .replace(/-/g,'/')
+    .replace(/\s+/g,' ')
+    .trim();
+
+  let m=s.match(/(\d{4})\/(\d{1,2})\/(\d{1,2})/);
+
+  if(m){
+    return new Date(Number(m[1]),Number(m[2])-1,Number(m[3])).getTime();
+  }
+
+  m=s.match(/(\d{1,2})\/(\d{1,2})/);
+
+  if(m){
+    return new Date(2026,Number(m[1])-1,Number(m[2])).getTime();
+  }
+
+  return 0;
+}
+
+function mediaHtml(s){
+  const media=parseMedia(s);
+  if(!media.length)return `<div class="noimage">No Image</div>`;
+
+  let html='<div class="media">';
+  media.forEach(m=>{
+    html+='<div class="slide">';
+    if(m.kind==='youtube'||m.kind==='driveVideo'){
+      html+=`<iframe src="${escAttr(m.url)}" allowfullscreen loading="lazy"></iframe>`;
+    }else if(m.kind==='video'){
+      html+=`<video src="${escAttr(m.url)}" controls playsinline preload="metadata"></video>`;
+    }else{
+      html+=`<img src="${escAttr(m.url)}" loading="lazy">`;
     }
+    html+='</div>';
+  });
+  html+='</div>';
+  return html;
+}
 
-    .box {
-      max-width: 450px;
-      margin: auto;
-      background: white;
-      padding: 25px;
-      border-radius: 20px;
-      border: 3px solid #ff5722;
-    }
+function parseMedia(s){
+  if(!s)return[];
+  const text=String(s).trim();
+  let urls=[];
 
-    input,
-    textarea {
-      width: 100%;
-      padding: 15px;
-      margin: 10px 0;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      box-sizing: border-box;
-      font-size: 16px;
-    }
-
-    .btn {
-      width: 100%;
-      padding: 18px;
-      border: none;
-      border-radius: 12px;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-      background: #ff5722;
-      color: white;
-    }
-
-    .gps {
-      background: #34a853;
-      color: white;
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
-      width: 100%;
-      margin-bottom: 10px;
-      font-weight: bold;
-    }
-
-    .note {
-      font-size: 12px;
-      color: #777;
-      line-height: 1.5;
-      margin-top: -4px;
-      margin-bottom: 8px;
-    }
-  </style>
-</head>
-
-<body>
-  <div class="box">
-    <h2>🚚 投稿パネル</h2>
-
-    <button onclick="getGPS()" class="gps">📍 現在地取得</button>
-
-    <input type="text" id="n" placeholder="店名">
-    <input type="text" id="p" placeholder="場所">
-    <input type="file" id="f" accept="image/*,video/*" multiple>
-    <div class="note">画像・動画は最大5枚まで。YouTubeリンクはメッセージ欄へ。</div>
-    <textarea id="m" rows="3" placeholder="メッセージ（YouTubeリンクOK）"></textarea>
-
-    <button id="sB" class="btn" onclick="send()">送信</button>
-  </div>
-
-  <script>
-    let lt = '';
-    let lg = '';
-
-    function getGPS() {
-      navigator.geolocation.getCurrentPosition(
-        function(p) {
-          lt = p.coords.latitude;
-          lg = p.coords.longitude;
-          alert('取得完了');
-        },
-        function() {
-          alert('位置情報を取得できませんでした');
-        }
-      );
-    }
-
-    function send() {
-      const btn = document.getElementById('sB');
-      const files = Array.from(document.getElementById('f').files || []).slice(0, 5);
-
-      btn.disabled = true;
-      btn.textContent = '送信中...';
-
-      readFiles(files, function(fileList) {
-        const data = {
-          n: document.getElementById('n').value,
-          p: document.getElementById('p').value,
-          m: document.getElementById('m').value,
-          lt: lt,
-          lg: lg,
-          files: fileList
-        };
-
-        google.script.run
-          .withSuccessHandler(function() {
-            alert('送信完了');
-            location.reload();
-          })
-          .withFailureHandler(function(e) {
-            alert('エラー: ' + (e && e.message ? e.message : e));
-            btn.disabled = false;
-            btn.textContent = '送信';
-          })
-          .uploadAndSave(data);
-      });
-    }
-
-    function readFiles(files, callback) {
-      if (!files.length) {
-        callback([]);
-        return;
-      }
-
-      const result = [];
-      let done = 0;
-
-      files.forEach(function(file) {
-        const r = new FileReader();
-
-        r.onload = function(e) {
-          result.push({
-            name: file.name,
-            data: e.target.result
+  try{
+    const data=JSON.parse(text);
+    if(Array.isArray(data)){
+      data.forEach(x=>{
+        if(typeof x==='string'){
+          urls.push({url:x,type:''});
+        }else if(x&&typeof x==='object'){
+          urls.push({
+            url:String(x.url||x.src||x.link||'').trim(),
+            type:String(x.type||x.kind||'').trim()
           });
-
-          done++;
-          if (done === files.length) {
-            callback(result);
-          }
-        };
-
-        r.readAsDataURL(file);
+        }
+      });
+    }else if(data&&typeof data==='object'){
+      urls.push({
+        url:String(data.url||data.src||data.link||'').trim(),
+        type:String(data.type||data.kind||'').trim()
       });
     }
-  </script>
+  }catch(e){
+    urls=extractUrls(text).map(u=>({url:u,type:''}));
+  }
+
+  return urls.map(x=>makeMedia(x.url,x.type)).filter(Boolean);
+}
+
+function makeMedia(url,type){
+  if(!url)return null;
+  const t=String(type||'').toLowerCase();
+
+  const yt=youtubeEmbed(url);
+  if(yt)return{kind:'youtube',url:yt};
+
+  const driveId=driveFileId(url);
+  if(driveId){
+    if(t.includes('video')||t.includes('movie')||isVideoUrl(url)||String(url).includes('/preview')){
+      return{kind:'driveVideo',url:'https://drive.google.com/file/d/'+driveId+'/preview'};
+    }
+    return{kind:'image',url:'https://drive.google.com/thumbnail?id='+driveId+'&sz=w2000'};
+  }
+
+  if(t.includes('video')||isVideoUrl(url))return{kind:'video',url:url};
+  return{kind:'image',url:url};
+}
+
+function youtubeEmbed(url){
+  const s=String(url||'');
+  const m=s.match(/youtube\.com\/embed\/([^?&/]+)/)||s.match(/youtube\.com\/shorts\/([^?&/]+)/)||s.match(/youtu\.be\/([^?&/]+)/)||s.match(/[?&]v=([^?&/]+)/);
+  if(!m||!m[1])return'';
+  return'https://www.youtube.com/embed/'+m[1];
+}
+
+function driveFileId(url){
+  const s=String(url||'');
+  const m=s.match(/\/file\/d\/([^/]+)/)||s.match(/[?&]id=([^&]+)/)||s.match(/\/d\/([^/]+)/);
+  return m&&m[1]?m[1]:'';
+}
+
+function extractUrls(text){
+  return String(text||'').match(/https?:\/\/[^\s"'<>]+/g)||[];
+}
+
+function isVideoUrl(url){
+  return /\.(mp4|mov|m4v|webm|ogg)(\?|#|$)/i.test(String(url||''));
+}
+
+function getParam(name){
+  const p=new URLSearchParams(window.location.search);
+  return p.get(name)||'';
+}
+
+function getCell(c){
+  if(!c)return'';
+  if(c.f!==null&&c.f!==undefined)return String(c.f);
+  if(c.v!==null&&c.v!==undefined)return String(c.v);
+  return'';
+}
+
+function esc(s){
+  return String(s||'')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
+
+function escAttr(s){
+  return esc(s);
+}
+</script>
+
 </body>
-</html>`;
-}
-
-/* =========================================================
-   共通関数
-========================================================= */
-
-function getMainSheet_() {
-  const ss = SpreadsheetApp.openById(SS_ID);
-  const sheet = ss.getSheets()[0];
-
-  if (sheet.getLastRow() === 0) {
-    sheet.appendRow(['日時', '店名', '場所', 'メッセージ', 'メディアURL', '緯度経度', 'マップURL']);
-  }
-
-  return sheet;
-}
-
-function getOrCreateFolder_() {
-  const folders = DriveApp.getFoldersByName(FOLDER_NAME);
-  if (folders.hasNext()) return folders.next();
-  return DriveApp.createFolder(FOLDER_NAME);
-}
-
-function extractUrls_(text) {
-  const s = String(text || '');
-  const matches = s.match(/https?:\/\/[^\s　]+/g);
-  return matches || [];
-}
-
-function extractYouTubeId_(text) {
-  const s = String(text || '');
-
-  let m = s.match(/youtube\.com\/watch\?v=([a-zA-Z0-9_-]{11})/);
-  if (m) return m[1];
-
-  m = s.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
-  if (m) return m[1];
-
-  m = s.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/);
-  if (m) return m[1];
-
-  m = s.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/);
-  if (m) return m[1];
-
-  return '';
-}
-
-function makeYouTubeEmbedUrl_(id) {
-  return 'https://www.youtube.com/embed/' + id + '?playsinline=1&mute=1&loop=1&playlist=' + id;
-}
-
-function toDrivePreviewUrl_(url) {
-  const s = String(url || '');
-
-  let m = s.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-  if (m) {
-    return 'https://drive.google.com/file/d/' + m[1] + '/preview';
-  }
-
-  m = s.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-  if (m) {
-    return 'https://drive.google.com/file/d/' + m[1] + '/preview';
-  }
-
-  return s;
-}
-
-function escapeHtml_(s) {
-  return String(s || '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
+</html>
