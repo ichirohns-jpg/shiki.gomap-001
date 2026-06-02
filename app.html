@@ -11,8 +11,8 @@
 <meta property="og:title" content="志木Go map｜出店情報">
 <meta property="og:description" content="志木市周辺のキッチンカー出店情報を、スマートフォンで見やすく確認できます。">
 <meta property="og:url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/app.html">
-<meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=20260602">
-<meta property="og:image:secure_url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=20260602">
+<meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=8888">
+<meta property="og:image:secure_url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=8888">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:site_name" content="志木Go map">
@@ -21,7 +21,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="志木Go map｜出店情報">
 <meta name="twitter:description" content="志木市周辺のキッチンカー出店情報を見やすく確認できます。">
-<meta name="twitter:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=20260602">
+<meta name="twitter:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=8888">
 
 <style>
 *{
@@ -37,71 +37,77 @@ html,body{
   -webkit-text-size-adjust:100%;
 }
 
+body{
+  min-height:100vh;
+}
+
 .wrap{
   width:100%;
   max-width:640px;
   margin:0 auto;
-  padding:18px 14px 38px;
+  padding:18px 14px 40px;
 }
 
 .hero{
   background:#ffffff;
-  border:3px solid #1e5bb8;
+  border:4px solid #1e5bb8;
   border-radius:34px;
-  overflow:hidden;
+  padding:20px 20px 28px;
   box-shadow:0 10px 28px rgba(20,70,130,.16);
   margin-bottom:18px;
+  overflow:hidden;
 }
 
-.hero img{
+.hero-img{
   width:100%;
   display:block;
   aspect-ratio:1200/630;
   object-fit:cover;
+  border-radius:24px;
   background:#dfeeff;
-}
-
-.hero-body{
-  padding:22px 18px 28px;
-  text-align:center;
+  margin:0 auto 26px;
 }
 
 h1{
-  margin:0 0 12px;
+  margin:0 0 18px;
   font-size:42px;
   line-height:1.15;
   color:#1268b3;
   font-weight:900;
+  text-align:center;
+  letter-spacing:.02em;
 }
 
 .lead{
   margin:0;
   font-size:22px;
-  line-height:1.7;
+  line-height:1.75;
   font-weight:900;
   color:#1f2937;
+  text-align:center;
 }
 
 .top-buttons{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:12px;
-  margin-top:22px;
+  gap:14px;
+  margin-top:28px;
 }
 
 .top-buttons a{
   display:flex;
   align-items:center;
   justify-content:center;
-  min-height:74px;
+  min-height:78px;
   border-radius:999px;
   text-decoration:none;
-  color:#fff;
+  color:#ffffff;
   font-size:21px;
   line-height:1.25;
   font-weight:900;
   text-align:center;
   padding:10px;
+  box-shadow:0 8px 18px rgba(20,70,130,.16);
 }
 
 .blue{
@@ -115,7 +121,7 @@ h1{
 .tabs{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:12px;
+  gap:14px;
   margin:20px 0 16px;
 }
 
@@ -131,7 +137,7 @@ h1{
 
 .tab.active{
   background:#1e5bb8;
-  color:#fff;
+  color:#ffffff;
 }
 
 .tab.normal{
@@ -141,11 +147,11 @@ h1{
 
 .note{
   background:#ffffff;
-  border-radius:24px;
-  padding:22px 16px;
-  margin-bottom:18px;
+  border-radius:26px;
+  padding:24px 16px;
+  margin-bottom:20px;
   text-align:center;
-  font-size:20px;
+  font-size:21px;
   line-height:1.7;
   font-weight:900;
   color:#1f2937;
@@ -154,11 +160,11 @@ h1{
 
 .card{
   background:#ffffff;
-  border-radius:28px;
+  border-radius:30px;
   overflow:hidden;
-  margin:0 0 18px;
+  margin:0 0 20px;
   box-shadow:0 8px 24px rgba(20,70,130,.14);
-  border:2px solid #d7e9ff;
+  border:3px solid #1e5bb8;
 }
 
 .media{
@@ -170,16 +176,31 @@ h1{
   width:100%;
   display:block;
   object-fit:cover;
-  max-height:420px;
+  max-height:460px;
+}
+
+.video-wrap{
+  position:relative;
+  width:100%;
+  aspect-ratio:16/9;
+  background:#000;
+}
+
+.video-wrap iframe{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  border:0;
 }
 
 .body{
-  padding:20px 18px 22px;
+  padding:22px 18px 24px;
 }
 
 .time{
   display:inline-block;
-  margin-bottom:10px;
+  margin-bottom:12px;
   padding:7px 12px;
   border-radius:999px;
   background:#eef6ff;
@@ -189,7 +210,7 @@ h1{
 }
 
 .name{
-  margin:0 0 10px;
+  margin:0 0 12px;
   font-size:30px;
   line-height:1.3;
   color:#1268b3;
@@ -216,8 +237,8 @@ h1{
 .btns{
   display:grid;
   grid-template-columns:1fr;
-  gap:10px;
-  margin-top:16px;
+  gap:11px;
+  margin-top:18px;
 }
 
 .btn{
@@ -225,10 +246,10 @@ h1{
   width:100%;
   border:none;
   border-radius:999px;
-  padding:16px 12px;
+  padding:17px 12px;
   text-align:center;
   text-decoration:none;
-  color:#fff;
+  color:#ffffff;
   background:#1e5bb8;
   font-size:19px;
   font-weight:900;
@@ -258,7 +279,7 @@ h1{
 .loading{
   background:#ffffff;
   border-radius:26px;
-  padding:28px 18px;
+  padding:30px 18px;
   text-align:center;
   font-size:21px;
   line-height:1.7;
@@ -269,11 +290,11 @@ h1{
 
 .home{
   display:block;
-  margin-top:22px;
+  margin-top:24px;
   padding:18px 12px;
   border-radius:999px;
   background:#607d8b;
-  color:#fff;
+  color:#ffffff;
   text-align:center;
   text-decoration:none;
   font-size:20px;
@@ -298,15 +319,18 @@ h1{
 <div class="wrap">
 
   <section class="hero">
-    <img src="gomap-ogp.jpg?v=20260602" alt="志木Go map">
-    <div class="hero-body">
-      <h1>志木Go map</h1>
-      <p class="lead">キッチンカーの出店情報を<br>リアルタイムでお届けします</p>
+    <img class="hero-img" src="gomap-ogp.jpg?v=8888" alt="志木Go map">
 
-      <div class="top-buttons">
-        <a class="blue" href="app.html?v=20260602">最新情報</a>
-        <a class="orange" href="owner.html">出店希望者はこちら</a>
-      </div>
+    <h1>志木Go map</h1>
+
+    <p class="lead">
+      キッチンカーの出店情報を<br>
+      リアルタイムでお届けします
+    </p>
+
+    <div class="top-buttons">
+      <a class="blue" href="app.html?v=8888">最新情報</a>
+      <a class="orange" href="owner.html">出店希望者はこちら</a>
     </div>
   </section>
 
@@ -321,7 +345,7 @@ h1{
     <div class="loading">出店情報を読み込んでいます...</div>
   </div>
 
-  <a class="home" href="index.html?v=20260602">← トップに戻る</a>
+  <a class="home" href="index.html?v=8888">← トップに戻る</a>
 
   <div class="footer">Shiki Go map</div>
 
@@ -329,15 +353,23 @@ h1{
 
 <script>
 const SHEET_ID = '12pq1Flwl_Ol61frvAMhdFkpDzoTdGsnnzystje8jEXw';
-const SHEET_NAMES = ['シート1','公開用','投稿データ'];
+
+const SHEET_URLS = [
+  'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json;responseHandler=handleSheet',
+  'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?sheet=%E3%82%B7%E3%83%BC%E3%83%881&tqx=out:json;responseHandler=handleSheet',
+  'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?sheet=%E6%8A%95%E7%A8%BF%E3%83%87%E3%83%BC%E3%82%BF&tqx=out:json;responseHandler=handleSheet',
+  'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?sheet=%E5%85%AC%E9%96%8B%E7%94%A8&tqx=out:json;responseHandler=handleSheet'
+];
+
 const SITE_ROOT = 'https://ichirohns-jpg.github.io/shiki.gomap-001/';
 const BASE_URL = SITE_ROOT + 'app.html';
 const SHARE_PAGE = SITE_ROOT + 'share.html';
 const TOP_COUNT = 5;
 
 let ALL = [];
-let sheetIndex = 0;
+let urlIndex = 0;
 let loaded = false;
+let loadingTimer = null;
 
 function getParam(name){
   const p = new URLSearchParams(location.search);
@@ -349,6 +381,36 @@ function getCell(cell){
   if(cell.f !== undefined && cell.f !== null) return String(cell.f).trim();
   if(cell.v !== undefined && cell.v !== null) return String(cell.v).trim();
   return '';
+}
+
+function getDeepText(cell){
+  if(!cell) return '';
+  let out = '';
+
+  try{
+    out += ' ' + JSON.stringify(cell);
+  }catch(e){}
+
+  if(cell.v !== undefined && cell.v !== null) out += ' ' + String(cell.v);
+  if(cell.f !== undefined && cell.f !== null) out += ' ' + String(cell.f);
+  if(cell.p !== undefined && cell.p !== null) out += ' ' + String(cell.p);
+
+  return decodeText(out);
+}
+
+function decodeText(s){
+  return String(s || '')
+    .replace(/\\u003d/g,'=')
+    .replace(/\\u0026/g,'&')
+    .replace(/\\u003c/g,'<')
+    .replace(/\\u003e/g,'>')
+    .replace(/\\\//g,'/')
+    .replace(/&amp;/g,'&')
+    .replace(/%3A/gi,':')
+    .replace(/%2F/gi,'/')
+    .replace(/%3F/gi,'?')
+    .replace(/%3D/gi,'=')
+    .replace(/%26/gi,'&');
 }
 
 function esc(s){
@@ -392,31 +454,66 @@ function parseDateForSort(s){
   return 0;
 }
 
+function collectUrls(row, cells, deepCells){
+  let text = '';
+
+  text += ' ' + cells.join(' ');
+  text += ' ' + deepCells.join(' ');
+
+  try{
+    text += ' ' + JSON.stringify(row);
+  }catch(e){}
+
+  text = decodeText(text);
+
+  const urls = text.match(/https?:\/\/[^\s"'<>]+/g) || [];
+
+  return urls.map(u=>{
+    return decodeText(u)
+      .replace(/[)\],.。]+$/,'')
+      .trim();
+  }).filter(Boolean);
+}
+
+function driveId(url){
+  const u = String(url || '');
+
+  let m = u.match(/\/file\/d\/([^/]+)/);
+  if(m) return m[1];
+
+  m = u.match(/[?&]id=([^&]+)/);
+  if(m) return m[1];
+
+  m = u.match(/\/d\/([^/]+)/);
+  if(m) return m[1];
+
+  return '';
+}
+
 function makeDriveImage(url){
-  if(!url) return '';
-
-  let id = '';
-
-  let m = String(url).match(/\/file\/d\/([^/]+)/);
-  if(m) id = m[1];
-
-  m = String(url).match(/[?&]id=([^&]+)/);
-  if(!id && m) id = m[1];
-
+  const id = driveId(url);
   if(id){
     return 'https://drive.google.com/thumbnail?id=' + encodeURIComponent(id) + '&sz=w1200';
   }
-
   return url;
 }
 
-function isImage(url){
+function makeDrivePreview(url){
+  const id = driveId(url);
+  if(id){
+    return 'https://drive.google.com/file/d/' + encodeURIComponent(id) + '/preview';
+  }
+  return url;
+}
+
+function isDrive(url){
   const u = String(url || '').toLowerCase();
-  return (
-    u.includes('drive.google.com') ||
-    u.includes('googleusercontent.com') ||
-    u.match(/\.(jpg|jpeg|png|gif|webp)(\?|$)/)
-  );
+  return u.includes('drive.google.com') || u.includes('docs.google.com/uc');
+}
+
+function isImageFile(url){
+  const u = String(url || '').toLowerCase();
+  return u.match(/\.(jpg|jpeg|png|gif|webp)(\?|$)/);
 }
 
 function isYoutube(url){
@@ -424,15 +521,46 @@ function isYoutube(url){
   return u.includes('youtube.com') || u.includes('youtu.be');
 }
 
-function findUrlInText(text){
-  const m = String(text || '').match(/https?:\/\/[^\s"'<>]+/);
-  return m ? m[0] : '';
+function youtubeId(url){
+  const u = String(url || '');
+
+  let m = u.match(/youtu\.be\/([a-zA-Z0-9_-]{6,})/);
+  if(m) return m[1];
+
+  m = u.match(/[?&]v=([a-zA-Z0-9_-]{6,})/);
+  if(m) return m[1];
+
+  m = u.match(/\/shorts\/([a-zA-Z0-9_-]{6,})/);
+  if(m) return m[1];
+
+  m = u.match(/\/embed\/([a-zA-Z0-9_-]{6,})/);
+  if(m) return m[1];
+
+  return '';
 }
 
-function findMapUrl(cells, place){
-  const joined = cells.join(' ');
-  const urls = joined.match(/https?:\/\/[^\s"'<>]+/g) || [];
+function findYoutubeUrl(urls){
+  for(const u of urls){
+    if(isYoutube(u)) return u;
+  }
+  return '';
+}
 
+function findDriveUrl(urls){
+  for(const u of urls){
+    if(isDrive(u)) return u;
+  }
+  return '';
+}
+
+function findImageUrl(urls){
+  for(const u of urls){
+    if(isImageFile(u)) return u;
+  }
+  return '';
+}
+
+function findMapUrl(urls, cells, place){
   for(const u of urls){
     const low = u.toLowerCase();
     if(low.includes('google.com/maps') || low.includes('maps.app.goo.gl')){
@@ -440,6 +568,7 @@ function findMapUrl(cells, place){
     }
   }
 
+  const joined = cells.join(' ');
   const latlng = joined.match(/(35\.\d+)\s*,\s*(139\.\d+)/);
   if(latlng){
     return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(latlng[1] + ',' + latlng[2]);
@@ -452,23 +581,20 @@ function findMapUrl(cells, place){
   return '';
 }
 
-function findMediaUrl(cells){
-  const joined = cells.join(' ');
-  const urls = joined.match(/https?:\/\/[^\s"'<>]+/g) || [];
-
-  for(const u of urls){
-    const low = u.toLowerCase();
-    if(
-      low.includes('drive.google.com') ||
-      low.includes('googleusercontent.com') ||
-      low.includes('youtube.com') ||
-      low.includes('youtu.be') ||
-      low.match(/\.(jpg|jpeg|png|gif|webp)(\?|$)/)
-    ){
-      return u;
+function pickByHeader(labels, cells, words){
+  for(let i=0; i<labels.length; i++){
+    const label = String(labels[i] || '');
+    if(words.some(w => label.includes(w))){
+      return cells[i] || '';
     }
   }
+  return '';
+}
 
+function firstNonEmpty(cells, indexes){
+  for(const i of indexes){
+    if(cells[i]) return cells[i];
+  }
   return '';
 }
 
@@ -480,20 +606,42 @@ function looksHeader(cells){
 window.handleSheet = function(json){
   loaded = true;
 
+  if(loadingTimer){
+    clearTimeout(loadingTimer);
+    loadingTimer = null;
+  }
+
   try{
-    const rows = json && json.table && json.table.rows ? json.table.rows : [];
+    const table = json && json.table ? json.table : null;
+    const rows = table && table.rows ? table.rows : [];
+    const labels = table && table.cols ? table.cols.map(c => String(c.label || c.id || '')) : [];
 
     ALL = rows.map((r,index)=>{
       const c = r.c || [];
       const cells = c.map(getCell);
+      const deepCells = c.map(getDeepText);
+      const urls = collectUrls(r, cells, deepCells);
 
-      const dateText = getCell(c[0]);
-      const name = getCell(c[1]);
-      const place = getCell(c[2]);
-      const msg = getCell(c[3]);
-      const mediaCell = getCell(c[4]);
-      const media = mediaCell || findMediaUrl(cells);
-      const map = getCell(c[6]) || findMapUrl(cells, place);
+      const dateText =
+        pickByHeader(labels,cells,['日時','日付','投稿日時','登録日時','タイムスタンプ']) ||
+        firstNonEmpty(cells,[0]);
+
+      const name =
+        pickByHeader(labels,cells,['店名','店舗名','キッチンカー','屋号']) ||
+        firstNonEmpty(cells,[1,2]);
+
+      const place =
+        pickByHeader(labels,cells,['出店場所','場所','住所','所在地']) ||
+        firstNonEmpty(cells,[2,3]);
+
+      const msg =
+        pickByHeader(labels,cells,['メッセージ','コメント','内容','説明','ひとこと']) ||
+        firstNonEmpty(cells,[3,4,5]);
+
+      const youtube = findYoutubeUrl(urls);
+      const drive = findDriveUrl(urls);
+      const image = findImageUrl(urls);
+      const map = findMapUrl(urls, cells, place);
 
       return {
         id:String(index + 1),
@@ -504,12 +652,14 @@ window.handleSheet = function(json){
         name:name,
         place:place,
         msg:msg,
-        media:media,
+        youtube:youtube,
+        drive:drive,
+        image:image,
         map:map
       };
     })
     .filter(d => !looksHeader(d.cells))
-    .filter(d => d.name || d.place || d.msg || d.media);
+    .filter(d => d.name || d.place || d.msg || d.youtube || d.drive || d.image);
 
     ALL.sort((a,b)=>{
       if(b.sortDate !== a.sortDate) return b.sortDate - a.sortDate;
@@ -536,17 +686,9 @@ function loadSheet(){
   const old = document.getElementById('jsonpLoader');
   if(old) old.remove();
 
-  const sheetName = SHEET_NAMES[sheetIndex];
-
   const script = document.createElement('script');
   script.id = 'jsonpLoader';
-  script.src =
-    'https://docs.google.com/spreadsheets/d/' +
-    encodeURIComponent(SHEET_ID) +
-    '/gviz/tq?sheet=' +
-    encodeURIComponent(sheetName) +
-    '&tqx=out:json;responseHandler:handleSheet&v=' +
-    Date.now();
+  script.src = SHEET_URLS[urlIndex] + '&v=' + Date.now();
 
   script.onerror = function(){
     tryNextSheet();
@@ -554,19 +696,19 @@ function loadSheet(){
 
   document.body.appendChild(script);
 
-  setTimeout(function(){
+  loadingTimer = setTimeout(function(){
     if(!loaded){
       tryNextSheet();
     }
-  },5000);
+  },6500);
 }
 
 function tryNextSheet(){
   if(loaded) return;
 
-  sheetIndex++;
+  urlIndex++;
 
-  if(sheetIndex < SHEET_NAMES.length){
+  if(urlIndex < SHEET_URLS.length){
     loadSheet();
     return;
   }
@@ -623,7 +765,7 @@ function render(list,emptyText){
 function card(d){
   return `
     <article class="card">
-      ${mediaHtml(d.media)}
+      ${mediaHtml(d)}
       <div class="body">
         ${d.time ? `<div class="time">${esc(d.time)}</div>` : ''}
         <h2 class="name">${esc(d.name || 'キッチンカー出店情報')}</h2>
@@ -631,6 +773,8 @@ function card(d){
         ${d.msg ? `<div class="msg">${esc(d.msg)}</div>` : ''}
         <div class="btns">
           ${d.map ? `<a class="btn map" href="${escAttr(d.map)}" target="_blank" rel="noopener">Googleマップを見る</a>` : ''}
+          ${d.youtube ? `<a class="btn" href="${escAttr(d.youtube)}" target="_blank" rel="noopener">YouTubeで開く</a>` : ''}
+          ${d.drive ? `<a class="btn" href="${escAttr(d.drive)}" target="_blank" rel="noopener">動画・写真を開く</a>` : ''}
           ${shareHtml(d)}
         </div>
       </div>
@@ -638,21 +782,44 @@ function card(d){
   `;
 }
 
-function mediaHtml(url){
-  if(!url) return '';
+function mediaHtml(d){
+  if(d.youtube){
+    const id = youtubeId(d.youtube);
+    if(id){
+      return `
+        <div class="media">
+          <div class="video-wrap">
+            <iframe
+              src="https://www.youtube.com/embed/${escAttr(id)}"
+              title="YouTube video"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+      `;
+    }
+  }
 
-  if(isYoutube(url)){
+  if(d.drive){
     return `
       <div class="media">
-        <a class="btn" href="${escAttr(url)}" target="_blank" rel="noopener">動画を見る</a>
+        <div class="video-wrap">
+          <iframe
+            src="${escAttr(makeDrivePreview(d.drive))}"
+            title="Google Drive media"
+            allow="autoplay"
+            allowfullscreen>
+          </iframe>
+        </div>
       </div>
     `;
   }
 
-  if(isImage(url)){
+  if(d.image){
     return `
       <div class="media">
-        <img src="${escAttr(makeDriveImage(url))}" alt="出店情報画像" loading="lazy">
+        <img src="${escAttr(d.image)}" alt="出店情報画像" loading="lazy">
       </div>
     `;
   }
