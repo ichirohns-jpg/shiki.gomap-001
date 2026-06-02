@@ -13,8 +13,8 @@
 <meta property="og:url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/app.html">
 <meta property="og:title" content="志木Go map｜出店情報">
 <meta property="og:description" content="志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図。">
-<meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=2400">
-<meta property="og:image:secure_url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=2400">
+<meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=2500">
+<meta property="og:image:secure_url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=2500">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -22,7 +22,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="志木Go map｜出店情報">
 <meta name="twitter:description" content="志木市のキッチンカーは今どこ？今日のご飯が見つかるリアルタイム地図。">
-<meta name="twitter:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=2400">
+<meta name="twitter:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=2500">
 
 <style>
 *{box-sizing:border-box}
@@ -353,7 +353,7 @@ h1{
 <div class="wrap">
 
   <section class="header">
-    <img class="banner" src="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=2400" alt="志木Go map">
+    <img class="banner" src="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=2500" alt="志木Go map">
 
     <div class="header-body">
       <h1>志木Go map</h1>
@@ -382,7 +382,7 @@ h1{
     <button id="bottomArchiveBtn" onclick="toggleArchive()" class="bottom-btn archive-btn">アーカイブ</button>
   </div>
 
-  <a class="home" href="index.html?v=2400">← トップに戻る</a>
+  <a class="home" href="index.html?v=2500">← トップに戻る</a>
   <div class="footer">Shiki Go map</div>
 
 </div>
@@ -613,8 +613,21 @@ function handleSheet(json){
       const place = getCell(c[2]);
       const msg = getCell(c[3]);
       const mediaCell = getCell(c[4]);
-      const map = getCell(c[8]) || getCell(c[6]);
-      const status = getCell(c[8]);
+
+      /*
+        列の固定：
+        A 0 日付
+        B 1 店名
+        C 2 場所
+        D 3 メッセージ
+        E 4 メディアURL
+        I 8 地図URL
+        J 9 公開判定
+        K 10 並び替え用
+      */
+      const map = getCell(c[8]) || '';
+      const status = getCell(c[9]) || '';
+      const sortValue = getCell(c[10]) || '';
 
       let media = parseMediaList(mediaCell);
       if(!media || media.length === 0){
@@ -623,7 +636,7 @@ function handleSheet(json){
 
       return {
         time:dateText,
-        timeMs:parseDateValue(dateText),
+        timeMs:parseDateValue(dateText) || Number(sortValue) || 0,
         name:name,
         place:place,
         msg:msg,
@@ -634,7 +647,7 @@ function handleSheet(json){
     }).filter(function(r){
       if(!r.name) return false;
       if(shouldHide(r)) return false;
-      if(r.status && r.status !== '公開' && r.status.indexOf('http') === -1) return false;
+      if(r.status && r.status !== '公開') return false;
       return true;
     });
 
