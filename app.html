@@ -12,7 +12,7 @@
 <meta property="og:site_name" content="志木Go map">
 <meta property="og:title" content="志木Go map｜出店情報">
 <meta property="og:description" content="志木市のキッチンカー出店情報をリアルタイムでお届けします。">
-<meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=3200">
+<meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=3300">
 <meta property="og:url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/app.html">
 <meta name="twitter:card" content="summary_large_image">
 
@@ -220,25 +220,6 @@ body{
   border:0;
 }
 
-.video-fallback{
-  background:#111;
-  padding:14px 16px 18px;
-}
-
-.video-fallback .open-youtube{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  width:100%;
-  min-height:54px;
-  border-radius:12px;
-  background:#cc0000;
-  color:white;
-  text-decoration:none;
-  font-size:18px;
-  font-weight:900;
-}
-
 .card-inner{
   padding:22px 18px 24px;
 }
@@ -379,7 +360,7 @@ body{
 <div class="wrap">
 
   <section class="hero">
-    <img class="hero-img" src="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=3200" alt="志木Go map">
+    <img class="hero-img" src="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=3300" alt="志木Go map">
     <div class="hero-body">
       <div class="hero-title">志木Go map</div>
       <p class="hero-lead">キッチンカーの出店情報を<br>リアルタイムでお届けします</p>
@@ -410,7 +391,7 @@ body{
     <div id="archive-grid" class="card-list"></div>
   </section>
 
-  <a class="back-btn" href="index.html?v=3200">← トップに戻る</a>
+  <a class="back-btn" href="index.html?v=3300">← トップに戻る</a>
   <div class="footer">Shiki Go map</div>
 
 </div>
@@ -559,19 +540,6 @@ body{
 
       frame.appendChild(iframe);
       card.appendChild(frame);
-
-      const fallback = document.createElement("div");
-      fallback.className = "video-fallback";
-
-      const open = document.createElement("a");
-      open.className = "open-youtube";
-      open.href = "https://www.youtube.com/watch?v=" + ytId;
-      open.target = "_blank";
-      open.rel = "noopener noreferrer";
-      open.textContent = "YouTubeで開く";
-
-      fallback.appendChild(open);
-      card.appendChild(fallback);
     }
 
     const inner = document.createElement("div");
@@ -802,9 +770,7 @@ body{
         const combined = JSON.stringify(item);
 
         if(!item.name) continue;
-
         if(item.status && item.status !== "公開") continue;
-
         if(isExcludedText(combined)) continue;
 
         items.push(item);
