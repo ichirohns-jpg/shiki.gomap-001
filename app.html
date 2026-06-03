@@ -12,7 +12,7 @@
 <meta property="og:site_name" content="志木Go map">
 <meta property="og:title" content="志木Go map｜出店情報">
 <meta property="og:description" content="志木市のキッチンカー出店情報をリアルタイムでお届けします。">
-<meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=3300">
+<meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=3400">
 <meta property="og:url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/app.html">
 <meta name="twitter:card" content="summary_large_image">
 
@@ -24,7 +24,6 @@
   --green:#22a36b;
   --bg:#eef6ff;
   --text:#1f2d3d;
-  --muted:#667085;
   --card:#ffffff;
 }
 
@@ -51,7 +50,7 @@ body{
   width:100%;
   max-width:760px;
   margin:0 auto;
-  padding:14px 12px 42px;
+  padding:12px 12px 42px;
 }
 
 .hero{
@@ -75,7 +74,7 @@ body{
 
 .hero-title{
   font-size:44px;
-  line-height:1.18;
+  line-height:1.15;
   font-weight:900;
   color:var(--deep-blue);
   margin-bottom:14px;
@@ -89,35 +88,21 @@ body{
   color:#5f7083;
 }
 
-.hero-actions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  margin-top:22px;
-}
-
-.hero-actions a,
-.hero-actions button{
-  min-height:66px;
-  border:0;
-  border-radius:999px;
+.owner-link{
   display:flex;
   align-items:center;
   justify-content:center;
+  min-height:62px;
+  margin:22px auto 0;
+  width:100%;
+  max-width:520px;
+  border-radius:999px;
+  background:linear-gradient(180deg,#ff751e,#f05a00);
   color:#fff;
   text-decoration:none;
-  font-size:20px;
+  font-size:21px;
   font-weight:900;
-  font-family:inherit;
   box-shadow:0 8px 14px rgba(0,0,0,.10);
-}
-
-.hero-actions .latest{
-  background:linear-gradient(180deg,#1688ee,#0b74de);
-}
-
-.hero-actions .owner{
-  background:linear-gradient(180deg,#ff751e,#f05a00);
 }
 
 .tabs{
@@ -128,12 +113,12 @@ body{
 }
 
 .tab-btn{
-  min-height:64px;
+  min-height:66px;
   border:0;
   border-radius:999px;
   background:#dbeeff;
   color:var(--deep-blue);
-  font-size:22px;
+  font-size:24px;
   font-weight:900;
   font-family:inherit;
   box-shadow:0 5px 12px rgba(20,70,120,.08);
@@ -360,14 +345,11 @@ body{
 <div class="wrap">
 
   <section class="hero">
-    <img class="hero-img" src="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=3300" alt="志木Go map">
+    <img class="hero-img" src="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=3400" alt="志木Go map">
     <div class="hero-body">
       <div class="hero-title">志木Go map</div>
       <p class="hero-lead">キッチンカーの出店情報を<br>リアルタイムでお届けします</p>
-      <div class="hero-actions">
-        <button class="latest" type="button" id="topLatestBtn">最新情報</button>
-        <a class="owner" href="owner.html">出店希望者はこちら</a>
-      </div>
+      <a class="owner-link" href="owner.html">出店希望者はこちら</a>
     </div>
   </section>
 
@@ -391,7 +373,7 @@ body{
     <div id="archive-grid" class="card-list"></div>
   </section>
 
-  <a class="back-btn" href="index.html?v=3300">← トップに戻る</a>
+  <a class="back-btn" href="index.html?v=3400">← トップに戻る</a>
   <div class="footer">Shiki Go map</div>
 
 </div>
@@ -738,11 +720,6 @@ body{
 
   document.getElementById("latest-tab").addEventListener("click",function(){
     render("latest");
-  });
-
-  document.getElementById("topLatestBtn").addEventListener("click",function(){
-    render("latest");
-    window.scrollTo({top:0,behavior:"smooth"});
   });
 
   document.getElementById("archive-tab").addEventListener("click",function(){
