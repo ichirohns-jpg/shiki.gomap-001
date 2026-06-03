@@ -1,15 +1,18 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" prefix="og: https://ogp.me/ns#">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 
-<title>志木Go map</title>
+<title>志木Go map｜出店情報</title>
 <meta name="description" content="志木市のキッチンカー出店情報をお届けします。">
 
-<meta property="og:title" content="志木Go map">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="志木Go map">
+<meta property="og:title" content="志木Go map｜出店情報">
 <meta property="og:description" content="志木市のキッチンカー出店情報をお届けします。">
-<meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=3000">
+<meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=3100">
 <meta property="og:url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/app.html">
 <meta name="twitter:card" content="summary_large_image">
 
@@ -29,6 +32,11 @@
   padding:0;
 }
 
+html,body{
+  width:100%;
+  min-height:100%;
+}
+
 body{
   font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic","Yu Gothic UI",Arial,sans-serif;
   background:var(--bg);
@@ -40,6 +48,7 @@ body{
 }
 
 .container{
+  width:100%;
   max-width:760px;
   margin:0 auto;
 }
@@ -77,6 +86,36 @@ h1{
   line-height:1.65;
   color:#607080;
   font-weight:900;
+}
+
+.top-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:22px;
+}
+
+.top-actions a,
+.top-actions button{
+  min-height:64px;
+  border:none;
+  border-radius:999px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  color:#fff;
+  font-size:20px;
+  font-weight:900;
+  font-family:inherit;
+}
+
+.top-actions .latest{
+  background:var(--blue);
+}
+
+.top-actions .owner{
+  background:var(--orange);
 }
 
 .tabs{
@@ -290,6 +329,16 @@ h1{
   font-size:19px;
   font-weight:900;
 }
+
+.empty-box{
+  background:#fff;
+  border-radius:18px;
+  padding:22px;
+  text-align:center;
+  font-size:19px;
+  font-weight:900;
+  color:#777;
+}
 </style>
 </head>
 
@@ -298,10 +347,14 @@ h1{
 <div class="container">
 
   <section class="top-card">
-    <img class="top-image" src="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=3000" alt="志木Go map">
+    <img class="top-image" src="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=3100" alt="志木Go map">
     <div class="top-body">
       <h1>志木Go map</h1>
       <p class="lead">キッチンカーの出店情報を<br>リアルタイムでお届けします</p>
+      <div class="top-actions">
+        <button class="latest" type="button" id="topLatestBtn">最新情報</button>
+        <a class="owner" href="owner.html">出店希望者はこちら</a>
+      </div>
     </div>
   </section>
 
@@ -325,7 +378,7 @@ h1{
     <div id="archive-grid" class="card-list"></div>
   </section>
 
-  <a class="back-btn" href="index.html?v=3000">← トップに戻る</a>
+  <a class="back-btn" href="index.html?v=3100">← トップに戻る</a>
 
 </div>
 
@@ -438,7 +491,14 @@ h1{
 
   function parseDateValue(value){
     const text = String(value || "").trim();
-    const d = Date.parse(text.replace(/[年月]/g,"/").replace(/日/g," ").replace(/\./g,"/"));
+
+    const d = Date.parse(
+      text
+        .replace(/[年月]/g,"/")
+        .replace(/日/g," ")
+        .replace(/\./g,"/")
+    );
+
     return isNaN(d) ? 0 : d;
   }
 
@@ -636,7 +696,7 @@ h1{
       archiveSection.style.display = "block";
 
       if(archiveItems.length === 0){
-        archiveGrid.innerHTML = '<div id="loading">アーカイブ情報はありません。</div>';
+        archiveGrid.innerHTML = '<div class="empty-box">アーカイブ情報はありません。</div>';
         return;
       }
 
@@ -653,7 +713,7 @@ h1{
       archiveSection.style.display = "none";
 
       if(latestItems.length === 0){
-        latestGrid.innerHTML = '<div id="loading">公開中の出店情報はありません。</div>';
+        latestGrid.innerHTML = '<div class="empty-box">公開中の出店情報はありません。</div>';
         return;
       }
 
@@ -665,6 +725,11 @@ h1{
 
   document.getElementById("latest-tab").addEventListener("click",function(){
     render("latest");
+  });
+
+  document.getElementById("topLatestBtn").addEventListener("click",function(){
+    render("latest");
+    window.scrollTo({top:0,behavior:"smooth"});
   });
 
   document.getElementById("archive-tab").addEventListener("click",function(){
@@ -692,7 +757,14 @@ h1{
         const combined = JSON.stringify(item);
 
         if(!item.name) continue;
-        if(item.status !== "公開") continue;
+
+        /*
+          ここを強くしすぎない。
+          J列が空でも表示する。
+          J列に「非公開」などが入った時だけ除外する。
+        */
+        if(item.status && item.status !== "公開") continue;
+
         if(isExcludedText(combined)) continue;
 
         items.push(item);
@@ -703,7 +775,11 @@ h1{
       });
 
       if(items.length === 0){
-        throw new Error("表示条件を満たすデータがありません。J列が「公開」になっているか確認してください。");
+        throw new Error(
+          "表示条件を満たすデータがありません。\n" +
+          "ただしCSVは読み込めています。\n" +
+          "B列の店名、J列の公開、除外ワードを確認してください。"
+        );
       }
 
       latestItems = items.slice(0,5);
