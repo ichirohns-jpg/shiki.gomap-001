@@ -2,60 +2,119 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <title>志木Go map</title>
 <meta name="description" content="志木市のキッチンカー出店情報をお届けします。">
 
 <meta property="og:title" content="志木Go map">
 <meta property="og:description" content="志木市のキッチンカー出店情報をお届けします。">
-<meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=2900">
+<meta property="og:image" content="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=3000">
 <meta property="og:url" content="https://ichirohns-jpg.github.io/shiki.gomap-001/app.html">
 <meta name="twitter:card" content="summary_large_image">
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --primary:#0b5fb3;
+  --blue:#0b74de;
+  --orange:#f05a00;
+  --bg:#eef6ff;
+  --card:#ffffff;
+  --text:#263241;
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
 
 body{
-  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic","Yu Gothic UI",sans-serif;
-  background:#eef6ff;
-  color:#263241;
-  padding:15px;
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic","Yu Gothic UI",Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  padding:14px;
   font-size:18px;
   line-height:1.6;
   -webkit-text-size-adjust:100%;
 }
 
 .container{
-  max-width:620px;
+  max-width:760px;
   margin:0 auto;
+}
+
+.top-card{
+  background:#fff;
+  border-radius:28px;
+  overflow:hidden;
+  box-shadow:0 8px 22px rgba(0,0,0,.08);
+  margin-bottom:18px;
 }
 
 .top-image{
   width:100%;
-  border-radius:20px;
-  margin-bottom:18px;
   display:block;
   background:#dbeeff;
 }
 
-h1{
+.top-body{
   text-align:center;
-  margin:15px 0 20px;
-  font-size:34px;
-  color:#0b5fb3;
+  padding:22px 16px 26px;
+}
+
+h1{
+  margin:0 0 12px;
+  font-size:42px;
+  line-height:1.18;
+  color:var(--primary);
   font-weight:900;
 }
 
-h2{
-  margin:30px 0 15px;
-  font-size:24px;
-  border-left:6px solid #ff6b6b;
-  padding-left:12px;
+.lead{
+  margin:0;
+  font-size:22px;
+  line-height:1.65;
+  color:#607080;
   font-weight:900;
 }
 
-#status{
+.tabs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin:18px 0;
+}
+
+.tab-btn{
+  min-height:62px;
+  border:none;
+  border-radius:999px;
+  background:#dbeeff;
+  color:var(--primary);
+  font-size:22px;
+  font-weight:900;
+  font-family:inherit;
+}
+
+.tab-btn.active{
+  background:var(--blue);
+  color:#fff;
+}
+
+.notice{
+  background:#fff;
+  border-radius:22px;
+  padding:20px 16px;
+  margin-bottom:18px;
+  text-align:center;
+  font-size:20px;
+  line-height:1.65;
+  font-weight:900;
+  box-shadow:0 6px 16px rgba(0,0,0,.06);
+}
+
+#loading{
   background:#fff3cd;
   color:#856404;
   padding:20px;
@@ -67,10 +126,25 @@ h2{
   font-size:20px;
 }
 
-#status.error{
+#error-message{
+  display:none;
   background:#f8d7da;
   color:#721c24;
-  border-color:#f5c6cb;
+  padding:18px;
+  border-radius:14px;
+  margin:20px 0;
+  border:2px solid #f5c6cb;
+  font-size:17px;
+  font-weight:800;
+  white-space:pre-wrap;
+}
+
+.section-title{
+  margin:28px 0 15px;
+  font-size:24px;
+  border-left:6px solid var(--orange);
+  padding-left:12px;
+  font-weight:900;
 }
 
 .card-list{
@@ -79,66 +153,71 @@ h2{
 }
 
 .card{
-  background:#fff;
-  border-radius:18px;
-  padding:20px;
-  box-shadow:0 5px 15px rgba(0,0,0,.08);
-  border-top:6px solid #0b5fb3;
+  background:var(--card);
+  border-radius:22px;
+  overflow:hidden;
+  box-shadow:0 7px 18px rgba(0,0,0,.08);
+  border-top:6px solid var(--primary);
 }
 
-.date{
+.card-inner{
+  padding:20px 18px 22px;
+}
+
+.card-date{
   font-size:15px;
-  color:#666;
+  color:#777;
   font-weight:800;
   margin-bottom:6px;
 }
 
-.shop-name{
-  font-size:26px;
+.card-title{
+  font-size:30px;
+  line-height:1.3;
   font-weight:900;
-  color:#0b5fb3;
+  color:var(--primary);
   margin-bottom:10px;
   word-break:break-word;
 }
 
-.location{
-  font-size:19px;
-  color:#e65100;
-  font-weight:900;
-  margin-bottom:12px;
+.card-location{
   background:#fff3e0;
-  display:inline-block;
-  padding:8px 12px;
+  color:#e65100;
+  padding:8px 13px;
   border-radius:8px;
+  font-size:18px;
+  font-weight:900;
+  display:inline-block;
+  margin-bottom:14px;
   word-break:break-word;
 }
 
-.message{
+.card-location::before{
+  content:"📍 ";
+}
+
+.card-message{
   font-size:19px;
+  line-height:1.8;
   white-space:pre-wrap;
-  margin-bottom:15px;
+  margin-bottom:16px;
   background:#f1f3f5;
   padding:14px;
   border-radius:10px;
   word-break:break-word;
 }
 
-.yt-thumb-container{
-  margin-bottom:15px;
-  border-radius:12px;
-  overflow:hidden;
-  position:relative;
-  padding-top:56.25%;
-  background:#000;
+.video-container{
+  background:#111;
+  padding:18px;
 }
 
-.yt-thumb-container img{
-  position:absolute;
-  top:0;
-  left:0;
+.youtube-thumb{
   width:100%;
-  height:100%;
-  object-fit:cover;
+  display:block;
+  border-radius:14px;
+  margin-bottom:12px;
+  background:#222;
 }
 
 .btn{
@@ -151,19 +230,27 @@ h2{
   font-weight:900;
   border-radius:12px;
   text-decoration:none;
-  margin-bottom:10px;
+  margin-top:10px;
   border:none;
   cursor:pointer;
+  font-family:inherit;
 }
 
-.btn-youtube{background:#cc0000;color:white}
-.btn-map{background:#34a853;color:white}
+.btn-youtube{
+  background:#cc0000;
+  color:#fff;
+}
+
+.btn-map{
+  background:#34a853;
+  color:#fff;
+}
 
 .share-title{
   font-size:15px;
   color:#666;
   font-weight:900;
-  margin:16px 0 8px;
+  margin:18px 0 8px;
   text-align:center;
 }
 
@@ -174,15 +261,16 @@ h2{
 }
 
 .btn-share{
-  padding:12px 5px;
+  padding:13px 5px;
   font-size:14px;
   font-weight:900;
-  color:white;
-  border-radius:8px;
+  color:#fff;
+  border-radius:9px;
   text-align:center;
   text-decoration:none;
   border:none;
   cursor:pointer;
+  font-family:inherit;
 }
 
 .share-copy{background:#6c757d}
@@ -202,13 +290,6 @@ h2{
   font-size:19px;
   font-weight:900;
 }
-
-.small-note{
-  font-size:14px;
-  color:#777;
-  margin-top:8px;
-  text-align:center;
-}
 </style>
 </head>
 
@@ -216,317 +297,432 @@ h2{
 
 <div class="container">
 
-  <img class="top-image" src="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=2900" alt="志木Go map">
+  <section class="top-card">
+    <img class="top-image" src="https://ichirohns-jpg.github.io/shiki.gomap-001/gomap-ogp.jpg?v=3000" alt="志木Go map">
+    <div class="top-body">
+      <h1>志木Go map</h1>
+      <p class="lead">キッチンカーの出店情報を<br>リアルタイムでお届けします</p>
+    </div>
+  </section>
 
-  <h1>志木Go map</h1>
-
-  <div id="status">出店情報を読み込んでいます…</div>
-
-  <div id="main-content" style="display:none;">
-    <h2>最新の出店情報</h2>
-    <div id="recent-list" class="card-list"></div>
-
-    <h2 id="archive-title">アーカイブ情報</h2>
-    <div id="archive-list" class="card-list"></div>
+  <div class="tabs">
+    <button id="latest-tab" class="tab-btn active" type="button">最新情報</button>
+    <button id="archive-tab" class="tab-btn" type="button">アーカイブ</button>
   </div>
 
-  <a class="back-btn" href="index.html?v=2900">← トップに戻る</a>
+  <div id="notice" class="notice">新しい出店情報から順番に表示します。</div>
+
+  <div id="loading">出店情報を読み込んでいます…</div>
+  <div id="error-message"></div>
+
+  <section id="latest-section" style="display:none;">
+    <h2 class="section-title">最新の出店情報</h2>
+    <div id="latest-grid" class="card-list"></div>
+  </section>
+
+  <section id="archive-section" style="display:none;">
+    <h2 class="section-title">アーカイブ</h2>
+    <div id="archive-grid" class="card-list"></div>
+  </section>
+
+  <a class="back-btn" href="index.html?v=3000">← トップに戻る</a>
 
 </div>
 
 <script>
-const EXCLUDE_WORDS = [
-  "Safariで開いたページ",
-  "ホーム画面に追加",
-  "スマートフォンのホーム画面",
-  "CsCl68YL36o",
-  "CsCi68YL36o"
-];
-
-function getYouTubeId(url){
-  if(!url) return null;
-
-  const text = String(url);
-
-  let match = text.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/);
-  if(match) return match[1];
-
-  match = text.match(/youtube\.com\/watch\?v=([a-zA-Z0-9_-]{11})/);
-  if(match) return match[1];
-
-  match = text.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
-  if(match) return match[1];
-
-  match = text.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/);
-  if(match) return match[1];
-
-  return null;
-}
-
-function isExcluded(rowText){
-  return EXCLUDE_WORDS.some(function(word){
-    return rowText.indexOf(word) !== -1;
-  });
-}
-
-function copyToClipboard(text){
-  if(navigator.clipboard){
-    navigator.clipboard.writeText(text).then(function(){
-      alert("コピーしました！");
-    }).catch(function(){
-      fallbackCopy(text);
-    });
-  }else{
-    fallbackCopy(text);
-  }
-}
-
-function fallbackCopy(text){
-  const textarea = document.createElement("textarea");
-  textarea.value = text;
-  textarea.style.position = "fixed";
-  textarea.style.left = "-9999px";
-  document.body.appendChild(textarea);
-  textarea.focus();
-  textarea.select();
-
-  try{
-    document.execCommand("copy");
-    alert("コピーしました！");
-  }catch(err){
-    prompt("コピーしてください", text);
-  }
-
-  document.body.removeChild(textarea);
-}
-
-function escapeHtml(str){
-  return String(str || "").replace(/[&<>"']/g,function(match){
-    return {
-      "&":"&amp;",
-      "<":"&lt;",
-      ">":"&gt;",
-      '"':"&quot;",
-      "'":"&#39;"
-    }[match];
-  });
-}
-
-function escapeAttr(str){
-  return escapeHtml(str);
-}
-
-function escapeJs(str){
-  return String(str || "")
-    .replace(/\\/g,"\\\\")
-    .replace(/'/g,"\\'")
-    .replace(/\n/g,"\\n")
-    .replace(/\r/g,"");
-}
-
-function parseDateValue(text){
-  const s = String(text || "");
-
-  const m = s.match(/Date\((\d+),(\d+),(\d+)(?:,(\d+),(\d+),(\d+))?\)/);
-  if(m){
-    return new Date(
-      Number(m[1]),
-      Number(m[2]),
-      Number(m[3]),
-      Number(m[4] || 0),
-      Number(m[5] || 0),
-      Number(m[6] || 0)
-    ).getTime();
-  }
-
-  const clean = s.replace(/[年月]/g,"/").replace(/日/g," ").replace(/\./g,"/").trim();
-  const d = Date.parse(clean);
-  return isNaN(d) ? 0 : d;
-}
-
-/* 重要：Googleから呼ばれる関数。必ず window 直下に置く */
-window.myCallback = function(data){
-  const statusEl = document.getElementById("status");
-
-  if(!data || !data.table){
-    statusEl.className = "error";
-    statusEl.innerText = "データの構造が不正です。Googleシートの公開設定かURLを確認してください。";
-    return;
-  }
-
-  const rows = data.table.rows || [];
-
-  if(rows.length === 0){
-    statusEl.className = "error";
-    statusEl.innerText = "有効なデータ行が見つかりませんでした。";
-    return;
-  }
-
-  const validData = [];
-
-  for(let i = 0; i < rows.length; i++){
-    const cells = rows[i].c || [];
-
-    const getValue = function(idx){
-      return cells[idx] && cells[idx].v !== null && cells[idx].v !== undefined
-        ? String(cells[idx].v).trim()
-        : "";
-    };
-
-    const getFormattedValue = function(idx){
-      return cells[idx] && cells[idx].f !== null && cells[idx].f !== undefined
-        ? String(cells[idx].f).trim()
-        : getValue(idx);
-    };
-
-    const item = {
-      date: getFormattedValue(0),
-      shopName: getValue(1),
-      location: getValue(2),
-      message: getValue(3),
-      mediaUrl: getValue(4),
-      mediaType: getValue(5),
-      lat: getValue(6),
-      lng: getValue(7),
-      mapUrl: getValue(8),
-      status: getValue(9),
-      sortOrder: parseFloat(getValue(10)) || parseDateValue(getFormattedValue(0)) || 0
-    };
-
-    const combinedText = JSON.stringify(item);
-
-    if(
-      item.shopName !== "" &&
-      item.status === "公開" &&
-      !isExcluded(combinedText)
-    ){
-      validData.push(item);
-    }
-  }
-
-  validData.sort(function(a,b){
-    return b.sortOrder - a.sortOrder;
-  });
-
-  if(validData.length === 0){
-    statusEl.className = "error";
-    statusEl.innerText = "表示条件を満たすデータがありません。J列が「公開」になっているか確認してください。";
-    return;
-  }
-
-  statusEl.style.display = "none";
-  document.getElementById("main-content").style.display = "block";
-
-  const recentList = document.getElementById("recent-list");
-  const archiveList = document.getElementById("archive-list");
-  const archiveTitle = document.getElementById("archive-title");
-
-  recentList.innerHTML = "";
-  archiveList.innerHTML = "";
-
-  validData.forEach(function(item,index){
-    const card = document.createElement("div");
-    card.className = "card";
-
-    let cardHtml = "";
-
-    cardHtml += '<div class="date">' + escapeHtml(item.date) + "</div>";
-    cardHtml += '<div class="shop-name">' + escapeHtml(item.shopName) + "</div>";
-
-    if(item.location){
-      cardHtml += '<div class="location">' + escapeHtml(item.location) + "</div>";
-    }
-
-    if(item.message){
-      cardHtml += '<div class="message">' + escapeHtml(item.message) + "</div>";
-    }
-
-    const ytId = getYouTubeId(item.mediaUrl);
-
-    if(ytId){
-      cardHtml +=
-        '<div class="yt-thumb-container">' +
-        '<img src="https://img.youtube.com/vi/' + ytId + '/hqdefault.jpg" alt="YouTubeサムネイル">' +
-        "</div>" +
-        '<a href="https://www.youtube.com/watch?v=' + ytId + '" target="_blank" rel="noopener noreferrer" class="btn btn-youtube">YouTubeで動画を見る</a>';
-    }
-
-    if(item.mapUrl){
-      cardHtml +=
-        '<a href="' + escapeAttr(item.mapUrl) + '" target="_blank" rel="noopener noreferrer" class="btn btn-map">Googleマップを見る</a>';
-    }
-
-    const shareBaseUrl = "https://ichirohns-jpg.github.io/shiki.gomap-001/app.html";
-    const shareUrl = encodeURIComponent(shareBaseUrl);
-    const shareText = encodeURIComponent("【志木Go map】" + item.shopName + " - " + item.location + " " + item.date);
-
-    const copyText =
-      "【志木Go map】\\n" +
-      item.shopName + "\\n" +
-      (item.location ? "場所：" + item.location + "\\n" : "") +
-      item.date + "\\n" +
-      shareBaseUrl;
-
-    cardHtml +=
-      '<div class="share-title">この情報をシェアする</div>' +
-      '<div class="share-group">' +
-      '<button onclick="copyToClipboard(\\'' + escapeJs(copyText) + '\\')" class="btn-share share-copy">コピー</button>' +
-      '<a href="https://www.facebook.com/sharer/sharer.php?u=' + shareUrl + '" target="_blank" rel="noopener noreferrer" class="btn-share share-fb">FB</a>' +
-      '<a href="https://social-plugins.line.me/lineit/share?url=' + shareUrl + '&text=' + shareText + '" target="_blank" rel="noopener noreferrer" class="btn-share share-line">LINE</a>' +
-      '<a href="https://twitter.com/share?url=' + shareUrl + '&text=' + shareText + '" target="_blank" rel="noopener noreferrer" class="btn-share share-x">X</a>' +
-      "</div>";
-
-    card.innerHTML = cardHtml;
-
-    if(index < 5){
-      recentList.appendChild(card);
-    }else{
-      archiveList.appendChild(card);
-    }
-  });
-
-  if(validData.length <= 5){
-    archiveTitle.style.display = "none";
-    archiveList.style.display = "none";
-  }else{
-    archiveTitle.style.display = "block";
-    archiveList.style.display = "grid";
-  }
-};
-
-/* ここでJSONPを開始 */
 (function(){
+
   const spreadsheetId = "12pq1Flwl_Ol61frvAMhdFkpDzoTdGsnnzystje8jEXw";
   const sheetName = encodeURIComponent("公開用");
 
-  const url =
+  const csvUrl =
     "https://docs.google.com/spreadsheets/d/" +
     spreadsheetId +
-    "/gviz/tq?tqx=responseHandler:myCallback&sheet=" +
+    "/gviz/tq?tqx=out:csv&sheet=" +
     sheetName +
     "&v=" +
     Date.now();
 
-  const script = document.createElement("script");
-  script.src = url;
-  script.type = "text/javascript";
+  const EXCLUDE_WORDS = [
+    "Safariで開いたページ",
+    "ホーム画面に追加",
+    "スマートフォンのホーム画面",
+    "CsCl68YL36o",
+    "CsCi68YL36o"
+  ];
 
-  script.onerror = function(){
-    const statusEl = document.getElementById("status");
-    statusEl.className = "error";
-    statusEl.innerText = "スクリプトの読み込みに失敗しました。URL・シート名・公開設定を確認してください。";
-  };
+  let latestItems = [];
+  let archiveItems = [];
 
-  document.body.appendChild(script);
+  function getYouTubeId(url){
+    if(!url) return null;
 
-  setTimeout(function(){
-    const statusEl = document.getElementById("status");
-    if(statusEl && statusEl.style.display !== "none"){
-      statusEl.className = "error";
-      statusEl.innerText =
-        "読み込みが完了しません。callbackが呼ばれていません。app.htmlのJSONP設定またはGoogleシート側を確認してください。";
+    const text = String(url);
+
+    let match = text.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/);
+    if(match) return match[1];
+
+    match = text.match(/youtube\.com\/watch\?v=([a-zA-Z0-9_-]{11})/);
+    if(match) return match[1];
+
+    match = text.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+    if(match) return match[1];
+
+    match = text.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/);
+    if(match) return match[1];
+
+    return null;
+  }
+
+  function parseCSV(text){
+    const rows = [];
+    let row = [""];
+    let inQuotes = false;
+
+    for(let i = 0; i < text.length; i++){
+      const c = text[i];
+      const next = text[i + 1];
+
+      if(c === '"'){
+        if(inQuotes && next === '"'){
+          row[row.length - 1] += '"';
+          i++;
+        }else{
+          inQuotes = !inQuotes;
+        }
+      }else if(c === "," && !inQuotes){
+        row.push("");
+      }else if((c === "\r" || c === "\n") && !inQuotes){
+        if(c === "\r" && next === "\n"){
+          i++;
+        }
+        rows.push(row);
+        row = [""];
+      }else{
+        row[row.length - 1] += c;
+      }
     }
-  },8000);
+
+    if(row.length > 1 || row[0] !== ""){
+      rows.push(row);
+    }
+
+    return rows;
+  }
+
+  function isExcludedText(text){
+    return EXCLUDE_WORDS.some(function(word){
+      return text.indexOf(word) !== -1;
+    });
+  }
+
+  function normalizeRow(row){
+    while(row.length < 11){
+      row.push("");
+    }
+
+    return {
+      date: String(row[0] || "").trim(),
+      name: String(row[1] || "").trim(),
+      location: String(row[2] || "").trim(),
+      message: String(row[3] || "").trim(),
+      mediaUrl: String(row[4] || "").trim(),
+      mediaType: String(row[5] || "").trim(),
+      lat: String(row[6] || "").trim(),
+      lng: String(row[7] || "").trim(),
+      mapUrl: String(row[8] || "").trim(),
+      status: String(row[9] || "").trim(),
+      sortOrder: Number(String(row[10] || "").trim()) || parseDateValue(row[0]) || 0
+    };
+  }
+
+  function parseDateValue(value){
+    const text = String(value || "").trim();
+    const d = Date.parse(text.replace(/[年月]/g,"/").replace(/日/g," ").replace(/\./g,"/"));
+    return isNaN(d) ? 0 : d;
+  }
+
+  function createCard(data){
+    const card = document.createElement("article");
+    card.className = "card";
+
+    const ytId = getYouTubeId(data.mediaUrl);
+
+    if(ytId){
+      const video = document.createElement("div");
+      video.className = "video-container";
+
+      const img = document.createElement("img");
+      img.src = "https://img.youtube.com/vi/" + ytId + "/hqdefault.jpg";
+      img.alt = "YouTubeサムネイル";
+      img.className = "youtube-thumb";
+      video.appendChild(img);
+
+      const ytBtn = document.createElement("a");
+      ytBtn.href = "https://www.youtube.com/watch?v=" + ytId;
+      ytBtn.target = "_blank";
+      ytBtn.rel = "noopener noreferrer";
+      ytBtn.className = "btn btn-youtube";
+      ytBtn.textContent = "YouTubeで動画を見る";
+      video.appendChild(ytBtn);
+
+      card.appendChild(video);
+    }
+
+    const inner = document.createElement("div");
+    inner.className = "card-inner";
+
+    const dateEl = document.createElement("div");
+    dateEl.className = "card-date";
+    dateEl.textContent = data.date;
+    inner.appendChild(dateEl);
+
+    const titleEl = document.createElement("div");
+    titleEl.className = "card-title";
+    titleEl.textContent = data.name;
+    inner.appendChild(titleEl);
+
+    if(data.location){
+      const locEl = document.createElement("div");
+      locEl.className = "card-location";
+      locEl.textContent = data.location;
+      inner.appendChild(locEl);
+    }
+
+    if(data.message){
+      const msgEl = document.createElement("div");
+      msgEl.className = "card-message";
+      msgEl.textContent = removeUrls(data.message);
+      inner.appendChild(msgEl);
+    }
+
+    if(data.mapUrl){
+      const mapBtn = document.createElement("a");
+      mapBtn.href = data.mapUrl;
+      mapBtn.target = "_blank";
+      mapBtn.rel = "noopener noreferrer";
+      mapBtn.className = "btn btn-map";
+      mapBtn.textContent = "Googleマップを見る";
+      inner.appendChild(mapBtn);
+    }
+
+    addShareButtons(inner, data);
+
+    card.appendChild(inner);
+
+    return card;
+  }
+
+  function removeUrls(text){
+    return String(text || "").replace(/https?:\/\/[^\s　]+/g,"").trim();
+  }
+
+  function addShareButtons(parent, data){
+    const title = document.createElement("div");
+    title.className = "share-title";
+    title.textContent = "この情報をシェアする";
+    parent.appendChild(title);
+
+    const group = document.createElement("div");
+    group.className = "share-group";
+
+    const pageUrl = "https://ichirohns-jpg.github.io/shiki.gomap-001/app.html";
+    const text =
+      "【志木Go map】\n" +
+      data.name + "\n" +
+      (data.location ? "場所：" + data.location + "\n" : "") +
+      data.date + "\n" +
+      pageUrl;
+
+    const copyBtn = document.createElement("button");
+    copyBtn.className = "btn-share share-copy";
+    copyBtn.textContent = "コピー";
+    copyBtn.onclick = function(){
+      copyText(text);
+    };
+    group.appendChild(copyBtn);
+
+    const fb = document.createElement("a");
+    fb.className = "btn-share share-fb";
+    fb.textContent = "FB";
+    fb.target = "_blank";
+    fb.rel = "noopener noreferrer";
+    fb.href = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(pageUrl);
+    group.appendChild(fb);
+
+    const line = document.createElement("a");
+    line.className = "btn-share share-line";
+    line.textContent = "LINE";
+    line.target = "_blank";
+    line.rel = "noopener noreferrer";
+    line.href =
+      "https://social-plugins.line.me/lineit/share?url=" +
+      encodeURIComponent(pageUrl) +
+      "&text=" +
+      encodeURIComponent(text);
+    group.appendChild(line);
+
+    const x = document.createElement("a");
+    x.className = "btn-share share-x";
+    x.textContent = "X";
+    x.target = "_blank";
+    x.rel = "noopener noreferrer";
+    x.href =
+      "https://twitter.com/share?url=" +
+      encodeURIComponent(pageUrl) +
+      "&text=" +
+      encodeURIComponent("【志木Go map】" + data.name);
+    group.appendChild(x);
+
+    parent.appendChild(group);
+  }
+
+  function copyText(text){
+    if(navigator.clipboard){
+      navigator.clipboard.writeText(text).then(function(){
+        alert("コピーしました");
+      }).catch(function(){
+        fallbackCopy(text);
+      });
+    }else{
+      fallbackCopy(text);
+    }
+  }
+
+  function fallbackCopy(text){
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    try{
+      document.execCommand("copy");
+      alert("コピーしました");
+    }catch(e){
+      prompt("コピーしてください", text);
+    }
+
+    document.body.removeChild(textarea);
+  }
+
+  function showError(message){
+    document.getElementById("loading").style.display = "none";
+    const error = document.getElementById("error-message");
+    error.textContent = message;
+    error.style.display = "block";
+  }
+
+  function render(mode){
+    const latestSection = document.getElementById("latest-section");
+    const archiveSection = document.getElementById("archive-section");
+    const latestGrid = document.getElementById("latest-grid");
+    const archiveGrid = document.getElementById("archive-grid");
+    const latestTab = document.getElementById("latest-tab");
+    const archiveTab = document.getElementById("archive-tab");
+    const notice = document.getElementById("notice");
+
+    latestGrid.innerHTML = "";
+    archiveGrid.innerHTML = "";
+
+    if(mode === "archive"){
+      latestTab.classList.remove("active");
+      archiveTab.classList.add("active");
+      notice.textContent = "アーカイブを表示しています。";
+
+      latestSection.style.display = "none";
+      archiveSection.style.display = "block";
+
+      if(archiveItems.length === 0){
+        archiveGrid.innerHTML = '<div id="loading">アーカイブ情報はありません。</div>';
+        return;
+      }
+
+      archiveItems.forEach(function(item){
+        archiveGrid.appendChild(createCard(item));
+      });
+
+    }else{
+      archiveTab.classList.remove("active");
+      latestTab.classList.add("active");
+      notice.textContent = "新しい出店情報から順番に表示します。";
+
+      latestSection.style.display = "block";
+      archiveSection.style.display = "none";
+
+      if(latestItems.length === 0){
+        latestGrid.innerHTML = '<div id="loading">公開中の出店情報はありません。</div>';
+        return;
+      }
+
+      latestItems.forEach(function(item){
+        latestGrid.appendChild(createCard(item));
+      });
+    }
+  }
+
+  document.getElementById("latest-tab").addEventListener("click",function(){
+    render("latest");
+  });
+
+  document.getElementById("archive-tab").addEventListener("click",function(){
+    render("archive");
+  });
+
+  fetch(csvUrl)
+    .then(function(response){
+      if(!response.ok){
+        throw new Error("ネットワーク応答が正常ではありません。Status: " + response.status);
+      }
+      return response.text();
+    })
+    .then(function(csvText){
+      const rows = parseCSV(csvText);
+
+      if(rows.length <= 1){
+        throw new Error("CSVデータが空です。Googleスプレッドシートの「ウェブに公開」を確認してください。");
+      }
+
+      const items = [];
+
+      for(let i = 1; i < rows.length; i++){
+        const item = normalizeRow(rows[i]);
+        const combined = JSON.stringify(item);
+
+        if(!item.name) continue;
+        if(item.status !== "公開") continue;
+        if(isExcludedText(combined)) continue;
+
+        items.push(item);
+      }
+
+      items.sort(function(a,b){
+        return b.sortOrder - a.sortOrder;
+      });
+
+      if(items.length === 0){
+        throw new Error("表示条件を満たすデータがありません。J列が「公開」になっているか確認してください。");
+      }
+
+      latestItems = items.slice(0,5);
+      archiveItems = items.slice(5);
+
+      document.getElementById("loading").style.display = "none";
+      render("latest");
+    })
+    .catch(function(error){
+      showError(
+        "データの読み込みまたは処理中にエラーが発生しました。\n\n" +
+        error.message +
+        "\n\n確認すること：\n" +
+        "1. スプレッドシートがウェブに公開されているか\n" +
+        "2. 「公開用」タブがCSV公開対象になっているか\n" +
+        "3. A〜K列の列構成が合っているか"
+      );
+    });
+
 })();
 </script>
 
